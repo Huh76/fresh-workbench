@@ -919,15 +919,31 @@ function refreshMod(m){
 
 /* ====== 详情弹窗数据 & 控制器（站内预览，禁止自动跳转） ====== */
 const DETAILS={};
+let currentDetailKey=null;
 function openDetail(key){
   const d=DETAILS[key]; if(!d)return;
+  currentDetailKey=key;
   document.getElementById("dmTitle").textContent=d.title;
   document.getElementById("dmBody").innerHTML=d.html;
-  document.getElementById("dmFoot").innerHTML = d.src ? '<a class="go" href="'+d.src+'" target="_blank" rel="noopener">前往原网页 / 来源：'+d.srcName+' ↗</a>' : '';
+  document.getElementById("dmFoot").innerHTML='<button class="go" type="button" onclick="closeDetail();openDetailPage(currentDetailKey)">查看完整详情页 →</button>';
   document.getElementById("detailModal").classList.add("show");
 }
 function closeDetail(){document.getElementById("detailModal").classList.remove("show");}
-document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDetail();});
+/* 整页详情：点击「来源 ↗」在本系统内打开完整详情页（禁止跳转外部） */
+function openDetailPage(key){
+  const d=DETAILS[key]; if(!d)return;
+  currentDetailKey=key;
+  closeDetail();
+  document.getElementById("dpTitle").textContent=d.title;
+  document.getElementById("dpBody").innerHTML=d.html;
+  document.getElementById("detailPage").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function closeDetailPage(){
+  document.getElementById("detailPage").classList.remove("show");
+  document.body.style.overflow="";
+}
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){closeDetail();closeDetailPage();}});
 
 /* ====== Module 1: 追剧 ====== */
 const dramas=[
@@ -991,12 +1007,12 @@ function renderDramas(f,hi){
         <div><span>类型</span><b>${x.g}向</b></div>
         <div><span>观看方式</span><b>${x.pay?'付费会员':'免费'}</b></div>
       </div>
-      <p class="dm-note">本页为站内预览，点击右下「前往原网页 / 来源」可跳转至 ${x.p} 官方站点观看。</p>`, src:x.link, srcName:x.p};
+      <p class="dm-note">本页为站内详情预览（示例数据）。点击卡片主体或「来源 ↗」可查看完整详情页。</p>`, src:x.link, srcName:x.p};
     return `<div class="item" onclick="openDetail('${key}')"><span class="tag ${x.s==='完结'?'done':(x.s==='免费'?'free':'seri')}">${x.s}</span>${tag}${fresh}
       <h3>${x.t}</h3>
       <div class="meta">平台：<b>${x.p}</b> · 类型：<b>${x.g}向</b></div>
       <div class="desc">${x.d}</div>
-      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">观看来源 ↗</a></div>`;
+      <a class="go src-link" href="javascript:void(0)" onclick="event.stopPropagation();openDetailPage('${key}')">观看来源 ↗</a></div>`;
   }).join("");
 }
 
@@ -1067,7 +1083,7 @@ function renderHouses(_,hi){
       <div class="dm-sec"><h4>配套</h4><p>${x.fac}</p></div>
       <div class="dm-sec"><h4 class="dm-pros">优点</h4><p>${x.pros.join('、')}</p></div>
       <div class="dm-sec"><h4 class="dm-cons">缺点</h4><p>${x.cons.join('、')}</p></div>
-      <p class="dm-note">本页为站内预览示例数据，点击「前往原网页 / 来源」可跳转至 ${x.src} 官网查看真实房源。</p>`, src:x.link, srcName:x.src};
+      <p class="dm-note">本页为站内详情预览（示例数据）。点击卡片主体或「来源 ↗」可查看完整详情页。</p>`, src:x.link, srcName:x.src};
     return `<div class="item" onclick="openDetail('${key}')">${tag}${fresh}
       <h3>${x.t}</h3>
       <div class="meta">${x.city}·${x.dist} · 来源：<b>${x.src}</b></div>
@@ -1076,7 +1092,7 @@ function renderHouses(_,hi){
       <div class="desc" style="font-size:15px;color:var(--text);font-weight:700">${priceStr}</div>
       <div class="pc"><b class="pro">优点</b>${pros}</div>
       <div class="pc"><b class="con">缺点</b>${cons}</div>
-      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">来源官网 ↗</a></div>`;
+      <a class="go src-link" href="javascript:void(0)" onclick="event.stopPropagation();openDetailPage('${key}')">来源官网 ↗</a></div>`;
   }).join("");
 }
 function priceMatch(p,unit,sel){
@@ -1144,11 +1160,11 @@ function renderNews(f,hi){
         <div><span>来源</span><b>${x.src}</b></div>
         <div><span>发布时间</span><b>${x.time}</b></div>
       </div>
-      <p class="dm-note">本页为站内预览，点击「前往原网页 / 来源」可跳转至 ${x.src} 阅读原文。</p>`, src:x.link, srcName:x.src};
+      <p class="dm-note">本页为站内详情预览（示例数据）。点击卡片主体或「来源 ↗」可查看完整详情页。</p>`, src:x.link, srcName:x.src};
     return `<div class="row" onclick="openDetail('${key}')">
     <span class="cat" style="background:${catColor(x.cat)};color:${catText(x.cat)}">${x.cat}</span>
     <div class="body"><h3>${x.t}</h3><p>${x.d}</p>
-    <div class="src">${x.time}${fresh} · 来源 <a href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.src} ↗</a></div></div></div>`;
+    <div class="src">${x.time}${fresh} · 来源 <a href="javascript:void(0)" onclick="event.stopPropagation();openDetailPage('${key}')">${x.src} ↗</a></div></div></div>`;
   }).join("");
 }
 function catColor(c){return {财经:"#E4F0FB",生活:"#EAF7EE",娱乐:"#FBEFF6",本地:"#FEF6E0"}[c]||"#EEF4F8";}
@@ -1212,13 +1228,13 @@ function renderJobs(_,hi){
         <div><span>对接渠道</span><b>${x.ch}</b></div>
       </div>
       <div class="dm-sec"><h4>要求</h4><p>${x.req}</p></div>
-      <p class="dm-note">本页为站内预览，点击「前往原网页 / 来源」可跳转至 ${x.ch} 官网接单。</p>`, src:x.link, srcName:x.ch};
+      <p class="dm-note">本页为站内详情预览（示例数据）。点击卡片主体或「来源 ↗」可查看完整详情页。</p>`, src:x.link, srcName:x.ch};
     return `<div class="item" onclick="openDetail('${key}')">${tag}<span class="tag pay" style="right:auto;left:12px;top:12px">${x.skill}</span>${fresh}
       <h3 style="padding-left:54px">${x.t}</h3>
       <div class="meta">城市：<b>${x.city}</b> · 酬劳：<b style="color:#d9803e">${x.pay}</b></div>
       <div class="meta">要求：${x.req}</div>
       <div class="desc">对接渠道：<b>${x.ch}</b></div>
-      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.ch} 接单来源 ↗</a></div>`;
+      <a class="go src-link" href="javascript:void(0)" onclick="event.stopPropagation();openDetailPage('${key}')">${x.ch} 接单来源 ↗</a></div>`;
   }).join("");
 }
 function jobPayMatch(n,sel){
@@ -1260,13 +1276,13 @@ function renderDeals(f,hi){
         <div><span>门槛</span><b>${x.th}</b></div>
       </div>
       <div class="dm-sec"><h4 class="dm-cons">注意事项</h4><p>${x.warn}</p></div>
-      <p class="dm-note">本页为站内预览，点击「前往原网页 / 来源」可跳转至 ${x.p} 官网参与活动。</p>`, src:x.link, srcName:x.p};
+      <p class="dm-note">本页为站内详情预览（示例数据）。点击卡片主体或「来源 ↗」可查看完整详情页。</p>`, src:x.link, srcName:x.p};
     return `<div class="item" onclick="openDetail('${key}')"><span class="tag ${tagMap[x.type]||'seri'}">${x.type}</span>${fresh}
       <h3>${x.t}</h3>
       <div class="meta">平台：<b>${x.p}</b> · 福利：<b style="color:#d9803e">${x.reward}</b></div>
       <div class="meta">时效：<b>${x.exp}</b> · 门槛：${x.th}</div>
       <div class="desc" style="color:#d9803e">⚠ ${x.warn}</div>
-      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.p} 参与来源 ↗</a></div>`;
+      <a class="go src-link" href="javascript:void(0)" onclick="event.stopPropagation();openDetailPage('${key}')">${x.p} 参与来源 ↗</a></div>`;
   }).join("");
 }
 
@@ -1919,6 +1935,15 @@ setInterval(updateTime,1000);
     <div id="dmFoot" class="modal-foot"></div>
   </div>
 </div>
+<div id="detailPage" class="detailpage" onclick="if(event.target===this)closeDetailPage()">
+  <div class="dp-card">
+    <button class="modal-x" onclick="closeDetailPage()" aria-label="返回">×</button>
+    <div class="dp-bar"><span class="dp-badge">站内详情页</span></div>
+    <h2 id="dpTitle"></h2>
+    <div id="dpBody" class="modal-body"></div>
+    <div class="dp-foot"><button class="go" type="button" onclick="closeDetailPage()">← 返回工作台</button></div>
+  </div>
+</div>
 <style>
 .modal{position:fixed;inset:0;background:rgba(70,45,55,.40);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;z-index:999;padding:48px 16px;overflow:auto}
 .modal.show{display:flex}
@@ -1938,6 +1963,15 @@ setInterval(updateTime,1000);
 .dm-pros{color:#2f9e5e}.dm-cons{color:#d9803e}
 .modal-foot{margin-top:18px}
 .modal-foot .go{display:inline-block}
+/* 整页详情（站内，禁止跳转外部） */
+.detailpage{position:fixed;inset:0;background:rgba(255,238,246,.97);backdrop-filter:blur(8px);display:none;align-items:flex-start;justify-content:center;z-index:1000;padding:40px 16px;overflow:auto}
+.detailpage.show{display:flex}
+.dp-card{background:#fff;border-radius:26px;max-width:800px;width:100%;padding:30px 32px 26px;box-shadow:0 30px 70px rgba(180,120,150,.32);border:3px dashed #F0D3E0;position:relative;animation:pop .2s ease;margin-bottom:48px}
+.dp-bar{margin-bottom:8px}
+.dp-badge{display:inline-block;background:#FBEFF4;color:#b07d92;border-radius:999px;font-size:12px;padding:4px 12px;letter-spacing:.5px}
+.dp-card h2{font-size:24px;color:#574B53;padding-right:42px;margin:4px 0 18px;line-height:1.4}
+.dp-foot{margin-top:24px;text-align:right}
+.dp-foot .go{display:inline-block}
 .item{cursor:pointer}
 .row{cursor:pointer}
 .palette{cursor:pointer}
