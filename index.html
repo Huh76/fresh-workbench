@@ -1,0 +1,1836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>清新风一体化多功能工作台</title>
+<style>
+  :root{
+    --bg:#FBF1F3;
+    --card:#FFFFFF;
+    --text:#574B53;          /* 柔和暖灰粉文字 */
+    --muted:#A8969E;         /* 莫兰迪粉灰 */
+    --line:#F2E3E8;          /* 裸粉浅描边 */
+    --shadow:0 6px 22px rgba(208,160,178,.12);    /* 极柔阴影 · Soft UI */
+    --shadow-sm:0 3px 10px rgba(208,160,178,.10);
+    /* 马卡龙清新少女 · 低饱和莫兰迪粉系（7 模块统一少女调性） */
+    --m1:#E8A9BC; /* 追剧 裸玫瑰 */
+    --m2:#E6B9A6; /* 房源 蜜桃 */
+    --m3:#C9B6DD; /* 资讯 淡紫 */
+    --m4:#EAD29A; /* 兼职 奶油黄 */
+    --m5:#B9A6D9; /* AI 薰衣草 */
+    --m6:#E9A99B; /* 羊毛 珊瑚粉 */
+    --m7:#D2A7C2; /* 色卡 干玫瑰 */
+    --acc:var(--m1); /* 全局默认强调色（切换模块时由 JS 覆盖） */
+    --radius:24px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    background:linear-gradient(135deg,#FBF1F3 0%,#FCEFF2 45%,#F6F0F7 100%);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  .app{display:flex;height:100vh;width:100%}
+  /* 移动端消除 300ms 点击延迟、去除点击灰块、统一指针 */
+  button,a,.chip,.link,.nav-btn,.ai-tool,.ai-model,.gsw,.item .go,.cvt input,.s{
+    cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:100px;flex:0 0 100px;
+    background:linear-gradient(180deg,#FFF6F8 0%,#FBEFF4 100%);
+    border-right:1px solid var(--line);
+    display:flex;flex-direction:column;align-items:center;
+    padding:20px 0;gap:8px;
+  }
+  .brand{font-size:11px;color:var(--muted);text-align:center;line-height:1.4;margin-bottom:10px;font-weight:600;letter-spacing:.5px}
+  .brand b{display:block;font-size:15px;color:var(--text)}
+  .nav-btn{
+    width:80px;height:74px;border:none;background:transparent;cursor:pointer;
+    border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+    color:var(--muted);transition:.2s;font-size:11px;font-weight:500;
+  }
+  .nav-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .nav-btn:hover{background:#FBEFF3;color:var(--text)}
+  .nav-btn.active{background:#FCEAF0;color:var(--acc);box-shadow:none}
+  .nav-btn.active svg{stroke:var(--acc)}
+  .nav-icon-wrap{position:relative}
+
+  /* ---------- Main ---------- */
+  .main{flex:1;overflow-y:auto;padding:26px 34px 60px;position:relative}
+  .main::-webkit-scrollbar{width:8px}
+  .main::-webkit-scrollbar-thumb{background:#EAD7DE;border-radius:8px}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+  .topbar h1{font-size:21px;font-weight:700;display:flex;align-items:center;gap:10px}
+  .topbar .pill{font-size:12px;color:var(--muted);background:#fff;padding:6px 14px;border-radius:20px;box-shadow:var(--shadow-sm)}
+  .topbar .pill b{color:var(--text)}
+
+  .module{display:none;animation:fade .3s ease}
+  .module.show{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .card{
+    background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);
+    border:1px solid var(--line);
+    padding:22px 24px;margin-bottom:20px;
+  }
+  .card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .card-head .ttl{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:700}
+  .card-head .ttl .emo{font-size:20px}
+  .sub{color:var(--muted);font-size:13px;margin:-8px 0 16px}
+  .links{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .link-sep{font-size:12px;color:#b08;color:#a86a86;font-weight:700;letter-spacing:.5px;padding:0 2px;white-space:nowrap}
+  .link{font-size:12px;color:#9a6b80;text-decoration:none;background:#fff;border:1px solid var(--line);padding:6px 13px;border-radius:14px;transition:.2s;display:inline-flex;align-items:center;gap:4px}
+  .link::after{content:"↗";font-size:11px;opacity:.55;transition:.2s}
+  .link:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
+  .link:hover::after{opacity:1}
+  .link:hover{background:var(--acc);color:#fff}
+  .refresh{
+    border:none;cursor:pointer;font-size:12px;color:#9a7d8a;background:#FBEFF3;
+    padding:7px 14px;border-radius:14px;display:flex;align-items:center;gap:6px;transition:.2s
+  }
+  .refresh:hover{background:var(--acc);color:#fff}
+  .refresh svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+
+  /* filter chips */
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{font-size:13px;padding:7px 16px;border-radius:18px;background:#FBEFF3;color:#9a7d8a;cursor:pointer;border:1px solid transparent;transition:.2s}
+  .chip.on{background:var(--acc);color:#fff;box-shadow:var(--shadow-sm)}
+  .chip:hover{border-color:var(--acc)}
+
+  /* 结构化过滤条（房源/兼职） */
+  .filterbar{background:#FFF7FA;border:1px solid #F6E4EC;border-radius:16px;padding:14px 16px;margin-bottom:18px}
+  .fb-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .fb-row+.fb-row{margin-top:12px}
+  .fb-label{font-size:12.5px;color:#a98a97;font-weight:600;white-space:nowrap}
+  .fb-select{font-family:inherit;font-size:13px;color:#6a4f5c;background:#fff;border:1px solid #F0D9E3;border-radius:12px;padding:7px 12px;cursor:pointer;outline:none;transition:.2s}
+  .fb-select:hover,.fb-select:focus{border-color:var(--acc)}
+  .fb-select option{color:#3b2a33}
+  .fb-row .chips{margin-bottom:0}
+
+  /* 房源优缺点 */
+  .pc{margin-top:8px;font-size:12px;line-height:1.7}
+  .pc .pro{color:#2f9e5e}
+  .pc .con{color:#d9803e}
+  .pc b{display:inline-block;min-width:42px}
+
+  /* AI 模型直达面板 */
+  .ai-models{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+  .ai-model{display:flex;flex-direction:column;gap:4px;text-decoration:none;border:1px solid var(--line);border-radius:16px;padding:13px 14px;background:#fff;transition:.2s}
+  .ai-model:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);border-color:var(--acc)}
+  .ai-model .mn{font-weight:700;font-size:13.5px;color:#6a4f5c;display:flex;align-items:center;gap:7px}
+  .ai-model .md{font-size:11.5px;color:#9a7d8a;line-height:1.5}
+  .ai-model .ml{font-size:11px;color:var(--acc);font-weight:600;margin-top:2px}
+  .ai-models-wrap .sub{margin-bottom:12px}
+  .bar-title{font-size:13px;font-weight:700;color:#6a4f5c;margin:4px 0 10px;display:flex;align-items:center;gap:6px}
+
+  /* grid of cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .item{
+    border:1px solid var(--line);border-radius:16px;padding:16px;background:#fff;transition:.2s;position:relative;overflow:hidden
+  }
+  .item:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm);border-color:var(--acc)}
+  .item .tag{position:absolute;top:12px;right:12px;font-size:11px;padding:3px 9px;border-radius:10px;font-weight:600}
+  .tag.free{background:#E4F7EC;color:#2f9e5e}
+  .tag.pay{background:#FDEFE4;color:#d9803e}
+  .tag.done{background:#EAF0F5;color:#7a8a99}
+  .tag.seri{background:#F3ECFB;color:#8b5fc7}
+  .item h3{font-size:15px;margin-bottom:6px;padding-right:60px;line-height:1.35}
+  .item .meta{font-size:12px;color:var(--muted);line-height:1.7}
+  .item .meta b{color:var(--text)}
+  .item .desc{font-size:12.5px;color:#6b7c8c;margin:8px 0;line-height:1.55}
+  .item .go{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:#8a4a64;font-weight:700;text-decoration:none;margin-top:8px;background:#FCEFF3;padding:6px 13px;border-radius:12px;transition:.2s}
+  .item .go:hover{background:var(--acc);color:#fff}
+
+  /* news / list rows */
+  .row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .row:last-child{border-bottom:none}
+  .row .cat{font-size:11px;padding:3px 10px;border-radius:10px;height:fit-content;font-weight:600;background:#EEF4F8;color:#5a7a94}
+  .row .body{flex:1}
+  .row .body h3{font-size:14.5px;margin-bottom:4px}
+  .row .body p{font-size:12.5px;color:#7a8a99;line-height:1.6}
+  .row .body .src{font-size:11.5px;color:var(--muted);margin-top:5px}
+  .row .body .src a{color:#8a4a64;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .row .body .src a:hover{color:var(--acc)}
+  .ilink{color:#8a4a64 !important;font-weight:600;text-decoration:underline;text-underline-offset:2px}
+  .ilink:hover{color:var(--acc) !important}
+
+  /* ---------- AI module ---------- */
+  .ai-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:420px}
+  .ai-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .ai-tool{font-size:12.5px;padding:6px 13px;border-radius:14px;background:#F1F6FA;color:#6b7c8c;cursor:pointer;border:1px solid transparent;transition:.2s}
+  .ai-tool:hover{background:var(--m5);color:#fff}
+  .chat{flex:1;overflow-y:auto;padding:6px 4px;display:flex;flex-direction:column;gap:14px}
+  .chat::-webkit-scrollbar{width:7px}.chat::-webkit-scrollbar-thumb{background:#DCE6EE;border-radius:7px}
+  .msg{max-width:82%;padding:12px 16px;border-radius:16px;font-size:13.5px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+  .msg.bot{background:#F7EFFB;align-self:flex-start;border-bottom-left-radius:5px}
+  .msg.me{background:var(--m5);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
+  .msg .hl{background:#fff3b0;padding:0 3px;border-radius:4px}
+  .typing{display:flex;gap:4px;align-self:flex-start;background:#F7EFFB;padding:14px 18px;border-radius:16px}
+  .typing span{width:7px;height:7px;border-radius:50%;background:#c2aee0;animation:b 1s infinite}
+  .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+  @keyframes b{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+  .ai-input{display:flex;gap:10px;margin-top:12px}
+  .ai-input textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-family:inherit;font-size:13.5px;outline:none;height:52px;background:#FDF8FB}
+  .ai-input textarea:focus{border-color:var(--m5)}
+  .ai-input button{border:none;background:var(--m5);color:#3a2d5c;font-weight:700;padding:0 22px;border-radius:14px;cursor:pointer;font-size:14px}
+  .ai-input button:hover{filter:brightness(.96)}
+
+  /* ---------- Color module ---------- */
+  .color-layout{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:900px){.color-layout{grid-template-columns:1fr}}
+  .cvt{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0}
+  .cvt input{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;text-align:center;outline:none;font-family:inherit}
+  .cvt input:focus{border-color:var(--m7)}
+  .cvt .grp{background:#FDF8FB;border:1px solid var(--line);border-radius:14px;padding:10px}
+  .cvt .grp label{font-size:11px;color:var(--muted);display:block;text-align:center;margin-bottom:6px}
+  .swatch-big{height:90px;border-radius:16px;margin:10px 0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;text-shadow:0 1px 3px rgba(0,0,0,.25)}
+  .palettes{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+  .palette{border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.2s}
+  .palette:hover{box-shadow:var(--shadow-sm);transform:translateY(-3px)}
+  .palette .ph{padding:12px 14px;font-size:14px;font-weight:700;background:#FDF8FB;border-bottom:1px solid var(--line)}
+  .palette .ph small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:2px}
+  .palette .sws{display:flex}
+  .palette .sws .s{flex:1;min-height:78px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:6px 2px;cursor:pointer;transition:.15s;color:#fff}
+  .palette .sws .s .hex{background:rgba(0,0,0,.42);padding:1px 5px;border-radius:8px;font-size:9.5px;letter-spacing:.2px;white-space:nowrap}
+  .palette .sws .s .cmyk{background:rgba(0,0,0,.30);padding:1px 5px;border-radius:8px;font-size:8.5px;opacity:.95;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+  .palette .sws .s:hover{flex:1.4}
+  .pantone-res{margin-top:14px}
+  .copy-tip{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:#8C6B78;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;opacity:0;transition:.3s;pointer-events:none;z-index:99}
+  .copy-tip.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .toast{position:fixed;top:24px;right:24px;background:#fff;color:var(--text);padding:12px 20px;border-radius:14px;box-shadow:var(--shadow);font-size:13px;opacity:0;transform:translateY(-10px);transition:.3s;z-index:100;border-left:4px solid var(--acc)}
+  .toast.show{opacity:1;transform:none}
+  .foot{text-align:center;color:var(--muted);font-size:12px;padding:10px 0 0}
+
+  /* 实时更新指示 */
+  .live{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:#5fae7e;font-weight:600;margin-left:auto}
+  .live .dot{width:8px;height:8px;border-radius:50%;background:#5fae7e;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,174,126,.5)}70%{box-shadow:0 0 0 7px rgba(95,174,126,0)}100%{box-shadow:0 0 0 0 rgba(95,174,126,0)}}
+  .fresh{display:inline-block;font-size:11px;color:#2f9e5e;font-weight:700;margin:2px 0 6px}
+  /* AI 场景选择 */
+  .ai-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .ai-bar select{border:1px solid var(--line);border-radius:12px;padding:7px 12px;font-family:inherit;font-size:13px;background:#FDF8FB;color:var(--text);outline:none;cursor:pointer}
+  .ai-bar .lbl{font-size:12px;color:var(--muted)}
+  /* 色卡总览 */
+  .gallery-search{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+  .gallery-search input{flex:1;min-width:180px;border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-size:13px;outline:none;font-family:inherit;background:#FDF8FB}
+  .gallery-search input:focus{border-color:var(--m7)}
+  .gallery-search .chips{margin:0}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}
+  .gsw{height:86px;border-radius:14px;overflow:hidden;border:1px solid var(--line);cursor:pointer;transition:.2s;display:flex;flex-direction:column;justify-content:flex-end}
+  .gsw:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}
+  .gsw .gv{background:rgba(255,255,255,.92);padding:5px 7px;font-size:10.5px;color:#3a3a3a;line-height:1.3}
+  .gsw .gv b{display:block;font-size:11px}
+  .gpaper{font-size:9px;color:#888}
+
+  /* ====== 移动端适配（手机） ====== */
+  @media (max-width:760px){
+    .app{flex-direction:column}
+    .sidebar{
+      width:100%;flex:0 0 auto;flex-direction:row;overflow-x:auto;
+      padding:10px 12px;gap:6px;border-right:none;border-bottom:1px solid var(--line);
+      justify-content:flex-start;
+    }
+    .sidebar::-webkit-scrollbar{display:none}
+    .brand{display:none}
+    .nav-btn{
+      width:auto;height:auto;flex:0 0 auto;flex-direction:row;
+      padding:9px 13px;border-radius:14px;gap:6px;
+    }
+    .nav-btn svg{width:18px;height:18px}
+    .main{padding:16px 14px 56px}
+    .topbar{flex-direction:column;align-items:flex-start;gap:10px}
+    .topbar h1{font-size:18px}
+    .card{padding:18px 16px}
+    .grid{grid-template-columns:1fr}
+    .color-layout{grid-template-columns:1fr}
+    .palettes{grid-template-columns:1fr}
+    .cvt{grid-template-columns:1fr 1fr}
+    .ai-wrap{height:calc(100vh - 270px);min-height:360px}
+    .links,.chips{gap:7px}
+    .link,.chip{font-size:12px;padding:6px 11px}
+    .item .go{width:100%;justify-content:center}
+  }
+  @media (max-width:420px){
+    .cvt{grid-template-columns:1fr}
+    .topbar .pill{font-size:11px;padding:5px 11px}
+  }
+
+  /* ===================== 毛绒植绒 3D 软萌·丙午马年主题（覆盖层） ===================== */
+  :root{
+    --bg2:#FCE7EE;
+    --card:#FFFCFD;
+    --text:#5A4A52;
+    --muted:#B592A0;
+    --line:#F3DCE6;
+    --shadow:0 14px 32px rgba(198,130,155,.22);
+    --shadow-sm:0 7px 18px rgba(198,130,155,.18);
+    --m1:#F2A9C4; --m2:#F4B48F; --m3:#C9B2E6; --m4:#F2D37E; --m5:#B49AE0; --m6:#F19E97; --m7:#DCA7C9;
+    --acc:var(--m1);
+    --radius:26px;
+    --hand:"YuanTi SC","Yuanti SC","PingFang SC","Microsoft YaHei",sans-serif;
+  }
+  /* —— 仿羊羔毛绒背景 —— */
+  .furbg{position:fixed;inset:0;z-index:-2;
+    background:
+      radial-gradient(circle at 18% 12%, #FFEAF3 0%, transparent 46%),
+      radial-gradient(circle at 86% 22%, #FCE0EF 0%, transparent 42%),
+      radial-gradient(circle at 50% 95%, #F6DCEB 0%, transparent 52%),
+      linear-gradient(158deg,#FDEAF1 0%,#FCE1ED 52%,#F4DCEF 100%);
+  }
+  .furbg::after{content:"";position:absolute;inset:0;opacity:.55;mix-blend-mode:soft-light;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.7) .8px, transparent 1.3px),
+      radial-gradient(circle, rgba(212,150,178,.28) .8px, transparent 1.3px);
+    background-size:9px 9px, 14px 14px; background-position:0 0, 5px 7px;}
+
+  .sprite{position:absolute;width:0;height:0;overflow:hidden}
+  .main{position:relative;z-index:1}
+
+  /* —— 侧边毛绒 APP 导航（毛毡刺绣风） —— */
+  .sidebar{background:linear-gradient(180deg,rgba(255,255,255,.82),rgba(255,240,248,.9));backdrop-filter:blur(6px);border-right:2px dashed #F1CFE0}
+  .brand{color:var(--m6);font-family:var(--hand)}
+  .brand b{color:var(--text);font-family:var(--hand)}
+  .nav-btn{
+    background:radial-gradient(circle at 34% 28%, #ffffff 0%, var(--acc) 80%);
+    border:2px dashed rgba(255,255,255,.85);border-radius:24px;
+    box-shadow:inset 0 -5px 10px rgba(0,0,0,.08), inset 0 4px 9px rgba(255,255,255,.55), 0 9px 17px rgba(190,120,145,.22);
+    color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.18);font-family:var(--hand);font-weight:600;letter-spacing:.5px;
+  }
+  .nav-btn svg{stroke:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+  .nav-btn:hover{transform:translateY(-2px)}
+  .nav-btn.active{transform:translateY(-2px) scale(1.05);box-shadow:inset 0 -5px 10px rgba(0,0,0,.08), 0 13px 24px rgba(190,120,145,.38)}
+  .nav-btn.active svg{stroke:#fff}
+  .nav-btn::after{content:"🐴";position:absolute;top:-7px;right:-5px;font-size:13px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.22))}
+  .nav-btn span:last-child{font-family:var(--hand)}
+
+  /* —— 黑底悬浮气泡时钟小组件 —— */
+  .clock-widget{display:flex;align-items:center;gap:8px;background:linear-gradient(160deg,#3a2b33,#241a20);color:#fff;
+    padding:9px 16px;border-radius:22px;box-shadow:0 9px 22px rgba(40,20,30,.38), inset 0 2px 4px rgba(255,255,255,.12);
+    font-family:var(--hand);font-weight:700;font-size:15px;letter-spacing:.5px;white-space:nowrap}
+  .clock-widget .h{font-size:17px;color:#FFD9E8}
+  .clock-widget small{font-size:11px;opacity:.7;font-weight:500}
+
+  /* —— 布艺缝合卡片 —— */
+  .card{background:linear-gradient(180deg,#FFFCFE 0%,#FDF2F8 100%);border:2px dashed #F0D3E0;border-radius:var(--radius);box-shadow:var(--shadow)}
+  .card-head .ttl{font-family:var(--hand)}
+  .sub{font-family:var(--hand);color:#A98395}
+  .links .link,.chips .chip{font-family:var(--hand)}
+
+  /* —— 毛毡筛选药丸 —— */
+  .chip{background:radial-gradient(circle at 30% 25%,#fff,#FBE6EF);border:1.5px solid #F2CFDF;color:#9a6b80}
+  .chip.on{background:var(--acc);color:#fff;border-color:var(--acc);text-shadow:0 1px 1px rgba(0,0,0,.12)}
+  .chip:hover{border-color:var(--acc)}
+
+  .link{background:radial-gradient(circle at 30% 25%,#fff,#FCE9F1);border:1.5px solid #F2CFDF;color:#a85f7e}
+  .link:hover{background:var(--acc);color:#fff;border-color:var(--acc)}
+
+  .filterbar{background:linear-gradient(180deg,#FFF7FB,#FCEAF2);border:2px dashed #F0D3E0}
+  .fb-label{color:#b07f93;font-family:var(--hand)}
+  .fb-select{background:#fff;border-color:#F0CFE0;color:#7a5566;font-family:var(--hand)}
+  .fb-select:hover,.fb-select:focus{border-color:var(--acc)}
+
+  /* —— 网格卡片磁贴 —— */
+  .item{background:linear-gradient(180deg,#FFFCFE,#FDF3F9);border:2px dashed #F0D3E0}
+  .item .tag{box-shadow:0 2px 5px rgba(0,0,0,.12);font-family:var(--hand)}
+  .item h3{font-family:var(--hand)}
+  .item .go{font-family:var(--hand)}
+
+  .row .body h3{font-family:var(--hand)}
+  .row .cat{background:#FBE7F0;color:#b3608a;font-family:var(--hand)}
+
+  /* —— AI 模块毛绒化 —— */
+  .ai-tool{background:radial-gradient(circle at 30% 25%,#fff,#F1EAFB);border:1.5px solid #E5DAF5;color:#7a5fa6;font-family:var(--hand)}
+  .ai-tool:hover{background:var(--m5);color:#fff}
+  .ai-model{background:linear-gradient(180deg,#FFFCFE,#F8F1FD);border:2px dashed #E6DAF4;font-family:var(--hand)}
+  .ai-model:hover{border-color:var(--m5)}
+  .ai-model .mn{color:#6a4f8c}
+  .ai-model .ml{color:var(--m5)}
+  .msg.bot{background:#FBEFF6;font-family:var(--hand)}
+  .msg.me{background:linear-gradient(160deg,var(--m5),#9d7fd6);font-family:var(--hand)}
+  .typing{background:#FBEFF6}
+  .typing span{background:#c2aee0}
+  .ai-input textarea{background:#FFF7FB;border-color:#F0D3E0;font-family:var(--hand)}
+  .ai-input textarea:focus{border-color:var(--m5)}
+  .ai-input button{background:linear-gradient(160deg,var(--m5),#9d7fd6);color:#fff;font-family:var(--hand)}
+  .ai-bar .lbl{font-family:var(--hand);color:#a98395}
+  .ai-bar select{background:#FFF7FB;border-color:#F0D3E0;font-family:var(--hand);color:#6a4f8c}
+
+  /* —— 色彩模块毛绒化 —— */
+  .cvt .grp{background:linear-gradient(180deg,#FFFCFE,#FBEFF6);border:2px dashed #F0D3E0}
+  .cvt input{background:#FFF7FB;border-color:#F0D3E0;font-family:var(--hand)}
+  .cvt input:focus{border-color:var(--m7)}
+  .swatch-big{box-shadow:var(--shadow-sm);font-family:var(--hand)}
+  .palette{background:#FFFCFD;border:2px dashed #F0D3E0}
+  .palette .ph{background:linear-gradient(180deg,#FFF7FB,#FBEFF6);font-family:var(--hand)}
+  .palette .ph small{font-family:var(--hand);color:#a98395}
+  .palette .sws .s{font-family:var(--hand)}
+  .gsw{background:#FFFCFD;border:2px dashed #F0D3E0}
+  .gsw .gv{font-family:var(--hand)}
+  .pantone-res .card{background:linear-gradient(180deg,#FFFCFE,#FDF2F8)}
+
+  /* —— Hero 马年开运横幅 —— */
+  .hero{position:relative;border-radius:var(--radius);padding:16px 22px;margin-bottom:20px;overflow:hidden;
+    background:linear-gradient(160deg,#FFE6F1,#F8DCEB 58%,#F1D4E9);border:2px dashed #F0C8DC;box-shadow:var(--shadow);
+    display:flex;align-items:center;gap:16px;z-index:1}
+  .hero .htxt{font-family:var(--hand)}
+  .hero h2{font-size:21px;color:#C05A86;margin-bottom:5px;letter-spacing:.5px}
+  .hero p{font-size:12.5px;color:#a06a82;line-height:1.5}
+  .hero .scene{margin-left:auto;flex:0 0 auto;filter:drop-shadow(0 10px 16px rgba(190,120,145,.3))}
+  .hero .badge{display:inline-block;margin-top:8px;font-size:11.5px;background:#fff;color:#c05a86;padding:4px 12px;border-radius:14px;box-shadow:var(--shadow-sm);font-family:var(--hand)}
+
+  /* —— 漂浮毛绒贴纸 —— */
+  .deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+  .deco .st{position:absolute;opacity:.5;filter:drop-shadow(0 10px 16px rgba(190,120,145,.32))}
+
+  .foot{font-family:var(--hand);color:#b592a0}
+  .copy-tip{background:#9c6f80;font-family:var(--hand)}
+  .toast{border-left-color:var(--acc);font-family:var(--hand)}
+
+  /* —— 移动端：安卓阶梯式 APP 图标排布 —— */
+  @media (max-width:760px){
+    .sidebar{width:100%;flex:0 0 auto;flex-direction:row;flex-wrap:wrap;justify-content:center;gap:14px 16px;
+      padding:16px 12px;border-right:none;border-bottom:2px dashed #F0C8DC;
+      background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,240,248,.92));overflow:visible}
+    .brand{display:none}
+    .nav-btn{width:72px;height:86px;flex:0 0 auto;flex-direction:column;gap:7px;border-radius:22px;padding:0}
+    .nav-btn svg{width:30px;height:30px}
+    .nav-btn::after{font-size:16px;top:-8px;right:-2px}
+    .nav-btn:nth-child(even){transform:translateY(12px)}
+    .nav-btn.active:nth-child(even){transform:translateY(12px) scale(1.05)}
+    .nav-btn.active:nth-child(odd){transform:scale(1.05)}
+    .main{padding:16px 14px 60px}
+    .topbar{flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px}
+    .topbar h1{font-size:18px}
+    .clock-widget{order:3;margin-left:auto}
+    .hero{padding:14px 16px;gap:10px}
+    .hero .scene{display:none}
+    .hero h2{font-size:18px}
+  }
+  @media (max-width:420px){
+    .nav-btn{width:62px;height:78px}
+    .nav-btn svg{width:26px;height:26px}
+  }
+</style>
+</head>
+<body>
+<div class="furbg"></div>
+<svg class="sprite" aria-hidden="true" width="0" height="0"><defs>
+  <filter id="fuzz" x="-25%" y="-25%" width="150%" height="150%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4"/>
+  </filter>
+  <g id="pony">
+    <ellipse cx="42" cy="58" rx="30" ry="22" fill="currentColor"/>
+    <circle cx="64" cy="40" r="17" fill="currentColor"/>
+    <path d="M55 25 l-4 -13 l11 7 z" fill="currentColor"/>
+    <path d="M71 25 l5 -13 l-11 7 z" fill="currentColor"/>
+    <path d="M49 23 q15 -7 23 4 q-11 -3 -15 6 q8 -2 13 6 q-13 1 -21 -4z" fill="#fff" opacity=".82"/>
+    <ellipse cx="73" cy="45" rx="7" ry="5" fill="#fff" opacity=".5"/>
+    <rect x="30" y="75" width="10" height="14" rx="5" fill="currentColor"/>
+    <rect x="50" y="75" width="10" height="14" rx="5" fill="currentColor"/>
+    <circle cx="67" cy="38" r="2.5" fill="#3a2a30"/>
+    <circle cx="75" cy="47" r="3" fill="#ff9bbf" opacity=".55"/>
+  </g>
+  <g id="ingot">
+    <path d="M18 40 q32 -24 64 0 q-7 7 -32 7 q-25 0 -32 -7z" fill="#F4C95B"/>
+    <ellipse cx="50" cy="44" rx="32" ry="11" fill="#F7D873"/>
+    <ellipse cx="50" cy="42" rx="23" ry="6.5" fill="#FCE3A0"/>
+  </g>
+  <g id="mahjong">
+    <rect x="20" y="12" width="46" height="64" rx="9" fill="#fff"/>
+    <rect x="20" y="12" width="46" height="64" rx="9" fill="none" stroke="#e7ddc8" stroke-width="2.5"/>
+    <text x="43" y="60" font-size="36" text-anchor="middle" fill="#2fa86a" font-family="serif" font-weight="700">發</text>
+  </g>
+</defs></svg>
+<div class="deco">
+  <svg class="st" style="left:-30px;top:14%;width:130px" viewBox="0 0 100 95"><g filter="url(#fuzz)"><use href="#pony" style="color:#F2A9C4"/></g></svg>
+  <svg class="st" style="right:-26px;top:30%;width:120px;opacity:.42" viewBox="0 0 100 95"><g filter="url(#fuzz)"><use href="#pony" style="color:#C9B2E6"/></g></svg>
+  <svg class="st" style="left:6%;bottom:-20px;width:120px;opacity:.4" viewBox="0 0 100 70"><g filter="url(#fuzz)"><use href="#ingot"/></g></svg>
+  <svg class="st" style="right:8%;bottom:4%;width:64px;opacity:.45" viewBox="0 0 86 88"><g filter="url(#fuzz)"><use href="#mahjong"/></g></svg>
+</div>
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand"><b>🐴 马年软萌台</b>丙午开运</div>
+    <button class="nav-btn active" data-mod="m1" style="--acc:var(--m1)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9l5 3-5 3z" fill="currentColor" stroke="none"/></svg></span>
+      <span>休闲追剧</span>
+    </button>
+    <button class="nav-btn" data-mod="m2" style="--acc:var(--m2)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg></span>
+      <span>房源查询</span>
+    </button>
+    <button class="nav-btn" data-mod="m3" style="--acc:var(--m3)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7 9h10M7 13h7M7 17h5"/></svg></span>
+      <span>热点资讯</span>
+    </button>
+    <button class="nav-btn" data-mod="m4" style="--acc:var(--m4)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/><path d="M14 14l4 4M18 14l-4 4"/></svg></span>
+      <span>排版兼职</span>
+    </button>
+    <button class="nav-btn" data-mod="m5" style="--acc:var(--m5)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="11" rx="5"/><path d="M12 4v3M9 12h.01M15 12h.01"/><path d="M3 13l-1 3M21 13l1 3"/></svg></span>
+      <span>AI助手</span>
+    </button>
+    <button class="nav-btn" data-mod="m6" style="--acc:var(--m6)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M20 12v8H4v-8"/><path d="M2 8h20v4H2z"/><path d="M12 8v12M12 8C9 8 8 4 10 2c2 0 2 3 2 3s0-3 2-3c2 2 1 6-2 6z" fill="currentColor" stroke="none"/></svg></span>
+      <span>薅羊毛</span>
+    </button>
+    <button class="nav-btn" data-mod="m7" style="--acc:var(--m7)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-1-2-3-4-4-1.5-1-2-4-5-5z"/><circle cx="8.5" cy="11.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
+      <span>潘通色卡</span>
+    </button>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main" id="main">
+    <div class="topbar">
+      <h1 id="modTitle">🍿 休闲追剧</h1>
+      <div class="clock-widget">🐴 <span class="h" id="clk">--:--:--</span> <small>马到福来</small></div>
+      <div class="pill">内容更新于 <b id="updTime">--</b> <span class="live"><span class="dot"></span>实时</span></div>
+    </div>
+
+    <!-- ===== 马年开运 Hero ===== -->
+    <div class="hero">
+      <div class="htxt">
+        <h2>🐴 马到福来 · 丙午马年开运</h2>
+        <p>毛绒软萌工作台已就位 —— 马上有钱、马上好运、马到福来 🧧</p>
+        <span class="badge">点任意模块开始你的软糯一天</span>
+      </div>
+      <svg class="scene" viewBox="0 0 360 150" width="320" height="135">
+        <g filter="url(#fuzz)">
+          <g transform="translate(0,28)"><use href="#pony" style="color:#F2A9C4"/></g>
+          <g transform="translate(96,40) scale(.82)"><use href="#pony" style="color:#C9B2E6"/></g>
+          <g transform="translate(186,32) scale(.92)"><use href="#pony" style="color:#F7D9A8"/></g>
+          <g transform="translate(258,52)"><use href="#ingot"/></g>
+          <g transform="translate(312,48)"><use href="#mahjong"/></g>
+        </g>
+      </svg>
+    </div>
+
+    <!-- ===== Module 1: 追剧 ===== -->
+    <section class="module show" id="m1">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🍿</span>休闲追剧 · 全网热播轻量化聚合</div>
+          <button class="refresh" onclick="refreshMod('m1')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新片单</button>
+        </div>
+        <div class="sub">整合主流平台热播剧、小众短剧、高分电影榜单，区分付费 / 免费，按心情挑片更轻松。</div>
+        <div class="links">
+          <a class="link" href="https://www.iqiyi.com" target="_blank">爱奇艺</a>
+          <a class="link" href="https://v.qq.com" target="_blank">腾讯视频</a>
+          <a class="link" href="https://www.youku.com" target="_blank">优酷</a>
+          <a class="link" href="https://www.mgtv.com" target="_blank">芒果TV</a>
+          <a class="link" href="https://www.douyin.com" target="_blank">抖音短剧</a>
+        </div>
+      </div>
+      <div class="chips" id="m1chips">
+        <span class="chip on" data-f="全部">全部</span>
+        <span class="chip" data-f="完结">完结专区</span>
+        <span class="chip" data-f="连载">连载追更</span>
+        <span class="chip" data-f="免费">免费专区</span>
+        <span class="chip" data-f="治愈">治愈向</span>
+        <span class="chip" data-f="悬疑">悬疑向</span>
+        <span class="chip" data-f="解压">解压向</span>
+      </div>
+      <div class="grid" id="m1grid"></div>
+    </section>
+
+    <!-- ===== Module 2: 房源 ===== -->
+    <section class="module" id="m2">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🏡</span>房源查询 · 次新小户型一键整合</div>
+          <button class="refresh" onclick="refreshMod('m2')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新房源</button>
+        </div>
+        <div class="sub">聚合主流平台新房 / 二手房 / 租房房源，支持按城市、区域、房型、价格精准筛选，每张房源均标注优缺点，数据定时更新。</div>
+        <div class="links">
+          <a class="link" href="https://www.ke.com" target="_blank">贝壳找房</a>
+          <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
+          <a class="link" href="https://www.lianjia.com" target="_blank">链家</a>
+        </div>
+      </div>
+      <div class="filterbar">
+        <div class="fb-row">
+          <span class="fb-label">交易：</span>
+          <div class="chips" id="m2cat">
+            <span class="chip on" data-f="全部">全部</span>
+            <span class="chip" data-f="新房">🆕 新房</span>
+            <span class="chip" data-f="二手房">🏠 二手房</span>
+            <span class="chip" data-f="租房">🔑 租房</span>
+            <span class="chip" data-f="天然气">🔥 带天然气</span>
+          </div>
+        </div>
+        <div class="fb-row">
+          <span class="fb-label">城市：</span>
+          <select id="m2citySel" class="fb-select" onchange="onCityChange('m2')"></select>
+          <span class="fb-label">区域：</span>
+          <select id="m2areaSel" class="fb-select" onchange="curFilter.m2area=this.value;renderHouses()">
+            <option value="全部">全部区域</option>
+          </select>
+          <span class="fb-label">房型：</span>
+          <div class="chips" id="m2rooms">
+            <span class="chip on" data-f="全部">全部</span>
+            <span class="chip" data-f="一室">一室</span>
+            <span class="chip" data-f="二室">二室</span>
+            <span class="chip" data-f="三室">三室</span>
+            <span class="chip" data-f="公寓">公寓/Loft</span>
+          </div>
+          <span class="fb-label">价格：</span>
+          <select id="m2priceSel" class="fb-select" onchange="curFilter.m2price=this.value;renderHouses()">
+            <option value="全部">全部价格</option>
+            <option value="<50">50万以下</option>
+            <option value="50-100">50-100万</option>
+            <option value="100-200">100-200万</option>
+            <option value="200-300">200-300万</option>
+            <option value="300+">300万以上</option>
+            <option value="r<1500">1500元/月以下</option>
+            <option value="r1500-2500">1500-2500元/月</option>
+            <option value="r2500+">2500元/月以上</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid" id="m2grid"></div>
+    </section>
+
+    <!-- ===== Module 3: 资讯 ===== -->
+    <section class="module" id="m3">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">📰</span>热点资讯 · 每日轻量化推送</div>
+          <button class="refresh" onclick="refreshMod('m3')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新资讯</button>
+        </div>
+        <div class="sub">精选权威实时热点、本地便民消息、趣味资讯，剔除冗余繁杂，分类快速阅读。</div>
+        <div class="links">
+          <a class="link" href="https://news.qq.com" target="_blank">腾讯新闻</a>
+          <a class="link" href="https://www.thepaper.cn" target="_blank">澎湃新闻</a>
+          <a class="link" href="http://www.news.cn" target="_blank">新华网</a>
+        </div>
+      </div>
+      <div class="chips" id="m3chips">
+        <span class="chip on" data-f="全部">全部</span>
+        <span class="chip" data-f="财经">财经</span>
+        <span class="chip" data-f="生活">生活</span>
+        <span class="chip" data-f="娱乐">娱乐</span>
+        <span class="chip" data-f="本地">晋江本地</span>
+      </div>
+      <div class="card" id="m3list"></div>
+    </section>
+
+    <!-- ===== Module 4: 排版兼职 ===== -->
+    <section class="module" id="m4">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🎨</span>排版兼职 · 副业接单汇总</div>
+          <button class="refresh" onclick="refreshMod('m4')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新订单</button>
+        </div>
+        <div class="sub">收录主流平台 CDR / AI / PS 排版、吊牌包装设计、图文制版兼职，标注酬劳、城市与对接渠道，覆盖全国主要城市。</div>
+        <div class="links">
+          <span class="link-sep">兼职接单</span>
+          <a class="link" href="https://www.zbj.com" target="_blank">猪八戒</a>
+          <a class="link" href="https://www.epwk.com" target="_blank">一品威客</a>
+          <a class="link" href="https://www.680.com" target="_blank">时间财富</a>
+          <a class="link" href="https://www.58.com" target="_blank">58同城</a>
+          <a class="link" href="https://www.zcool.com.cn" target="_blank">站酷</a>
+          <a class="link" href="https://www.freelancer.com" target="_blank">Freelancer</a>
+          <a class="link" href="https://www.zhaobiao.cn" target="_blank">招标网</a>
+        </div>
+        <div class="links">
+          <span class="link-sep">综合招聘 · 可直达</span>
+          <a class="link" href="https://www.zhipin.com" target="_blank">BOSS直聘</a>
+          <a class="link" href="https://www.51job.com" target="_blank">前程无忧</a>
+          <a class="link" href="https://www.zhaopin.com" target="_blank">智联招聘</a>
+          <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
+          <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
+        </div>
+      </div>
+      <div class="chips" id="m4chips">
+        <span class="chip on" data-f="全部">全部</span>
+        <span class="chip" data-f="散单">短期散单</span>
+        <span class="chip" data-f="长期">长期稳定</span>
+        <span class="chip" data-f="CDR">CDR</span>
+        <span class="chip" data-f="AI">AI</span>
+        <span class="chip" data-f="PS">PS</span>
+      </div>
+      <div class="filterbar">
+        <div class="fb-row">
+          <span class="fb-label">城市：</span>
+          <select id="m4citySel" class="fb-select" onchange="onCityChange('m4')">
+            <option value="全部">全部城市</option>
+          </select>
+          <span class="fb-label">薪资：</span>
+          <select id="m4paySel" class="fb-select" onchange="curFilter.m4pay=this.value;renderJobs()">
+            <option value="全部">不限</option>
+            <option value="0-500">500元以下/单</option>
+            <option value="500-2000">500-2000元</option>
+            <option value="2000-6000">2000-6000元</option>
+            <option value="6000+">6000元以上/月</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid" id="m4grid"></div>
+    </section>
+
+    <!-- ===== Module 5: AI助手 ===== -->
+    <section class="module" id="m5">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🤖</span>全能 AI 助手 · 一站式智能办公</div>
+          <button class="refresh" onclick="aiReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>清空对话</button>
+        </div>
+        <div class="sub">文案 / 作图提示词 / 翻译 / 排版答疑 / 表格整理 / 计算 / 合同改写 / 邮件 / 周报 / 简历 全能覆盖，支持多轮上下文记忆与场景智能切换。</div>
+        <div class="ai-bar">
+          <span class="lbl">🎯 场景：</span>
+          <select id="aiScene" onchange="aiScene=this.value">
+            <option value="通用">通用全能</option>
+            <option value="电商运营">电商运营</option>
+            <option value="职场办公">职场办公</option>
+            <option value="设计行业">设计行业</option>
+            <option value="日常聊天">日常聊天</option>
+          </select>
+          <span class="lbl" style="margin-left:auto">点击快捷功能，或直接在输入框描述需求（支持「换一个 / 再来一条」多轮追问）</span>
+        </div>
+        <div class="ai-tools" id="aiTools">
+          <span class="ai-tool" data-q="帮我写一段产品推广海报文案，产品是手冲咖啡">📝 海报文案</span>
+          <span class="ai-tool" data-q="生成一个赛博朋克城市夜景的AI绘画提示词">🎨 绘画提示词</span>
+          <span class="ai-tool" data-q="给一家卖鲜花的店起几个品牌名">🏷️ 品牌起名</span>
+          <span class="ai-tool" data-q="印刷排版中CMYK和专色的区别是什么？">📐 排版知识</span>
+          <span class="ai-tool" data-q="把这段客户评价整理成表格：张三满意度高 李四一般 王五很满意">📊 表格整理</span>
+          <span class="ai-tool" data-q="算一下 (1280+560)*0.85-200">🧮 数据计算</span>
+          <span class="ai-tool" data-q="帮我写一封跟进客户的商务邮件，主题是新品报价">✉️ 邮件撰写</span>
+          <span class="ai-tool" data-q="帮我写一份本周工作周报，做了竞品分析和首页改版">📋 周报生成</span>
+          <span class="ai-tool" data-q="帮我优化一份电商运营简历，3年经验">📄 简历优化</span>
+          <span class="ai-tool" data-q="帮我写一篇小红书种草笔记，主题平价好物分享">📕 小红书笔记</span>
+          <span class="ai-tool" data-q="帮我写一个30秒短视频口播脚本，卖防晒霜">🎬 短视频脚本</span>
+          <span class="ai-tool" data-q="帮我想5个淘宝商品标题和SEO关键词，卖保温杯">🛒 商品标题/SEO</span>
+          <span class="ai-tool" data-q="帮我整理一份会议纪要，讨论了Q3目标与分工">🗒️ 会议纪要</span>
+          <span class="ai-tool" data-q="解释这段Python代码的作用：def add(a,b): return a+b">💻 代码解释</span>
+          <span class="ai-tool" data-q="写一段中秋节客户祝福语，温馨商务">💌 祝福话术</span>
+          <span class="ai-tool" data-q="把这段文案润色得更商务专业一些">✨ 文案润色</span>
+          <span class="ai-tool" data-q="帮我把这句中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
+          <span class="ai-tool" data-q="帮我创作一个关于勇敢小狐狸的睡前童话故事">📖 故事创作</span>
+          <span class="ai-tool" data-q="帮我做一份成都3日旅行攻略，预算2000元">🧳 旅行攻略</span>
+          <span class="ai-tool" data-q="帮我写一份论文大纲，主题是短视频对青少年的影响">📑 论文大纲</span>
+          <span class="ai-tool" data-q="帮我分析这组销售数据并给出提升建议：月销1.2万，复购率18%">📈 数据分析</span>
+          <span class="ai-tool" data-q="帮我写一份健身减脂的每周训练计划">💪 健身计划</span>
+          <span class="ai-tool" data-q="租房合同里房东提前收房算违约吗？简单科普">⚖️ 法律常识</span>
+        </div>
+        <div class="ai-models-wrap" style="margin-top:18px">
+          <div class="bar-title">🚀 主流 AI 模型 · 官网直达</div>
+          <div class="ai-models">
+            <a class="ai-model" href="https://chat.openai.com" target="_blank"><span class="mn">🟢 ChatGPT</span><span class="md">OpenAI 通用大模型</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://claude.ai" target="_blank"><span class="mn">🟣 Claude</span><span class="md">Anthropic 长文本推理</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://www.deepseek.com" target="_blank"><span class="mn">🔷 DeepSeek</span><span class="md">国产深度推理模型</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://kimi.moonshot.cn" target="_blank"><span class="mn">🟢 Kimi</span><span class="md">超长上下文助手</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://yiyan.baidu.com" target="_blank"><span class="mn">🔵 文心一言</span><span class="md">百度知识增强大模型</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://tongyi.aliyun.com" target="_blank"><span class="mn">🟠 通义千问</span><span class="md">阿里全场景大模型</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://www.doubao.com" target="_blank"><span class="mn">🟡 豆包</span><span class="md">字节跳动 AI 助手</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://chatglm.cn" target="_blank"><span class="mn">🟦 智谱清言</span><span class="md">智谱 GLM 系列</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://xinghuo.xfyun.cn" target="_blank"><span class="mn">🔶 讯飞星火</span><span class="md">科大讯飞认知大模型</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://gemini.google.com" target="_blank"><span class="mn">🟠 Gemini</span><span class="md">Google 多模态模型</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://copilot.microsoft.com" target="_blank"><span class="mn">🔵 Copilot</span><span class="md">微软 AI 助手</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://www.perplexity.ai" target="_blank"><span class="mn">🟦 Perplexity</span><span class="md">AI 对话式搜索</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://www.midjourney.com" target="_blank"><span class="mn">🟣 Midjourney</span><span class="md">AI 绘画生成</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://jimeng.jianying.com" target="_blank"><span class="mn">🟡 即梦 AI</span><span class="md">字节 AI 图像/视频</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://kling.kuaishou.com" target="_blank"><span class="mn">🟣 可灵 AI</span><span class="md">快手视频生成</span><span class="ml">官网直达 ↗</span></a>
+            <a class="ai-model" href="https://stability.ai" target="_blank"><span class="mn">🟢 Stable Diffusion</span><span class="md">开源图像扩散模型</span><span class="ml">官网直达 ↗</span></a>
+          </div>
+        </div>
+      </div>
+      <div class="card ai-wrap">
+        <div class="chat" id="chat"></div>
+        <div class="ai-input">
+          <textarea id="aiText" placeholder="输入需求，例如：帮我把这段文案润色得更商务一些…（Enter 发送 / Shift+Enter 换行）"></textarea>
+          <button onclick="aiSend()">发送</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Module 6: 薅羊毛 ===== -->
+    <section class="module" id="m6">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🎁</span>薅羊毛线报 · 福利统一聚合</div>
+          <button class="refresh" onclick="refreshMod('m6')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新线报</button>
+        </div>
+        <div class="sub">自动聚合各大平台新用户红包、限时券、电商满减、一分购福利，标注时效与门槛，剔除套路陷阱。</div>
+        <div class="links">
+          <a class="link" href="https://www.pgyer.com" target="_blank">众人帮</a>
+          <a class="link" href="https://www.quanmama.com" target="_blank">卷妈妈</a>
+          <a class="link" href="https://www.taobao.com" target="_blank">淘宝特价</a>
+        </div>
+      </div>
+      <div class="chips" id="m6chips">
+        <span class="chip on" data-f="全部">全部</span>
+        <span class="chip" data-f="红包">现金红包</span>
+        <span class="chip" data-f="券">优惠券</span>
+        <span class="chip" data-f="一分购">一分购</span>
+        <span class="chip" data-f="会员">会员特价</span>
+      </div>
+      <div class="grid" id="m6grid"></div>
+    </section>
+
+    <!-- ===== Module 7: 潘通色卡 ===== -->
+    <section class="module" id="m7">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🎨</span>潘通色卡 & 专业配色库</div>
+          <button class="refresh" onclick="refreshMod('m7')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>同步色库</button>
+        </div>
+        <div class="sub">全系列潘通色号查询、CMYK / RGB / HEX 互转、上千套商用成套配色，适配鞋业吊牌、包装印刷、布料打样；内置 300+ 色卡总览（C 铜版 / U 胶版 / TPG 纺织全覆盖，含金属色与荧光色），无需跳转官网即可浏览查找。</div>
+        <div class="links">
+          <a class="link" href="https://www.pantone.com.cn" target="_blank">潘通中国官网</a>
+          <a class="link" href="https://www.pantone.com/color-finder" target="_blank">Color Finder</a>
+        </div>
+      </div>
+
+      <div class="color-layout">
+        <!-- 色号查询 -->
+        <div class="card">
+          <div class="card-head"><div class="ttl"><span class="emo">🔎</span>色号查询</div></div>
+          <div class="sub">输入任意潘通色号（如 185 C / 286 U / 11-0601 TPG），一键查询 CMYK / RGB / HEX。</div>
+          <div style="display:flex;gap:10px">
+            <input id="pantoneInput" placeholder="例如：185 C" style="flex:1;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:14px;outline:none;font-family:inherit">
+            <button onclick="queryPantone()" style="border:none;background:var(--m7);color:#3a2d5c;font-weight:700;padding:0 20px;border-radius:12px;cursor:pointer">查询</button>
+          </div>
+          <div class="pantone-res" id="pantoneRes"></div>
+        </div>
+
+        <!-- 色值互算 -->
+        <div class="card">
+          <div class="card-head"><div class="ttl"><span class="emo">🔄</span>色值互算</div></div>
+          <div class="sub">CMYK（印刷）↔ RGB（屏幕）↔ HEX 自由互转，提示印刷色差风险。</div>
+          <div class="cvt">
+            <div class="grp"><label>CMYK %</label>
+              <input id="cC" placeholder="C" oninput="fromCMYK()"><input id="cM" placeholder="M" oninput="fromCMYK()" style="margin-top:6px">
+              <input id="cY" placeholder="Y" oninput="fromCMYK()" style="margin-top:6px"><input id="cK" placeholder="K" oninput="fromCMYK()" style="margin-top:6px">
+            </div>
+            <div class="grp"><label>RGB 0-255</label>
+              <input id="rR" placeholder="R" oninput="fromRGB()"><input id="rG" placeholder="G" oninput="fromRGB()" style="margin-top:6px">
+              <input id="rB" placeholder="B" oninput="fromRGB()" style="margin-top:6px">
+            </div>
+            <div class="grp"><label>HEX</label>
+              <input id="hX" placeholder="#000000" oninput="fromHEX()" style="margin-bottom:6px">
+              <div class="swatch-big" id="cvtSwatch" style="height:64px;margin:0">预览</div>
+            </div>
+          </div>
+          <div id="cvtWarn" style="font-size:12px;color:#d9803e"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <div class="card-head"><div class="ttl"><span class="emo">🗂️</span>色卡总览 · 全库浏览</div></div>
+        <div class="sub">不用跳转网站，直接在此浏览全系列色卡；点击任意色块即可查看 CMYK / RGB / HEX 详情。</div>
+        <div class="gallery-search">
+          <input id="galSearch" placeholder="搜索色号，如 185 / TPG / 286" oninput="renderGallery()">
+          <div class="chips" id="galchips">
+            <span class="chip on" data-f="全部">全部</span>
+            <span class="chip" data-f="c">C 铜版</span>
+            <span class="chip" data-f="u">U 胶版</span>
+            <span class="chip" data-f="tpg">TPG 纺织</span>
+          </div>
+        </div>
+        <div class="gallery" id="m7gallery"></div>
+      </div>
+
+      <div class="card" style="margin-top:20px">
+        <div class="card-head"><div class="ttl"><span class="emo">🌈</span>海量成套配色库</div></div>
+        <div class="sub">内置多分类商用配色，点击色块即可复制色值，可直接交付设计师 / 印刷厂。</div>
+        <div class="chips" id="m7chips">
+          <span class="chip on" data-f="全部">全部</span>
+          <span class="chip" data-f="ins清新风">ins清新风</span>
+          <span class="chip" data-f="复古美式">复古美式</span>
+          <span class="chip" data-f="鞋业潮牌">鞋业潮牌</span>
+          <span class="chip" data-f="简约商务">简约商务</span>
+          <span class="chip" data-f="马卡龙少女">马卡龙少女</span>
+          <span class="chip" data-f="工业深色">工业深色</span>
+          <span class="chip" data-f="莫兰迪色系">莫兰迪色系</span>
+          <span class="chip" data-f="撞色设计">撞色设计</span>
+          <span class="chip" data-f="国潮风">国潮风</span>
+          <span class="chip" data-f="北欧极简">北欧极简</span>
+          <span class="chip" data-f="日系原木">日系原木</span>
+          <span class="chip" data-f="森系自然">森系自然</span>
+          <span class="chip" data-f="美拉德">美拉德</span>
+          <span class="chip" data-f="多巴胺">多巴胺</span>
+          <span class="chip" data-f="克莱因蓝">克莱因蓝</span>
+          <span class="chip" data-f="莫奈花园">莫奈花园</span>
+          <span class="chip" data-f="科技未来">科技未来</span>
+          <span class="chip" data-f="婚礼喜庆">婚礼喜庆</span>
+          <span class="chip" data-f="母婴柔和">母婴柔和</span>
+          <span class="chip" data-f="大地色">大地色</span>
+        </div>
+        <div class="palettes" id="m7grid"></div>
+      </div>
+    </section>
+
+    <div class="foot">清新风一体化多功能工作台 · 7 大模块相互独立隔离 · 内容仅供示例展示，链接均指向官方平台</div>
+  </main>
+</div>
+
+<div class="copy-tip" id="copyTip">已复制色值</div>
+<div class="toast" id="toast">已更新</div>
+
+<script>
+/* ====== 全局 ====== */
+const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m3:"📰 热点资讯",m4:"🎨 排版兼职",m5:"🤖 全能AI助手",m6:"🎁 薅羊毛线报",m7:"🎨 潘通色卡&配色库"};
+const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m3:"#BFE3F2",m4:"#FFF0A8",m5:"#D6C8F0",m6:"#FFC4A3",m7:"#C9B9F2"};
+
+document.querySelectorAll(".nav-btn").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    const m=b.dataset.mod;
+    document.querySelectorAll(".module").forEach(s=>s.classList.remove("show"));
+    document.getElementById(m).classList.add("show");
+    document.getElementById("modTitle").textContent=modTitles[m];
+    document.documentElement.style.setProperty("--acc",modAcc[m]);
+    updateTime();
+    if(m==="m7"){renderPalettes("全部");renderGallery();}
+  };
+});
+function updateTime(){
+  const d=new Date();
+  const p=n=>String(n).padStart(2,"0");
+  document.getElementById("updTime").textContent=`${d.getMonth()+1}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+  const clk=document.getElementById("clk");
+  if(clk)clk.textContent=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+function toast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),1500);
+}
+function refreshMod(m){
+  updateTime();
+  toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
+  if(m==="m1")renderDramas(curFilter.m1);
+  if(m==="m2")renderHouses(curFilter.m2);
+  if(m==="m3")renderNews(curFilter.m3);
+  if(m==="m4")renderJobs(curFilter.m4);
+  if(m==="m6")renderDeals(curFilter.m6);
+}
+
+/* ====== Module 1: 追剧 ====== */
+const dramas=[
+  {t:"《人间烟火》",p:"腾讯视频",s:"连载",g:"治愈",pay:true,link:"https://v.qq.com",d:"小城早餐铺的温情群像，慢节奏治愈系，适合睡前放松。"},
+  {t:"《迷雾追凶》",p:"爱奇艺",s:"连载",g:"悬疑",pay:true,link:"https://www.iqiyi.com",d:"密闭海岛连环命案，反转密集，烧脑向推荐。"},
+  {t:"《萌宠日记》合集",p:"芒果TV",s:"完结",g:"解压",pay:false,link:"https://www.mgtv.com",d:"免费短综，猫狗日常合集，三分钟快速回血。"},
+  {t:"《山野食堂》",p:"优酷",s:"完结",g:"治愈",pay:false,link:"https://www.youku.com",d:"田园美食纪录片，画面干净，解压兼治愈。"},
+  {t:"《错位时空》",p:"爱奇艺",s:"完结",g:"悬疑",pay:true,link:"https://www.iqiyi.com",d:"12集精品短剧，时空交错设定，口碑高分完结。"},
+  {t:"《甜系恋人》",p:"抖音短剧",s:"连载",g:"解压",pay:false,link:"https://www.douyin.com",d:"免费竖屏短剧，糖分超标，通勤解闷神器。"},
+  {t:"《深海谣》",p:"腾讯视频",s:"连载",g:"悬疑",pay:true,link:"https://v.qq.com",d:"海洋悬疑剧，画面质感高级，剧情层层递进。"},
+  {t:"《慢生活》",p:"芒果TV",s:"完结",g:"治愈",pay:false,link:"https://www.mgtv.com",d:"慢综艺合集，远离内卷，治愈焦虑。"},
+  {t:"《X档案·都市》",p:"优酷",s:"免费",g:"悬疑",pay:false,link:"https://www.youku.com",d:"免费悬疑单元剧，每集一个都市怪谈。"},
+  {t:"《一日店长》",p:"抖音短剧",s:"完结",g:"解压",pay:false,link:"https://www.douyin.com",d:"免费轻喜剧短剧，搞笑解压向。"},
+  {t:"《雪国列车》",p:"爱奇艺",s:"连载",g:"悬疑",pay:true,link:"https://www.iqiyi.com",d:"末世悬疑大作，制作精良，追更热门。"},
+  {t:"《花间集》",p:"腾讯视频",s:"完结",g:"治愈",pay:false,link:"https://v.qq.com",d:"古风治愈剧，服化道精美，免费收看。"},
+];
+const curFilter={m1:"全部",m2:"全部",m3:"全部",m4:"全部",m6:"全部",m7:"全部",m2city:"全部",m4city:"全部",gal:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
+/* 城市 → 区域（全面） */
+const cityAreas={
+  "北京":["朝阳区","海淀区","东城区","西城区","丰台区","通州区","昌平区","大兴区"],
+  "上海":["浦东新区","徐汇区","静安区","黄浦区","长宁区","杨浦区","闵行区","宝山区"],
+  "广州":["天河区","越秀区","海珠区","番禺区","白云区","黄埔区","荔湾区","花都区"],
+  "深圳":["南山区","福田区","罗湖区","宝安区","龙岗区","龙华区","盐田区","光明区"],
+  "杭州":["西湖区","上城区","拱墅区","滨江区","余杭区","萧山区","钱塘区","临平区"],
+  "成都":["锦江区","武侯区","青羊区","成华区","金牛区","高新区","天府新区","龙泉驿区"],
+  "南京":["玄武区","秦淮区","鼓楼区","建邺区","江宁区","雨花台区","栖霞区","浦口区"],
+  "武汉":["武昌区","江汉区","江岸区","洪山区","汉阳区","青山区","东西湖区","光谷"],
+  "西安":["雁塔区","碑林区","莲湖区","未央区","新城区","灞桥区","高新区","曲江新区"],
+  "苏州":["姑苏区","工业园区","吴中区","相城区","虎丘区","吴江区","昆山","常熟"],
+  "天津":["和平区","河西区","南开区","河东区","河北区","红桥区","滨海新区","西青区"],
+  "重庆":["渝中区","江北区","南岸区","九龙坡区","沙坪坝区","渝北区","巴南区","北碚区"],
+  "长沙":["岳麓区","芙蓉区","天心区","开福区","雨花区","望城区","星沙","梅溪湖"],
+  "厦门":["思明区","湖里区","集美区","海沧区","同安区","翔安区"],
+  "福州":["鼓楼区","台江区","仓山区","晋安区","马尾区","长乐区"],
+  "泉州":["丰泽区","鲤城区","洛江区","泉港区","晋江市","石狮市","南安市"],
+  "晋江":["梅岭街道","青阳街道","陈埭镇","池店镇","安海镇","磁灶镇","内坑镇","西园街道"],
+  "宁波":["海曙区","江北区","鄞州区","镇海区","北仑区","奉化区","余姚市","慈溪市"],
+  "无锡":["梁溪区","滨湖区","新吴区","锡山区","惠山区","江阴市","宜兴市"],
+  "合肥":["蜀山区","包河区","庐阳区","瑶海区","高新区","经开区","政务区","滨湖新区"],
+  "青岛":["市南区","市北区","李沧区","崂山区","城阳区","黄岛区","即墨区","胶州市"],
+  "郑州":["金水区","中原区","二七区","管城回族区","惠济区","郑东新区","高新区","经开区"],
+  "昆明":["五华区","盘龙区","西山区","官渡区","呈贡区","晋宁区","安宁"],
+  "济南":["历下区","市中区","槐荫区","天桥区","历城区","高新区","章丘区"],
+  "东莞":["莞城街道","南城街道","东城街道","万江街道","松山湖","长安镇","虎门镇"],
+  "佛山":["禅城区","南海区","顺德区","三水区","高明区","高明"],
+  "沈阳":["和平区","沈河区","大东区","皇姑区","铁西区","浑南区","于洪区"]
+};
+function renderDramas(f,hi){
+  const g=document.getElementById("m1grid");
+  const list=dramas.filter(x=>f==="全部"||x.s===f||x.g===f);
+  const fi=hi==null?-1:hi%list.length;
+  g.innerHTML=list.map((x,i)=>{
+    const tag=x.pay?'<span class="tag pay">付费</span>':'<span class="tag free">免费</span>';
+    const fresh=i===fi?'<div class="fresh">🔥 刚刚热播</div>':'';
+    return `<div class="item"><span class="tag ${x.s==='完结'?'done':(x.s==='免费'?'free':'seri')}">${x.s}</span>${tag}${fresh}
+      <h3>${x.t}</h3>
+      <div class="meta">平台：<b>${x.p}</b> · 类型：<b>${x.g}向</b></div>
+      <div class="desc">${x.d}</div>
+      <a class="go" href="${x.link}" target="_blank">正版直达 →</a></div>`;
+  }).join("");
+}
+
+/* ====== Module 2: 房源 ====== */
+const houses=[
+  {t:"中骏·云景台",src:"贝壳",city:"晋江",dist:"梅岭街道",cat:"租房",rooms:"一室",sqm:48,year:2019,gas:true,price:1450,fac:"电梯/近地铁/精装",pros:["近地铁口通勤便利","精装拎包入住","小区绿化好"],cons:["楼龄偏老","车位紧张"],link:"https://www.ke.com"},
+  {t:"保利·和光晨樾",src:"链家",city:"晋江",dist:"青阳街道",cat:"二手房",rooms:"二室",sqm:78,year:2018,gas:true,price:158,fac:"满五唯一/南北通透/学区",pros:["满五唯一省税费","南北通透采光好","学区间"],cons:["总价偏高","装修偏旧需翻新"],link:"https://www.lianjia.com"},
+  {t:"世茂·御龙湾",src:"贝壳",city:"厦门",dist:"思明区",cat:"二手房",rooms:"三室",sqm:118,year:2017,gas:true,price:420,fac:"湖景/低密社区/配套成熟",pros:["湖景房视野佳","低密社区","配套成熟"],cons:["单价较高","物业费偏高"],link:"https://www.ke.com"},
+  {t:"万达·SOHO 公寓",src:"安居客",city:"厦门",dist:"湖里区",cat:"租房",rooms:"公寓",sqm:40,year:2020,gas:false,price:1200,fac:"Loft挑高/商圈核心/家电齐",pros:["Loft挑高实用","商圈核心","家电齐全"],cons:["商水商电成本高","无天然气"],link:"https://www.anjuke.com"},
+  {t:"龙湖·春江郦城",src:"链家",city:"福州",dist:"鼓楼区",cat:"租房",rooms:"一室",sqm:45,year:2021,gas:true,price:1600,fac:"新风/智慧社区/近地铁",pros:["新风系统","智慧社区","近地铁"],cons:["面积偏小","租金略高"],link:"https://www.lianjia.com"},
+  {t:"招商·雍景湾",src:"贝壳",city:"福州",dist:"仓山区",cat:"二手房",rooms:"二室",sqm:89,year:2018,gas:true,price:230,fac:"江景/品牌物业/户型方正",pros:["江景低密","品牌物业","户型方正"],cons:["距市中心较远","通勤略长"],link:"https://www.ke.com"},
+  {t:"中海·寰宇天下",src:"安居客",city:"广州",dist:"天河区",cat:"二手房",rooms:"三室",sqm:108,year:2019,gas:true,price:560,fac:"CBD核心/学位优质/保值",pros:["CBD核心地段","学位优质","保值性强"],cons:["总价高","月供压力大"],link:"https://www.anjuke.com"},
+  {t:"绿地·海珀",src:"安居客",city:"广州",dist:"番禺区",cat:"租房",rooms:"公寓",sqm:41,year:2022,gas:false,price:1250,fac:"青年社区/近地铁/自由购",pros:["青年社区氛围","近地铁","自由购"],cons:["商办性质","无天然气"],link:"https://www.anjuke.com"},
+  {t:"龙光·天瀛",src:"链家",city:"杭州",dist:"西湖区",cat:"二手房",rooms:"二室",sqm:88,year:2021,gas:true,price:360,fac:"智慧门禁/近地铁/环境清幽",pros:["智慧门禁","近地铁","环境清幽"],cons:["周边配套在建","摇号难"],link:"https://www.lianjia.com"},
+  {t:"网易·云栖",src:"安居客",city:"杭州",dist:"滨江区",cat:"租房",rooms:"一室",sqm:42,year:2022,gas:true,price:2600,fac:"互联网氛围/精装/通勤短",pros:["互联网氛围","精装品质","通勤短"],cons:["租金偏高","竞争房源少"],link:"https://www.anjuke.com"},
+  {t:"阳光城·丽兹公馆",src:"贝壳",city:"成都",dist:"锦江区",cat:"租房",rooms:"一室",sqm:42,year:2019,gas:true,price:1380,fac:"宠物友好/近公园/安静",pros:["宠物友好","近公园","安静"],cons:["楼龄一般","电梯稍慢"],link:"https://www.ke.com"},
+  {t:"万科·城市之光",src:"贝壳",city:"成都",dist:"高新区",cat:"新房",rooms:"三室",sqm:110,year:2023,gas:true,price:280,fac:"准现房/地铁口/户型好",pros:["准现房交付","地铁口","户型好"],cons:["周边仍在建设","入住率待提升"],link:"https://www.ke.com"},
+  {t:"金茂·悦湖湾",src:"链家",city:"上海",dist:"浦东新区",cat:"二手房",rooms:"二室",sqm:96,year:2022,gas:true,price:520,fac:"准现房/品质物业/配套全",pros:["准现房","品质物业","配套全"],cons:["单价高","车位紧张"],link:"https://www.lianjia.com"},
+  {t:"绿地·海珀",src:"链家",city:"上海",dist:"徐汇区",cat:"租房",rooms:"一室",sqm:46,year:2021,gas:true,price:3200,fac:"核心区位/精装/生活便利",pros:["核心区位","精装","生活便利"],cons:["租金高","面积紧凑"],link:"https://www.lianjia.com"},
+  {t:"融创·江南府",src:"安居客",city:"北京",dist:"朝阳区",cat:"二手房",rooms:"二室",sqm:95,year:2016,gas:true,price:460,fac:"学区稳定/户型方正/配套成熟",pros:["学区稳定","户型方正","配套成熟"],cons:["楼龄较久","需重新装修"],link:"https://www.anjuke.com"},
+  {t:"龙湖·唐宁",src:"贝壳",city:"北京",dist:"海淀区",cat:"租房",rooms:"一室",sqm:48,year:2020,gas:true,price:4500,fac:"中关村核心/高校环绕/通勤短",pros:["中关村核心","高校环绕","通勤极短"],cons:["租金极高","房源稀少"],link:"https://www.ke.com"},
+  {t:"华润·悦府",src:"链家",city:"深圳",dist:"南山区",cat:"二手房",rooms:"三室",sqm:128,year:2021,gas:true,price:980,fac:"科技园核心/海景/顶级物业",pros:["科技园核心","海景","顶级物业"],cons:["总价极高","门槛高"],link:"https://www.lianjia.com"},
+  {t:"万科·城市之光",src:"贝壳",city:"深圳",dist:"宝安区",cat:"租房",rooms:"一室",sqm:44,year:2022,gas:true,price:2800,fac:"新小区/近地铁/采光好",pros:["新小区","近地铁","采光好"],cons:["租金高","通勤到福田远"],link:"https://www.ke.com"},
+  {t:"招商·雍景湾",src:"安居客",city:"南京",dist:"建邺区",cat:"新房",rooms:"二室",sqm:89,year:2023,gas:true,price:320,fac:"河西新城/准现房/潜力大",pros:["河西新城","准现房","潜力大"],cons:["配套待完善","交付周期"],link:"https://www.anjuke.com"},
+  {t:"世茂·御龙湾",src:"贝壳",city:"武汉",dist:"武昌区",cat:"二手房",rooms:"三室",sqm:115,year:2017,gas:true,price:280,fac:"江景/教育资源/社区成熟",pros:["江景","教育资源","社区成熟"],cons:["楼龄偏老","停车难"],link:"https://www.ke.com"},
+  {t:"龙湖·春江郦城",src:"链家",city:"西安",dist:"雁塔区",cat:"租房",rooms:"一室",sqm:45,year:2021,gas:true,price:1500,fac:"高新核心/智慧社区/近地铁",pros:["高新核心","智慧社区","近地铁"],cons:["租金上涨快","面积小"],link:"https://www.lianjia.com"},
+  {t:"金茂·悦湖湾",src:"链家",city:"重庆",dist:"渝北区",cat:"新房",rooms:"二室",sqm:92,year:2023,gas:true,price:175,fac:"礼嘉板块/低密/品质高",pros:["礼嘉板块","低密","品质高"],cons:["距主城远","配套在建"],link:"https://www.lianjia.com"},
+  {t:"中海·寰宇天下",src:"安居客",city:"苏州",dist:"工业园区",cat:"二手房",rooms:"三室",sqm:120,year:2019,gas:true,price:420,fac:"金鸡湖畔/园区核心/保值",pros:["金鸡湖畔","园区核心","保值"],cons:["单价高","名额紧"],link:"https://www.anjuke.com"},
+  {t:"阳光城·丽兹公馆",src:"贝壳",city:"长沙",dist:"岳麓区",cat:"租房",rooms:"一室",sqm:43,year:2020,gas:true,price:1300,fac:"大学城旁/近公园/性价比高",pros:["大学城旁","近公园","性价比高"],cons:["租客多","电梯慢"],link:"https://www.ke.com"},
+  {t:"融创·江南府",src:"链家",city:"青岛",dist:"崂山区",cat:"二手房",rooms:"二室",sqm:92,year:2016,gas:true,price:240,fac:"海景房/空气好/宜居",pros:["海景房","空气好","宜居"],cons:["楼龄久","冬季偏冷"],link:"https://www.lianjia.com"},
+  {t:"保利·和光晨樾",src:"贝壳",city:"天津",dist:"和平区",cat:"新房",rooms:"三室",sqm:115,year:2023,gas:true,price:380,fac:"市中心/学区优/配套全",pros:["市中心","学区优","配套全"],cons:["总价高","车位贵"],link:"https://www.ke.com"},
+  {t:"中骏·云景台",src:"安居客",city:"泉州",dist:"丰泽区",cat:"租房",rooms:"一室",sqm:46,year:2020,gas:true,price:1300,fac:"天然气/地铁口/精装",pros:["带天然气","近地铁","精装"],cons:["面积小","楼层一般"],link:"https://www.anjuke.com"},
+];
+function renderHouses(_,hi){
+  const cat=curFilter.m2, city=curFilter.m2city, dist=curFilter.m2area, rooms=curFilter.m2rooms, price=curFilter.m2price;
+  const g=document.getElementById("m2grid");
+  const list=houses.filter(x=>{
+    if(cat!=="全部"){
+      if(cat==="天然气"){ if(!x.gas)return false; }
+      else if(x.cat!==cat)return false;
+    }
+    if(city!=="全部"&&x.city!==city)return false;
+    if(dist!=="全部"&&x.dist!==dist)return false;
+    if(rooms!=="全部"&&x.rooms!==rooms)return false;
+    if(price!=="全部"&&!priceMatch(x.price,x.cat==="租房"?"元":"万",price))return false;
+    return true;
+  });
+  const fi=hi==null?-1:hi%list.length;
+  if(!list.length){g.innerHTML='<div style="color:#9a7d8a;padding:24px;text-align:center">没有符合条件的房源，试试放宽筛选条件 🌿</div>';return;}
+  g.innerHTML=list.map((x,i)=>{
+    const tag=x.cat==="租房"?'<span class="tag free">租房</span>':(x.cat==="新房"?'<span class="tag pay">新房</span>':'<span class="tag seri">二手房</span>');
+    const priceStr=x.cat==="租房"?`¥${x.price}/月`:`¥${x.price}万`;
+    const fresh=i===fi?'<div class="fresh">🔥 刚刚上新</div>':'';
+    const pros=x.pros.map(p=>`<div class="pro">＋ ${p}</div>`).join("");
+    const cons=x.cons.map(c=>`<div class="con">－ ${c}</div>`).join("");
+    return `<div class="item">${tag}${fresh}
+      <h3>${x.t}</h3>
+      <div class="meta">${x.city}·${x.dist} · 来源：<b>${x.src}</b></div>
+      <div class="meta">房型：<b>${x.rooms}</b> · 面积：<b>${x.sqm}㎡</b> · ${x.gas?'<b>带天然气</b>':'无天然气'}</div>
+      <div class="meta">楼龄：<b>${2026-x.year}年</b>（${x.year}交房）· 配套：${x.fac}</div>
+      <div class="desc" style="font-size:15px;color:var(--text);font-weight:700">${priceStr}</div>
+      <div class="pc"><b class="pro">优点</b>${pros}</div>
+      <div class="pc"><b class="con">缺点</b>${cons}</div>
+      <a class="go" href="${x.link}" target="_blank">房源详情 →</a></div>`;
+  }).join("");
+}
+function priceMatch(p,unit,sel){
+  if(sel==="全部")return true;
+  if(unit==="万"){
+    if(sel==="<50")return p<50;
+    if(sel==="50-100")return p>=50&&p<100;
+    if(sel==="100-200")return p>=100&&p<200;
+    if(sel==="200-300")return p>=200&&p<300;
+    if(sel==="300+")return p>=300;
+  }else{
+    if(sel==="r<1500")return p<1500;
+    if(sel==="r1500-2500")return p>=1500&&p<2500;
+    if(sel==="r2500+")return p>=2500;
+  }
+  return true;
+}
+function onCityChange(key){
+  const isM2=key==="m2";
+  const citySel=document.getElementById(isM2?"m2citySel":"m4citySel");
+  const val=citySel.value;
+  if(isM2)curFilter.m2city=val; else curFilter.m4city=val;
+  const areaSel=document.getElementById(isM2?"m2areaSel":"m4areaSel");
+  if(areaSel){
+    const areas=cityAreas[val]||[];
+    areaSel.innerHTML='<option value="全部">全部区域</option>'+areas.map(a=>`<option value="${a}">${a}</option>`).join("");
+    if(isM2)curFilter.m2area="全部";
+  }
+  if(isM2)renderHouses(); else renderJobs();
+}
+function fillCitySel(selId,key){
+  const sel=document.getElementById(selId);
+  if(!sel)return;
+  const cur=curFilter[key+"city"]||"全部";
+  sel.innerHTML='<option value="全部">全部城市</option>'+Object.keys(cityAreas).map(c=>`<option value="${c}"${c===cur?' selected':''}>${c}</option>`).join("");
+  // 初始化区域联动
+  const areaSel=document.getElementById(key==="m2"?"m2areaSel":"m4areaSel");
+  if(areaSel&&cur!=="全部"){
+    const areas=cityAreas[cur]||[];
+    areaSel.innerHTML='<option value="全部">全部区域</option>'+areas.map(a=>`<option value="${a}">${a}</option>`).join("");
+  }
+}
+
+/* ====== Module 3: 资讯 ====== */
+const news=[
+  {t:"央行最新LPR报价出炉，房贷利率迎年内第三次下调",cat:"财经",src:"新华网",time:"2小时前",d:"5年期以上 LPR 下调至 3.45%，首套房贷成本进一步降低，业内预计将带动刚需购房回暖。",link:"http://www.news.cn"},
+  {t:"晋江国际鞋纺城秋季采购季开启，本土鞋企订单回暖",cat:"本地",src:"澎湃新闻",time:"4小时前",d:"多家本土鞋企表示海外订单环比增长，新材料与环保工艺成为本届采购季关键词。",link:"https://www.thepaper.cn"},
+  {t:"国产动画电影票房破纪录，治愈系画风获年轻人好评",cat:"娱乐",src:"腾讯新闻",time:"6小时前",d:"上映两周票房突破 18 亿，水墨与治愈系美术风格引发社交平台二创热潮。",link:"https://news.qq.com"},
+  {t:"三部门联合发文，推进社区嵌入式养老服务设施建设",cat:"生活",src:"新华网",time:"昨天",d:"鼓励在老旧小区改造中配建日间照料中心，重点解决独居老人就近养老难题。",link:"http://www.news.cn"},
+  {t:"暑期文旅消费数据发布，县域小城游热度同比上涨六成",cat:"财经",src:"澎湃新闻",time:"昨天",d:"反向旅游持续走热，晋江、泉州等县域目的地酒店预订量创历史新高。",link:"https://www.thepaper.cn"},
+  {t:"本地便民：晋江多条公交线路下周起优化调整",cat:"本地",src:"腾讯新闻",time:"2天前",d:"新增 3 条微循环线路覆盖新建社区，市民可通过官方小程序实时查询到站。",link:"https://news.qq.com"},
+  {t:"新中式茶饮频出爆款，年轻人爱上「轻养生」",cat:"生活",src:"腾讯新闻",time:"2天前",d:"草本、五谷类饮品搜索量同比翻倍，健康化成为新茶饮赛道新竞争点。",link:"https://news.qq.com"},
+  {t:"口碑剧集收官，主创访谈揭秘悬疑叙事巧思",cat:"娱乐",src:"澎湃新闻",time:"3天前",d:"编剧透露采用多线并行结构，观众二刷可发现大量埋线细节。",link:"https://www.thepaper.cn"},
+];
+function renderNews(f,hi){
+  const g=document.getElementById("m3list");
+  const list=news.filter(x=>f==="全部"||x.cat===f);
+  const fi=hi==null?-1:hi%list.length;
+  g.innerHTML=list.map((x,i)=>{
+    const fresh=i===fi?' <span style="color:#2f9e5e;font-weight:700">· 🔥刚刚</span>':'';
+    return `<div class="row">
+    <span class="cat" style="background:${catColor(x.cat)};color:${catText(x.cat)}">${x.cat}</span>
+    <div class="body"><h3>${x.t}</h3><p>${x.d}</p>
+    <div class="src">${x.time}${fresh} · 来源 <a href="${x.link}" target="_blank">${x.src} ↗</a></div></div></div>`;
+  }).join("");
+}
+function catColor(c){return {财经:"#E4F0FB",生活:"#EAF7EE",娱乐:"#FBEFF6",本地:"#FEF6E0"}[c]||"#EEF4F8";}
+function catText(c){return {财经:"#3a7bc0",生活:"#2f9e5e",娱乐:"#b85fa0",本地:"#c79a2f"}[c]||"#5a7a94";}
+
+/* ====== Module 4: 排版兼职 ====== */
+const jobs=[
+  {t:"鞋盒吊牌 CDR 排版",skill:"CDR",type:"散单",pay:"300-600元/款",payNum:300,city:"晋江",req:"熟悉鞋业吊牌尺寸与出血，2天交付",ch:"猪八戒",link:"https://www.zbj.com"},
+  {t:"品牌包装 AI 长图设计",skill:"AI",type:"长期",pay:"8-12k/月",payNum:8000,city:"广州",req:"每周稳定产出，懂印刷工艺优先",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"电商详情页 PS 精修",skill:"PS",type:"散单",pay:"150-400元/页",payNum:150,city:"杭州",req:"白底精修+场景合成，当天返稿",ch:"站酷",link:"https://www.zcool.com.cn"},
+  {t:"服装水洗标排版",skill:"CDR",type:"长期",pay:"0.8-1.5元/款",payNum:1,city:"泉州",req:"批量处理，细心不出错",ch:"猪八戒",link:"https://www.zbj.com"},
+  {t:"画册网格系统搭建",skill:"AI",type:"散单",pay:"2000-3500元/本",payNum:2000,city:"上海",req:"提供印刷级文件，含出血裁切线",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"小红书图文制版",skill:"PS",type:"长期",pay:"5-8k/月",payNum:5000,city:"厦门",req:"日更3-5图，网感好",ch:"站酷",link:"https://www.zcool.com.cn"},
+  {t:"食品包装正面设计",skill:"AI",type:"散单",pay:"800-1500元",payNum:800,city:"成都",req:"需提供专色与 CMYK 双版本",ch:"一品威客",link:"https://www.epwk.com"},
+  {t:"展会易拉宝排版",skill:"CDR",type:"散单",pay:"120-260元/张",payNum:120,city:"福州",req:"72h交付，含 bleeds",ch:"时间财富",link:"https://www.680.com"},
+  {t:"鞋标烫金工艺设计",skill:"AI",type:"散单",pay:"500-900元",payNum:500,city:"晋江",req:"熟悉鞋标烫金/压印工艺",ch:"猪八戒",link:"https://www.zbj.com"},
+  {t:"礼盒结构排版",skill:"CDR",type:"长期",pay:"6-9k/月",payNum:6000,city:"广州",req:"懂包装结构刀线，稳定合作",ch:"一品威客",link:"https://www.epwk.com"},
+  {t:"短视频封面 PS",skill:"PS",type:"散单",pay:"80-200元/张",payNum:80,city:"杭州",req:"信息流封面，高点击率",ch:"站酷",link:"https://www.zcool.com.cn"},
+  {t:"吊牌文案排版",skill:"AI",type:"散单",pay:"400-700元",payNum:400,city:"泉州",req:"中英文双语吊牌排版",ch:"猪八戒",link:"https://www.zbj.com"},
+  {t:"包装盒刀线设计",skill:"CDR",type:"散单",pay:"300-600元",payNum:300,city:"东莞",req:"熟悉刀线啤版工艺",ch:"一品威客",link:"https://www.epwk.com"},
+  {t:"企业画册 AI 排版",skill:"AI",type:"长期",pay:"7-10k/月",payNum:7000,city:"深圳",req:"整套 VI 画册能力强",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"品牌 LOGO 延展 AI",skill:"AI",type:"散单",pay:"600-1500元",payNum:600,city:"北京",req:"提供 VI 规范与延展",ch:"站酷",link:"https://www.zcool.com.cn"},
+  {t:"包装插画 PS 合成",skill:"PS",type:"散单",pay:"500-1200元",payNum:500,city:"武汉",req:"场景合成氛围感强",ch:"Freelancer",link:"https://www.freelancer.com"},
+  {t:"不干胶标签排版",skill:"CDR",type:"散单",pay:"200-500元",payNum:200,city:"佛山",req:"批量标签出血规范",ch:"时间财富",link:"https://www.680.com"},
+  {t:"鞋盒结构 3D CDR",skill:"CDR",type:"散单",pay:"500-1000元",payNum:500,city:"苏州",req:"结构准确可打样",ch:"一品威客",link:"https://www.epwk.com"},
+  {t:"海报主视觉 AI",skill:"AI",type:"散单",pay:"800-2000元",payNum:800,city:"南京",req:"活动主视觉统一调性",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"国际排版接单 PS",skill:"PS",type:"散单",pay:"$30-80/页",payNum:200,city:"上海",req:"英文排版，欧美客户",ch:"Freelancer",link:"https://www.freelancer.com"},
+  {t:"系列吊牌 CDR 全套",skill:"CDR",type:"长期",pay:"1-2元/款",payNum:1,city:"晋江",req:"系列化吊牌长期合作",ch:"猪八戒",link:"https://www.zbj.com"},
+  {t:"文创包装插画 AI",skill:"AI",type:"散单",pay:"600-1200元",payNum:600,city:"成都",req:"国潮风插画表现力",ch:"一品威客",link:"https://www.epwk.com"},
+  {t:"设计兼职 直聊HR",skill:"AI",type:"长期",pay:"10-20k/月",payNum:10000,city:"北京",req:"BOSS直聘搜索设计兼职，与HR直聊效率高",ch:"BOSS直聘",link:"https://www.zhipin.com"},
+  {t:"平面设计 社招岗",skill:"CDR",type:"长期",pay:"8-15k/月",payNum:8000,city:"上海",req:"前程无忧投递，含印刷排版/包装经验优先",ch:"前程无忧",link:"https://www.51job.com"},
+  {t:"电商美工 本地兼职",skill:"PS",type:"散单",pay:"200-500元/天",payNum:200,city:"广州",req:"智联招聘查找同城美工兼职，日结优先",ch:"智联招聘",link:"https://www.zhaopin.com"},
+  {t:"资深视觉 猎头岗",skill:"AI",type:"长期",pay:"15-30k/月",payNum:15000,city:"深圳",req:"猎聘对接猎头，资深品牌视觉优先",ch:"猎聘",link:"https://www.liepin.com"},
+  {t:"互联网UI 实习岗",skill:"PS",type:"散单",pay:"150-300元/天",payNum:150,city:"杭州",req:"拉勾投递设计实习，每周到岗3天+",ch:"拉勾招聘",link:"https://www.lagou.com"},
+];
+function renderJobs(_,hi){
+  const f=curFilter.m4, city=curFilter.m4city, pay=curFilter.m4pay;
+  const g=document.getElementById("m4grid");
+  const list=jobs.filter(x=>{
+    if(f!=="全部"){
+      if(f==="散单"&&x.type!=="散单")return false;
+      if(f==="长期"&&x.type!=="长期")return false;
+      if(f!=="散单"&&f!=="长期"&&x.skill!==f)return false;
+    }
+    if(city!=="全部"&&x.city!==city)return false;
+    if(pay!=="全部"&&!jobPayMatch(x.payNum,pay))return false;
+    return true;
+  });
+  const fi=hi==null?-1:hi%list.length;
+  if(!list.length){g.innerHTML='<div style="color:#9a7d8a;padding:24px;text-align:center">暂无符合该城市的接单需求，试试其他城市 🌿</div>';return;}
+  g.innerHTML=list.map((x,i)=>{
+    const tag=x.type==="散单"?'<span class="tag seri">短期散单</span>':'<span class="tag free">长期稳定</span>';
+    const fresh=i===fi?'<div class="fresh">🔥 刚刚发布</div>':'';
+    return `<div class="item">${tag}<span class="tag pay" style="right:auto;left:12px;top:12px">${x.skill}</span>${fresh}
+      <h3 style="padding-left:54px">${x.t}</h3>
+      <div class="meta">城市：<b>${x.city}</b> · 酬劳：<b style="color:#d9803e">${x.pay}</b></div>
+      <div class="meta">要求：${x.req}</div>
+      <div class="desc">对接渠道：<b>${x.ch}</b></div>
+      <a class="go" href="${x.link}" target="_blank">${x.ch} 接单入口 →</a></div>`;
+  }).join("");
+}
+function jobPayMatch(n,sel){
+  if(sel==="全部")return true;
+  if(sel==="0-500")return n<500;
+  if(sel==="500-2000")return n>=500&&n<2000;
+  if(sel==="2000-6000")return n>=2000&&n<=6000;
+  if(sel==="6000+")return n>6000;
+  return true;
+}
+
+/* ====== Module 6: 薅羊毛 ====== */
+const deals=[
+  {t:"新人 0 元购礼包",p:"淘宝",type:"一分购",reward:"价值39元日用品",exp:"今日24点",th:"需新注册账号",link:"https://www.taobao.com",warn:"仅限未下单新用户"},
+  {t:"外卖 15-12 无门槛券",p:"美团",type:"券",reward:"满15减12",exp:"3天内",th:"每日限量发放",link:"https://www.meituan.com",warn:"先领券再下单"},
+  {t:"视频会员 1 分首月",p:"京东",type:"会员",reward:"月卡0.01元",exp:"本周日",th:"自动续费需手动关",link:"https://www.jd.com",warn:"记得关闭自动续费"},
+  {t:"支付红包 最高88元",p:"天猫",type:"红包",reward:"随机0.5-88",exp:"每日可领",th:"需登录账号",link:"https://www.tmall.com",warn:"无门槛可提现"},
+  {t:"电商满300减50品类券",p:"淘宝",type:"券",reward:"满300减50",exp:"大促当天",th:"指定品类可用",link:"https://www.taobao.com",warn:"凑单更划算"},
+  {t:"云盘会员季卡3折",p:"京东",type:"会员",reward:"季卡低至3折",exp:"月底截止",th:"新老用户同享",link:"https://www.jd.com",warn:"对比官方价再买"},
+  {t:"1分钱抽纸整箱",p:"拼多多",type:"一分购",reward:"24包抽纸",exp:"今日",th:"需付1分+运费",link:"https://www.pinduoduo.com",warn:"运费到付需留意"},
+  {t:"签到现金红包",p:"美团",type:"红包",reward:"连续7天得8元",exp:"长期",th:"每日签到",link:"https://www.meituan.com",warn:"无套路可提现"},
+  {t:"天猫超市 9.9 福袋",p:"天猫",type:"一分购",reward:"随机好物9.9",exp:"今日",th:"限量秒杀",link:"https://www.tmall.com",warn:"整点开抢"},
+  {t:"拼团 1 元秒杀",p:"拼多多",type:"券",reward:"1元带走",exp:"整点场",th:"需拼团成功",link:"https://www.pinduoduo.com",warn:"拼满人数才发货"},
+];
+function renderDeals(f,hi){
+  const g=document.getElementById("m6grid");
+  const list=deals.filter(x=>f==="全部"||x.type===f);
+  const fi=hi==null?-1:hi%list.length;
+  const tagMap={红包:'pay',券:'seri',一分购:'free',会员:'done'};
+  g.innerHTML=list.map((x,i)=>{
+    const fresh=i===fi?'<div class="fresh">🔥 刚刚上新</div>':'';
+    return `<div class="item"><span class="tag ${tagMap[x.type]||'seri'}">${x.type}</span>${fresh}
+      <h3>${x.t}</h3>
+      <div class="meta">平台：<b>${x.p}</b> · 福利：<b style="color:#d9803e">${x.reward}</b></div>
+      <div class="meta">时效：<b>${x.exp}</b> · 门槛：${x.th}</div>
+      <div class="desc" style="color:#d9803e">⚠ ${x.warn}</div>
+      <a class="go" href="${x.link}" target="_blank">参与直达 →</a></div>`;
+  }).join("");
+}
+
+/* ====== 筛选 chips 绑定 ====== */
+function bindChips(id,cb,key){
+  document.querySelectorAll("#"+id+" .chip").forEach(c=>{
+    c.onclick=()=>{
+      document.querySelectorAll("#"+id+" .chip").forEach(x=>x.classList.remove("on"));
+      c.classList.add("on");
+      curFilter[key]=c.dataset.f;
+      cb(c.dataset.f);
+    };
+  });
+}
+bindChips("m1chips",renderDramas,"m1");
+bindChips("m2cat",renderHouses,"m2");
+bindChips("m3chips",renderNews,"m3");
+bindChips("m4chips",renderJobs,"m4");
+bindChips("m6chips",renderDeals,"m6");
+bindChips("m7chips",renderPalettes,"m7");
+bindChips("m2rooms",renderHouses,"m2rooms");
+bindChips("galchips",renderGallery,"gal");
+
+/* ====== Module 5: AI 助手 ====== */
+const chat=document.getElementById("chat");
+const aiText=document.getElementById("aiText");
+let aiMem=[];
+let aiScene="通用";
+let lastGen=null;
+function aiAdd(role,html){
+  const d=document.createElement("div");
+  d.className="msg "+(role==="me"?"me":"bot");
+  d.innerHTML=html;
+  chat.appendChild(d);
+  chat.scrollTop=chat.scrollHeight;
+}
+function aiReset(){
+  chat.innerHTML="";aiMem=[];lastGen=null;
+  aiAdd("bot","你好，我是你的全能 AI 助手 👋<br>已支持 <b>25+</b> 项功能：海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、合同润色、排版答疑、话术定制、故事创作、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等。<br><br>顶部可切换 <b>场景</b>（电商运营/职场办公/设计行业/日常聊天），我会据此调整语气；支持多轮上下文，可直接说「换一个 / 再来一条」让我重新生成 ✨ 也可点下方「AI 模型直达」前往任意大模型官网。");
+}
+document.getElementById("aiTools").querySelectorAll(".ai-tool").forEach(t=>{
+  t.onclick=()=>{aiText.value=t.dataset.q;aiSend();};
+});
+aiText.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();aiSend();}
+});
+function aiSend(){
+  const v=aiText.value.trim();
+  if(!v)return;
+  aiAdd("me",v.replace(/</g,"&lt;"));
+  aiMem.push(v);
+  aiText.value="";
+  // typing
+  const ty=document.createElement("div");
+  ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
+  chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
+  setTimeout(()=>{ty.remove();aiAdd("bot",aiRespond(v));},650);
+}
+function hl(s){return '<span class="hl">'+s+'</span>';}
+function aiRespond(q){
+  const t=q.toLowerCase();
+  // 上下文追问：换一个 / 再来 / 继续
+  if(/换一个|再来一条|再来一个|继续|另一个|重新写|重新来|换种/.test(q) && lastGen){
+    return "好的，换一个思路给你：\n\n"+lastGen.fn(q, true);
+  }
+  let fn=null;
+  if(/提示词|prompt|绘画|生图|画图|ai画/.test(q)){fn=genPrompt;}
+  else if(/小红书|xhs|种草笔记|笔记/.test(q)){fn=genXHS;}
+  else if(/文案|海报|广告语|宣传|推文|卖点|朋友圈/.test(q)){fn=genCopy;}
+  else if(/话术|客服|销售|催单|回复|沟通/.test(q)){fn=genScript;}
+  else if(/排版|印刷|cmyk|专色|色差|出血|分辨率|烫金|覆膜/.test(q)){fn=typesetKnow;}
+  else if(/润色|改写|合同|优化|重述|措辞/.test(q)){fn=genPolish;}
+  else if(/表格|整理成表|做成表|列表/.test(q)){fn=genTable;}
+  else if(/邮件|email|mail|回信|写信/.test(q)){fn=genEmail;}
+  else if(/周报|日报|月报|汇报|工作总结/.test(q)){fn=genReport;}
+  else if(/简历|求职|cv|履历/.test(q)){fn=genResume;}
+  else if(/短视频|脚本|分镜|口播|视频文案/.test(q)){fn=genVideo;}
+  else if(/商品标题|标题优化|seo|淘宝|详情标题|关键词/.test(q)){fn=genProduct;}
+  else if(/会议纪要|会议记录|整理会议/.test(q)){fn=genMeeting;}
+  else if(/代码|编程|python|js\b|函数|bug|解释.*代码/.test(q)){fn=genCode;}
+  else if(/祝福|节日|贺卡|情话|问候/.test(q)){fn=genBless;}
+  else if(/起名|品牌|店名|名字|取名/.test(q)){fn=genNames;}
+  else if(/故事|童话|小说|剧本|情节/.test(q)){fn=genStory;}
+  else if(/旅行|旅游|攻略|出游|行程/.test(q)){fn=genTravel;}
+  else if(/论文|大纲|开题|目录|框架/.test(q)){fn=genOutline;}
+  else if(/数据|分析|报表|增长|转化率|提升建议/.test(q)){fn=genData;}
+  else if(/健身|减脂|训练|增肌|运动计划/.test(q)){fn=genFitness;}
+  else if(/法律|违约|法规|合同科普|赔偿|维权|民法典/.test(q)){fn=genLaw;}
+  else if(/翻译|英文|中文|english|中英|互译|translate/.test(q)){fn=genTranslate;}
+  else if(/[\d\.\+\-\*\/\(\)]+/.test(q)&&/[\+\-\*\/]/.test(q)){const r=calcExpr(q);if(r!==null)return "🧮 计算结果：\n\n"+r;}
+  else if(/错题|解析|这道题|为什么错|讲解/.test(q)){fn=genExplain;}
+  if(fn){lastGen={fn,q};return scenePrefix()+fn(q,false);}
+  // 默认
+  return "收到～我是你的全能 AI 助手，已支持 25+ 功能：海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、合同润色、排版答疑、话术定制、故事创作、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等。\n\n你可以直接说需求，例如：「帮奶茶店写朋友圈推广」「生成国潮插画提示词」「(120+80)*0.9 算一下」。当前场景：「"+aiScene+"」，可切换后我按该场景调整语气 ✨ 也可以点上方「AI 模型直达」前往任意大模型官网。";
+}
+function scenePrefix(){
+  if(aiScene==="通用")return "";
+  const m={
+    "电商运营":"（已按「电商运营」场景优化，偏转化与种草语气）\n\n",
+    "职场办公":"（已按「职场办公」场景优化，偏专业、正式、条理）\n\n",
+    "设计行业":"（已按「设计行业」场景优化，偏视觉与工艺专业度）\n\n",
+    "日常聊天":"（已按「日常聊天」场景优化，偏轻松口语化）\n\n"
+  };
+  return m[aiScene]||"";
+}
+function genPrompt(q){
+  const subj=q.replace(/生成一个|生成|的|ai绘画提示词|提示词|绘画|生图|画图|ai画|。|，/g,"").trim()||"唯美风景";
+  return `主体：${subj}\n风格：高细节、电影级光影、8k 分辨率\n镜头：中景、浅景深、自然光\n色彩：低饱和清新马卡龙色调、柔和过渡\n材质：细腻纹理、真实质感\n氛围：宁静治愈、空气感\n参数：--ar 3:4 --v 6.0 --style raw\n\n英文版：\n${subj}, cinematic lighting, ultra detailed, 8k, soft pastel macaron color palette, shallow depth of field, serene healing atmosphere, airy mood, --ar 3:4 --v 6.0`;
+}
+function genNames(q){
+  const kw=q.replace(/给|一家|卖|的|店|起几个|品牌名|起名|名字|取名|。|，/g,"").trim()||"生活好物";
+  const pre=["鹿","云","屿","初","拾","禾","野","栖","漫","知","暖","叙"];
+  const suf=["集","屋","所","记","方","间","铺","堂","社","造物","工坊","研究所"];
+  let out=[];
+  for(let i=0;i<6;i++){out.push(pre[i]+suf[i]);}
+  return `围绕「${kw}」给你 6 个品牌名参考：\n${out.map((n,i)=>`${i+1}. ${n}`).join("\n")}\n\n💡 命名思路：用自然意象+空间感词汇，清新好记、易注册。`;
+}
+function genCopy(q){
+  const kw=q.replace(/帮我写(一段|一篇|一条|份)?|产品(是|为)?|的|海报文案|文案|推广|朋友圈|小红书|。|，/g,"").trim()||"你的产品";
+  return `【标题】${kw}，一口就爱上 ☕\n\n【正文】\n慢下来的早晨，从一杯现磨开始。\n${kw}严选产地豆源，低温慢萃锁住香气，\n0 添加、0 负担，把咖啡馆搬进你家厨房。\n\n【行动号召】\n今日下单立享尝鲜价，第二件半价 → 点击带走你的专属风味\n\n（可按平台/受众微调语气，需要更商务或更口语告诉我～）`;
+}
+function genScript(q){
+  return `【开场】亲，您眼光真好，这款是我们回购率最高的～\n【卖点】核心优势有三点：①XX ②XX ③XX，对比同价位是性价比天花板。\n【促单】今天刚好有活动，现在下单还能多送一份小样。\n【留客】不合适随时找我退换，售后无忧您放心。\n\n💡 可按「售前/售中/售后」「催付/挽单」等场景再细化。`;
+}
+function typesetKnow(q){
+  if(/专色|cmyk/.test(q)){
+    return `① CMYK 是印刷四色（青品黄黑），通过网点叠加模拟颜色，适合大多数彩色印刷；\n② 专色（Spot Color，如潘通专色）是预先调好的实色油墨，色彩更准、更饱和，常用于品牌 LOGO、烫金烫银；\n③ 专色需单独制版、加收专色费，大面积实地色建议用专色避免四色叠印不实；\n④ 四色转换专色会有色差，品牌色务必提供潘通专色号。\n\n需要我把某 CMYK 值换算成近似潘通色号，去「潘通色卡」模块查询即可。`;
+  }
+  if(/出血|裁切/.test(q)){
+    return `印刷出血（Bleed）一般预留 3mm，即成品尺寸四周各往外扩 3mm，防止裁切误差露白；同时重要内容离裁切线至少 5mm（安全边距）。导出 PDF 时选择「PDF/X-4」并勾选裁切/出血标记。`;
+  }
+  return `常见印刷排版要点：\n• 色彩模式用 CMYK，非 RGB；\n• 图片分辨率 ≥ 300dpi（远处喷绘可 100-150dpi）；\n• 文字转曲（创建轮廓）避免缺字；\n• 黑色文字用单色黑（K100）而非四色黑；\n• 留 3mm 出血、5mm 安全边；\n• 导出 PDF/X-4 交付印刷厂。\n有具体问题（专色/烫金/覆膜）可继续问。`;
+}
+function genPolish(q){
+  return `已为你做结构化润色建议：\n1. 删减冗余口语，保留核心信息；\n2. 将长句拆分为要点，提升可读性；\n3. 统一术语与语气（商务/亲和二选一）；\n4. 若为合同：补充责任边界、交付节点、违约条款等要素。\n\n👉 把需要润色的原文贴给我，我可以直接帮你改出成稿。`;
+}
+function genTable(q){
+  // 尝试从文本提取「名称+评价」结构
+  const body=q.replace(/把|这段|客户评价|整理成表格|表格|。/g,"").trim();
+  const rows=body.split(/[，,\n]/).map(s=>s.trim()).filter(Boolean);
+  if(rows.length){
+    let md="| 对象 | 评价 |\n| --- | --- |\n";
+    rows.forEach(r=>{
+      const m=r.match(/(.*?)(满意度高|一般|很满意|不满意|满意|差|好)/);
+      if(m)md+=`| ${m[1]} | ${m[2]} |\n`;
+      else md+=`| ${r} | - |\n`;
+    });
+    return md+"\n（如需更多列，告诉我字段名即可）";
+  }
+  return "请把要整理的内容发给我，例如：「把 张三-满意 李四-一般 王五-很满意 整理成表格」，我帮你生成 Markdown 表格。";
+}
+function calcExpr(q){
+  try{
+    const expr=q.replace(/[^\d\.\+\-\*\/\(\)\s]/g,"").trim();
+    if(!expr)return null;
+    // eslint-disable-next-line no-new-func
+    const val=Function('"use strict";return ('+expr+')')();
+    if(typeof val!=="number"||!isFinite(val))return null;
+    return `${expr} = ${Math.round(val*10000)/10000}`;
+  }catch(e){return null;}
+}
+function genExplain(q){
+  return `我来帮你拆解这道题：\n1. 先明确考查的知识点；\n2. 标出你当前思路中出错的步骤；\n3. 给出正确解法与易错提醒；\n4. 附一道同类变式巩固。\n\n👉 把题目（文字或拍照描述）发我，我针对性讲解。`;
+}
+function genTranslate(q){
+  return `（演示模式：当前未接入在线翻译引擎，以下为对照模板，接入 API 后可自动互译）\n\n原文：${q.replace(/翻译|英文|中文|成英文|成中文|互译|。/g,"").trim()||"（请填入要翻译的内容）"}\n\n🇨🇳 中文：____\n🇺🇸 English：____\n\n如需真正自动翻译，可在设置中配置翻译 API Key。`;
+}
+
+/* ---- 新增：更多 AI 生成器 ---- */
+function genXHS(q){
+  const kw=q.replace(/帮我写(一篇|条|篇)?|小红书|种草笔记|主题|笔记|。|，/g,"").trim()||"好物分享";
+  return `📕 小红书笔记 · ${kw}\n\n【标题】挖到宝了！${kw}真的绝✨（附清单）\n\n【正文】\n最近入了 ${kw}，亲测真香🔥\n✅ 颜值在线，拍照超出片\n✅ 性价比拉满，学生党也友好\n✅ 使用感细腻，回购预定\n\n姐妹们冲鸭，链接放评论区啦～\n\n#${kw} #好物分享 #平价推荐 #种草 #生活记录`;
+}
+function genEmail(q){
+  return `主题：关于${q.includes("报价")?"新品报价":"合作事宜"}的跟进\n\n尊敬的客户，您好：\n\n感谢您此前的关注。就您关心的需求，我们已准备好对应方案/报价单，核心要点如下：\n1. 交付周期与您的时间线匹配；\n2. 可提供样品/小批量试单；\n3. 价格随量级阶梯优惠。\n\n方便的话我们约个时间细聊，期待与您达成合作。\n\n祝商祺\n[你的名字]`;
+}
+function genReport(q){
+  return `【本周工作周报】\n一、核心进展\n  · 竞品分析：完成 3 家对标，输出差异点清单\n  · 首页改版：完成高保真稿，已进入评审\n二、数据亮点\n  · 关键指标环比 +12%\n三、风险/卡点\n  · 设计资源紧张，已协调排期\n四、下周计划\n  · 推动改版评审通过并启动开发`;
+}
+function genResume(q){
+  return `【简历优化要点】\n· 一句话定位：${q.replace(/帮我优化一份|简历|，.*/g,"").trim()||"资深从业者"}，X 年经验，擅长从 0 到 1\n· 经历用「动作+数据」重写：如「主导XX项目，GMV 提升 30%」\n· 技能按岗位 JD 对齐，突出关键词\n· 教育/证书精简，控制在 1 页\n\n👉 把你的原始简历贴给我，我直接帮你改成成稿。`;
+}
+function genVideo(q){
+  const kw=q.replace(/帮我写(一个)?|30秒|短视频|口播脚本|卖|。|，/g,"").trim()||"产品";
+  return `🎬 30秒短视频口播脚本 · ${kw}\n0-3s 钩子：「别再乱买！${kw}认准这几点」\n3-15s 痛点+卖点：对比踩坑 vs 我们的解决方案\n15-25s 信任：实测/资质/老客反馈\n25-30s 行动：点击下方小黄车，限时限量\nBGM：轻快节奏；字幕：大字号高对比`;
+}
+function genProduct(q){
+  const kw=q.replace(/帮我想|个|淘宝商品标题|和seo关键词|商品标题|关键词|卖|。|，/gi,"").trim()||"保温杯";
+  return `【${kw} 商品标题 ×5】\n1. 2026新款${kw} 大容量便携 长效保温 礼物推荐\n2. 高颜值${kw} 316不锈钢 24h锁温 学生上班族\n3. 网红同款${kw} 一键开盖 防漏设计 情侣款\n4. 简约风${kw} 商务办公 便携随身 送礼佳品\n5. 平价好物${kw} 实测保温 性价比之王\n\n【SEO关键词】${kw}、保温杯推荐、便携水杯、316不锈钢、生日礼物、学生水杯`;
+}
+function genMeeting(q){
+  return `【会议纪要】\n时间：____  参会：____\n一、Q3 目标：营收 +20%，新品上线 2 款\n二、分工：A 负责设计（7/10 前）；B 负责渠道（7/15 前）；C 跟进数据\n三、风险：供应链交期紧张，需备选方案\n四、下次会议：____\n（把实际讨论内容发我，我帮你整理成正式纪要）`;
+}
+function genCode(q){
+  return `这段代码的作用是：接收两个参数 a 与 b，将它们相加后返回结果。\n\n解析：\n· def 定义名为 add 的函数；\n· 参数 a、b 为输入；\n· return a+b 执行求和并输出。\n\n示例：add(2,3) → 5。\n（把你的真实代码贴给我，我可以逐行讲解、找 bug 或优化）`;
+}
+function genBless(q){
+  return `【中秋客户祝福 · 温馨商务】\n值此中秋佳节，谨向您致以最诚挚的问候。\n感谢一路以来的信任与支持，愿明月常圆、事业圆满、阖家安康。\n未来可期，期待与您继续同行，共赴新程。🌕`;
+}
+function genStory(q){
+  const kw=q.replace(/帮我创作|一个|关于|的|睡前|童话|故事|。|，/g,"").trim()||"一只小狐狸";
+  return `📖 故事 · 《${kw}的奇遇》\n\n从前，森林里住着${kw}，它最大的愿望是看到真正的星星。\n一个夏夜，它顺着萤火虫的光爬上山顶，才发现——星星一直在天上等它。\n它许下心愿：要把这份光带给怕黑的小动物们。\n从此，每个夜晚都有一盏小小的、温暖的灯亮着。\n\n（可说「换一个 / 换个结局」让我重新创作，也能指定风格：温馨/悬疑/搞笑）`;
+}
+function genTravel(q){
+  const kw=q.replace(/帮我做|一份|旅行|旅游|攻略|预算|。|，|元/g,"").trim()||"3日城市游";
+  return `🧳 旅行攻略 · ${kw}\n\n【Day1】抵达+老城区漫步，打卡本地小吃街，傍晚看城市夜景\n【Day2】自然/人文景点深度游，体验一项本地特色活动\n【Day3】文创园区+伴手礼采购，午后返程\n\n💡 贴士：交通以地铁+共享单车为主；门票提前线上买；餐饮人均 60-100 元；预留 10% 预算应急。\n（把目的地和天数告诉我，可细化到 hourly 行程）`;
+}
+function genOutline(q){
+  const kw=q.replace(/帮我写|一份|论文|大纲|主题是|。|，/g,"").trim()||"研究主题";
+  return `📑 论文大纲 · 《${kw}》\n\n一、绪论\n  1.1 研究背景与意义\n  1.2 国内外研究现状\n  1.3 研究问题与思路\n二、文献综述\n三、研究方法\n四、分析与讨论\n五、结论与展望\n参考文献\n\n💡 每章可继续让我展开成二级/三级标题与要点。`;
+}
+function genData(q){
+  const kw=q.replace(/帮我分析|这组|销售|数据|并给出|提升建议|。|，/g,"").trim()||"业务数据";
+  return `📈 数据分析建议 · ${kw}\n\n① 现状：当前月销 1.2 万、复购率 18%，属健康但增长平缓区间；\n② 机会点：复购率偏低 → 做会员/私域复购钩子；新客获客成本需监控；\n③ 提升建议：A. 搭建复购券体系拉升复购至 25%+；B. 用爆款带长尾提升客单；C. 分层运营高价值用户；\n④ 监控指标：ROI、复购率、留存、客单价。\n（把你的真实数据发我，我按数据给出具体动作）`;
+}
+function genFitness(q){
+  const kw=q.replace(/帮我写|一份|健身|减脂|的|每周|训练|计划|。|，/g,"").trim()||"减脂塑形";
+  return `💪 每周训练计划 · ${kw}\n\n周一 力量（腿臀）· 周三 有氧 HIIT · 周五 上肢+核心 · 周日 长有氧\n每日：热身 10min + 主体 40min + 拉伸 10min\n饮食：蛋白质 1.6g/kg，碳水训练日略增、休息日略减，少油少糖多喝水\n\n⚠ 新手从低强度起步，循序渐进；有伤病先咨询专业人士。`;
+}
+function genLaw(q){
+  return `⚖️ 法律常识（仅供参考，非法律意见）\n\n一般情况下，租赁合同是双方合意，房东无约定或法定事由提前收房，构成违约，应承担违约责任（退押金+赔偿损失）。\n建议：① 保留合同与沟通记录；② 先协商，明确违约赔偿；③ 协商不成可向住建/12345 投诉或法院起诉。\n\n⚠ 具体以合同条款和当地法规为准，重大事宜请咨询执业律师。`;
+}
+
+/* ====== Module 7: 潘通色卡 ====== */
+// 潘通 C/U/TPG 参考库（印刷参考值，近似）
+const pantoneDB={
+  "100c":{name:"Pantone 100 C",cmyk:[5,5,95,0],rgb:[248,235,0],hex:"#F8EB00",paper:"C 亮光铜版",note:"明亮柠黄，常用于警示/活力元素"},
+  "107c":{name:"Pantone 107 C",cmyk:[0,20,95,0],rgb:[255,205,0],hex:"#FFCD00",paper:"C 亮光铜版"},
+  "123c":{name:"Pantone 123 C",cmyk:[0,35,95,0],rgb:[255,199,44],hex:"#FFC72C",paper:"C 亮光铜版"},
+  "1495c":{name:"Pantone 1495 C",cmyk:[0,55,100,0],rgb:[255,121,0],hex:"#FF7900",paper:"C 亮光铜版"},
+  "165c":{name:"Pantone 165 C",cmyk:[0,70,100,0],rgb:[255,94,39],hex:"#FF5E27",paper:"C 亮光铜版"},
+  "185c":{name:"Pantone 185 C",cmyk:[0,100,85,0],rgb:[227,29,26],hex:"#E31D1A",paper:"C 亮光铜版",note:"经典正红，品牌主色常用"},
+  "199c":{name:"Pantone 199 C",cmyk:[0,90,75,5],rgb:[200,16,46],hex:"#C8102E",paper:"C 亮光铜版"},
+  "219c":{name:"Pantone 219 C",cmyk:[0,70,0,0],rgb:[237,28,142],hex:"#ED1C8E",paper:"C 亮光铜版",note:"玫红/桃粉，少女风首选"},
+  "235c":{name:"Pantone 235 C",cmyk:[0,75,0,15],rgb:[214,0,110],hex:"#D6006E",paper:"C 亮光铜版"},
+  "2607c":{name:"Pantone 2607 C",cmyk:[55,80,0,20],rgb:[101,54,161],hex:"#6536A1",paper:"C 亮光铜版"},
+  "266c":{name:"Pantone 266 C",cmyk:[45,80,0,25],rgb:[111,49,158],hex:"#6F319E",paper:"C 亮光铜版"},
+  "272c":{name:"Pantone 272 C",cmyk:[40,75,0,30],rgb:[138,65,146],hex:"#8A4192",paper:"C 亮光铜版"},
+  "286c":{name:"Pantone 286 C",cmyk:[100,75,0,10],rgb:[0,51,160],hex:"#0033A0",paper:"C 亮光铜版",note:"标准深蓝，企业VI常用"},
+  "293c":{name:"Pantone 293 C",cmyk:[100,65,0,15],rgb:[0,87,184],hex:"#0057B8",paper:"C 亮光铜版"},
+  "300c":{name:"Pantone 300 C",cmyk:[100,45,0,20],rgb:[0,114,206],hex:"#0072CE",paper:"C 亮光铜版"},
+  "312c":{name:"Pantone 312 C",cmyk:[100,5,30,0],rgb:[0,163,196],hex:"#00A3C4",paper:"C 亮光铜版"},
+  "320c":{name:"Pantone 320 C",cmyk:[100,0,45,10],rgb:[0,140,133],hex:"#008C85",paper:"C 亮光铜版"},
+  "340c":{name:"Pantone 340 C",cmyk:[100,0,80,0],rgb:[0,163,136],hex:"#00A388",paper:"C 亮光铜版"},
+  "354c":{name:"Pantone 354 C",cmyk:[100,0,90,0],rgb:[0,148,68],hex:"#009444",paper:"C 亮光铜版",note:"草绿/环保色"},
+  "368c":{name:"Pantone 368 C",cmyk:[75,0,100,0],rgb:[92,184,44],hex:"#5CB82C",paper:"C 亮光铜版"},
+  "376c":{name:"Pantone 376 C",cmyk:[50,0,100,0],rgb:[141,198,63],hex:"#8DC63F",paper:"C 亮光铜版"},
+  "414c":{name:"Pantone 414 C",cmyk:[35,35,55,20],rgb:[158,139,113],hex:"#9E8B71",paper:"C 亮光铜版"},
+  "425c":{name:"Pantone 425 C",cmyk:[65,50,45,30],rgb:[91,103,112],hex:"#5B6770",paper:"C 亮光铜版"},
+  "430c":{name:"Pantone 430 C",cmyk:[25,20,25,0],rgb:[182,177,169],hex:"#B6B1A9",paper:"C 亮光铜版"},
+  "448c":{name:"Pantone 448 C",cmyk:[55,40,80,20],rgb:[126,140,63],hex:"#7E8C3F",paper:"C 亮光铜版"},
+  "4625c":{name:"Pantone 4625 C",cmyk:[45,55,60,55],rgb:[92,75,62],hex:"#5C4B3E",paper:"C 亮光铜版"},
+  "485c":{name:"Pantone 485 C",cmyk:[0,95,90,5],rgb:[218,41,28],hex:"#DA291C",paper:"C 亮光铜版"},
+  "504c":{name:"Pantone 504 C",cmyk:[30,25,30,25],rgb:[139,140,137],hex:"#8B8C89",paper:"C 亮光铜版"},
+  "516c":{name:"Pantone 516 C",cmyk:[30,75,0,55],rgb:[110,33,81],hex:"#6E2151",paper:"C 亮光铜版"},
+  "528c":{name:"Pantone 528 C",cmyk:[70,85,0,45],rgb:[75,46,131],hex:"#4B2E83",paper:"C 亮光铜版"},
+  "539c":{name:"Pantone 539 C",cmyk:[100,75,40,40],rgb:[0,60,113],hex:"#003C71",paper:"C 亮光铜版"},
+  "548c":{name:"Pantone 548 C",cmyk:[100,40,45,40],rgb:[0,108,142],hex:"#006C8E",paper:"C 亮光铜版"},
+  "574c":{name:"Pantone 574 C",cmyk:[40,35,70,25],rgb:[168,161,107],hex:"#A8A16B",paper:"C 亮光铜版"},
+  "586c":{name:"Pantone 586 C",cmyk:[25,25,90,0],rgb:[227,197,49],hex:"#E3C531",paper:"C 亮光铜版"},
+  "638c":{name:"Pantone 638 C",cmyk:[55,20,40,25],rgb:[109,158,158],hex:"#6D9E9E",paper:"C 亮光铜版"},
+  "654c":{name:"Pantone 654 C",cmyk:[75,55,30,30],rgb:[58,90,152],hex:"#3A5A98",paper:"C 亮光铜版"},
+  "660c":{name:"Pantone 660 C",cmyk:[55,70,80,45],rgb:[127,79,36],hex:"#7F4F24",paper:"C 亮光铜版"},
+  "691c":{name:"Pantone 691 C",cmyk:[20,80,0,30],rgb:[170,46,123],hex:"#AA2E7B",paper:"C 亮光铜版"},
+  "705c":{name:"Pantone 705 C",cmyk:[35,55,60,45],rgb:[149,102,78],hex:"#95664E",paper:"C 亮光铜版"},
+  "711c":{name:"Pantone 711 C",cmyk:[25,90,55,45],rgb:[142,39,73],hex:"#8E2749",paper:"C 亮光铜版"},
+  "727c":{name:"Pantone 727 C",cmyk:[30,45,80,25],rgb:[175,134,55],hex:"#AF8637",paper:"C 亮光铜版"},
+  "7515c":{name:"Pantone 7515 C",cmyk:[40,45,55,40],rgb:[122,106,83],hex:"#7A6A53",paper:"C 亮光铜版"},
+  "7566c":{name:"Pantone 7566 C",cmyk:[30,60,75,25],rgb:[194,128,75],hex:"#C2804B",paper:"C 亮光铜版"},
+  "7740c":{name:"Pantone 7740 C",cmyk:[70,30,80,30],rgb:[107,142,78],hex:"#6B8E4E",paper:"C 亮光铜版"},
+  "800c":{name:"Pantone 800 C",cmyk:[55,70,75,55],rgb:[110,70,47],hex:"#6E462F",paper:"C 亮光铜版"},
+  "8240c":{name:"Pantone 8240 C",cmyk:[40,50,45,45],rgb:[131,83,84],hex:"#835354",paper:"C 亮光铜版"},
+  "865c":{name:"Pantone 865 C",cmyk:[35,45,65,35],rgb:[170,139,91],hex:"#AA8B5B",paper:"C 亮光铜版"},
+  "1805c":{name:"Pantone 1805 C",cmyk:[10,95,90,10],rgb:[190,30,45],hex:"#BE1E2D",paper:"C 亮光铜版"},
+  "484c":{name:"Pantone 484 C",cmyk:[5,95,95,0],rgb:[216,38,44],hex:"#D8262C",paper:"C 亮光铜版"},
+  // U 系列（哑光胶版，色值略暗）
+  "185u":{name:"Pantone 185 U",cmyk:[0,100,85,0],rgb:[214,40,40],hex:"#D62828",paper:"U 哑光胶版"},
+  "286u":{name:"Pantone 286 U",cmyk:[100,75,0,10],rgb:[35,64,150],hex:"#234096",paper:"U 哑光胶版"},
+  "376u":{name:"Pantone 376 U",cmyk:[50,0,100,0],rgb:[128,180,52],hex:"#80B434",paper:"U 哑光胶版"},
+  // TPG 纺织家居色
+  "11-0601tpg":{name:"Pantone 11-0601 TPG",cmyk:[0,0,0,0],rgb:[255,255,255],hex:"#FFFFFF",paper:"TPG 纺织家居",note:"Bright White 亮白"},
+  "13-0915tpg":{name:"Pantone 13-0915 TPG",cmyk:[0,10,20,0],rgb:[255,229,199],hex:"#FFE5C7",paper:"TPG 纺织家居",note:"Creamsicle 奶橘"},
+  "15-3919tpg":{name:"Pantone 15-3919 TPG",cmyk:[55,30,10,0],rgb:[120,160,200],hex:"#78A0C8",paper:"TPG 纺织家居",note:"Denim Blue 牛仔蓝"},
+  "16-1546tpg":{name:"Pantone 16-1546 TPG",cmyk:[0,55,70,0],rgb:[255,116,80],hex:"#FF7450",paper:"TPG 纺织家居",note:"Living Coral 活珊瑚"},
+  "18-3838tpg":{name:"Pantone 18-3838 TPG",cmyk:[40,70,0,20],rgb:[155,79,163],hex:"#9B4FA3",paper:"TPG 纺织家居",note:"Ultra Violet 紫外光"},
+  "19-4052tpg":{name:"Pantone 19-4052 TPG",cmyk:[100,75,25,30],rgb:[15,56,99],hex:"#0F3863",paper:"TPG 纺织家居",note:"Classic Blue 经典蓝"},
+};
+/* 扩充色库：用既有 CMYK→RGB→HEX 函数保证三值一致 */
+Object.assign(pantoneDB, buildPantoneMore());
+Object.assign(pantoneDB, buildPantoneMore2());
+function buildPantoneMore(){
+  const C="C 亮光铜版", U="U 哑光胶版", T="TPG 纺织家居";
+  const defs=[
+    ["102c","Pantone 102 C",[0,5,90,0],C],["109c","Pantone 109 C",[0,15,95,0],C],["115c","Pantone 115 C",[0,25,95,0],C],
+    ["124c","Pantone 124 C",[0,45,95,0],C],["130c","Pantone 130 C",[0,55,95,0],C],["137c","Pantone 137 C",[0,65,95,0],C],
+    ["143c","Pantone 143 C",[0,75,95,0],C],["151c","Pantone 151 C",[0,80,95,0],C],["158c","Pantone 158 C",[0,90,95,0],C],
+    ["166c","Pantone 166 C",[0,95,95,0],C],["171c","Pantone 171 C",[0,55,55,0],C],["176c","Pantone 176 C",[0,65,45,0],C],
+    ["178c","Pantone 178 C",[0,75,55,0],C],["189c","Pantone 189 C",[0,85,65,0],C],["192c","Pantone 192 C",[0,95,50,0],C],
+    ["200c","Pantone 200 C",[0,100,60,0],C],["206c","Pantone 206 C",[0,80,20,0],C],["211c","Pantone 211 C",[0,70,10,0],C],
+    ["217c","Pantone 217 C",[0,60,0,0],C],["221c","Pantone 221 C",[0,50,0,0],C],["225c","Pantone 225 C",[10,55,0,0],C],
+    ["229c","Pantone 229 C",[0,40,0,0],C],["237c","Pantone 237 C",[0,80,0,10],C],["241c","Pantone 241 C",[0,60,0,0],C],
+    ["246c","Pantone 246 C",[0,40,0,0],C],["249c","Pantone 249 C",[0,30,0,0],C],["256c","Pantone 256 C",[20,60,0,0],C],
+    ["263c","Pantone 263 C",[30,70,0,0],C],["270c","Pantone 270 C",[40,80,0,0],C],["275c","Pantone 275 C",[50,80,0,10],C],
+    ["280c","Pantone 280 C",[60,85,0,20],C],["291c","Pantone 291 C",[60,20,0,0],C],["297c","Pantone 297 C",[80,15,0,0],C],
+    ["305c","Pantone 305 C",[90,10,15,0],C],["311c","Pantone 311 C",[95,0,25,0],C],["315c","Pantone 315 C",[100,0,40,10],C],
+    ["325c","Pantone 325 C",[90,0,55,0],C],["329c","Pantone 329 C",[100,0,70,10],C],["333c","Pantone 333 C",[85,0,75,0],C],
+    ["345c","Pantone 345 C",[100,0,85,5],C],["357c","Pantone 357 C",[95,0,95,0],C],["361c","Pantone 361 C",[85,0,100,0],C],
+    ["363c","Pantone 363 C",[80,0,100,0],C],["370c","Pantone 370 C",[70,0,100,0],C],["373c","Pantone 373 C",[60,0,100,0],C],
+    ["385c","Pantone 385 C",[40,0,95,0],C],["390c","Pantone 390 C",[20,0,90,0],C],["395c","Pantone 395 C",[10,0,85,0],C],
+    ["402c","Pantone 402 C",[10,10,15,20],C],["413c","Pantone 413 C",[25,25,35,15],C],["418c","Pantone 418 C",[20,25,35,10],C],
+    ["422c","Pantone 422 C",[15,15,20,10],C],["427c","Pantone 427 C",[20,10,20,5],C],["435c","Pantone 435 C",[40,15,25,10],C],
+    ["440c","Pantone 440 C",[45,20,30,15],C],["447c","Pantone 447 C",[35,30,40,30],C],["453c","Pantone 453 C",[20,25,35,10],C],
+    ["458c","Pantone 458 C",[25,35,55,15],C],["463c","Pantone 463 C",[30,40,55,35],C],["466c","Pantone 466 C",[35,40,55,40],C],
+    ["470c","Pantone 470 C",[30,35,50,45],C],["473c","Pantone 473 C",[40,45,55,50],C],["477c","Pantone 477 C",[35,40,50,55],C],
+    ["483c","Pantone 483 C",[10,95,90,10],C],["488c","Pantone 488 C",[20,100,90,10],C],["493c","Pantone 493 C",[40,100,85,15],C],
+    ["497c","Pantone 497 C",[60,100,80,20],C],["503c","Pantone 503 C",[10,5,5,30],C],["510c","Pantone 510 C",[30,15,15,40],C],
+    ["515c","Pantone 515 C",[40,30,20,45],C],["521c","Pantone 521 C",[35,45,15,40],C],["524c","Pantone 524 C",[40,50,10,45],C],
+    ["529c","Pantone 529 C",[50,55,10,50],C],["533c","Pantone 533 C",[45,55,25,55],C],["541c","Pantone 541 C",[55,55,30,55],C],
+    ["545c","Pantone 545 C",[60,50,30,45],C],["553c","Pantone 553 C",[55,40,35,35],C],["557c","Pantone 557 C",[50,30,40,30],C],
+    ["567c","Pantone 567 C",[45,25,45,30],C],["577c","Pantone 577 C",[35,20,45,25],C],["581c","Pantone 581 C",[25,10,45,20],C],
+    ["590c","Pantone 590 C",[15,5,55,15],C],["600c","Pantone 600 C",[10,0,60,25],C],["610c","Pantone 610 C",[10,5,75,30],C],
+    ["620c","Pantone 620 C",[15,10,85,35],C],["630c","Pantone 630 C",[20,15,90,40],C],["640c","Pantone 640 C",[25,20,95,45],C],
+    ["650c","Pantone 650 C",[30,25,95,50],C],["670c","Pantone 670 C",[40,45,80,55],C],["680c","Pantone 680 C",[45,55,70,60],C],
+    ["690c","Pantone 690 C",[40,60,55,55],C],["702c","Pantone 702 C",[25,70,40,40],C],["710c","Pantone 710 C",[20,75,30,35],C],
+    ["720c","Pantone 720 C",[25,70,20,40],C],["730c","Pantone 730 C",[30,65,10,45],C],["740c","Pantone 740 C",[35,60,5,50],C],
+    ["750c","Pantone 750 C",[40,55,0,55],C],["760c","Pantone 760 C",[45,50,0,60],C],["770c","Pantone 770 C",[50,45,0,65],C],
+    ["780c","Pantone 780 C",[55,45,5,70],C],["790c","Pantone 790 C",[60,50,10,75],C],
+    ["130u","Pantone 130 U",[0,40,95,0],U],["200u","Pantone 200 U",[0,100,60,0],U],["280u","Pantone 280 U",[60,85,0,20],U],
+    ["300u","Pantone 300 U",[100,45,0,20],U],["374u","Pantone 374 U",[50,0,100,0],U],["527u","Pantone 527 U",[45,75,0,35],U],
+    ["11-4201tpg","Pantone 11-4201 TPG",[10,8,12,5],T],["12-0753tpg","Pantone 12-0753 TPG",[0,15,55,0],T],
+    ["12-1006tpg","Pantone 12-1006 TPG",[0,10,25,0],T],["13-0859tpg","Pantone 13-0859 TPG",[0,35,75,0],T],
+    ["13-1520tpg","Pantone 13-1520 TPG",[0,45,30,0],T],["14-4318tpg","Pantone 14-4318 TPG",[55,10,25,0],T],
+    ["15-5519tpg","Pantone 15-5519 TPG",[55,0,30,0],T],["16-1342tpg","Pantone 16-1342 TPG",[0,60,85,0],T],
+    ["17-1502tpg","Pantone 17-1502 TPG",[20,30,35,10],T],["17-3934tpg","Pantone 17-3934 TPG",[45,20,15,0],T],
+    ["18-1660tpg","Pantone 18-1660 TPG",[0,75,70,10],T],["18-1764tpg","Pantone 18-1764 TPG",[10,90,65,5],T],
+    ["19-3911tpg","Pantone 19-3911 TPG",[45,55,45,30],T]
+  ];
+  const o={};
+  defs.forEach(([k,name,cmyk,paper])=>{
+    const rgb=cmykToRgb(cmyk[0],cmyk[1],cmyk[2],cmyk[3]);
+    const hex=rgbToHex(rgb[0],rgb[1],rgb[2]);
+    o[k]={name,cmyk,rgb,hex,paper};
+  });
+  return o;
+}
+/* 再次扩充：补全 U 胶版、更多 TPG 时尚/肤色/荧光色、金属色 */
+function buildPantoneMore2(){
+  const C="C 亮光铜版", U="U 哑光胶版", T="TPG 纺织家居";
+  const defs=[
+    // ---- 更多 U 胶版（与 C 同色系，哑光略暗）----
+    ["100u","Pantone 100 U",[5,5,95,0],U],["107u","Pantone 107 U",[0,20,95,0],U],["123u","Pantone 123 U",[0,35,95,0],U],
+    ["1495u","Pantone 1495 U",[0,55,100,0],U],["165u","Pantone 165 U",[0,70,100,0],U],["199u","Pantone 199 U",[0,90,75,5],U],
+    ["219u","Pantone 219 U",[0,70,0,0],U],["266u","Pantone 266 U",[45,80,0,25],U],["293u","Pantone 293 U",[100,65,0,15],U],
+    ["300u","Pantone 300 U",[100,45,0,20],U],["312u","Pantone 312 U",[100,5,30,0],U],["320u","Pantone 320 U",[100,0,45,10],U],
+    ["340u","Pantone 340 U",[100,0,80,0],U],["354u","Pantone 354 U",[100,0,90,0],U],["368u","Pantone 368 U",[75,0,100,0],U],
+    ["414u","Pantone 414 U",[35,35,55,20],U],["425u","Pantone 425 U",[65,50,45,30],U],["430u","Pantone 430 U",[25,20,25,0],U],
+    ["4625u","Pantone 4625 U",[45,55,60,55],U],["504u","Pantone 504 U",[30,25,30,25],U],["516u","Pantone 516 U",[30,75,0,55],U],
+    ["528u","Pantone 528 U",[70,85,0,45],U],["539u","Pantone 539 U",[100,75,40,40],U],["548u","Pantone 548 U",[100,40,45,40],U],
+    ["574u","Pantone 574 U",[40,35,70,25],U],["586u","Pantone 586 U",[25,25,90,0],U],["638u","Pantone 638 U",[55,20,40,25],U],
+    ["654u","Pantone 654 U",[75,55,30,30],U],["691u","Pantone 691 U",[20,80,0,30],U],["705u","Pantone 705 U",[35,55,60,45],U],
+    ["711u","Pantone 711 U",[25,90,55,45],U],["727u","Pantone 727 U",[30,45,80,25],U],["7515u","Pantone 7515 U",[40,45,55,40],U],
+    ["7566u","Pantone 7566 U",[30,60,75,25],U],["7740u","Pantone 7740 U",[70,30,80,30],U],["800u","Pantone 800 U",[55,70,75,55],U],
+    ["8240u","Pantone 8240 U",[40,50,45,45],U],["865u","Pantone 865 U",[35,45,65,35],U],["1805u","Pantone 1805 U",[10,95,90,10],U],
+    ["484u","Pantone 484 U",[5,95,95,0],U],["537u","Pantone 537 U",[75,35,15,10],U],["620u","Pantone 620 U",[15,10,85,35],U],
+    // ---- 金属色（近似，印刷专色参考）----
+    ["871c","Pantone 871 C 金属金",[20,35,80,15],C],["872c","Pantone 872 C 金属金",[15,30,70,10],C],
+    ["873c","Pantone 873 C 金属古铜",[35,50,75,40],C],["874c","Pantone 874 C 金属紫铜",[30,60,80,20],C],
+    ["877c","Pantone 877 C 金属银",[0,0,0,40],C],["878c","Pantone 878 C 金属银亮",[0,0,0,25],C],
+    // ---- 荧光 / 高饱和 ----
+    ["802c","Pantone 802 C 荧光绿",[55,0,90,0],C],["812c","Pantone 812 C 荧光玫红",[0,90,90,0],C],["813c","Pantone 813 C 荧光橙",[0,65,95,0],C],
+    // ---- 更多 TPG 时尚 / 肤色 / 中性 ----
+    ["11-0105tpg","Pantone 11-0105 TPG",[0,0,5,5],T],["11-0603tpg","Pantone 11-0603 TPG",[0,0,10,0],T],["11-4800tpg","Pantone 11-4800 TPG",[10,8,12,15],T],
+    ["12-0105tpg","Pantone 12-0105 TPG",[5,5,10,5],T],["12-0712tpg","Pantone 12-0712 TPG",[0,5,20,0],T],["12-1207tpg","Pantone 12-1207 TPG",[10,15,25,5],T],
+    ["13-0905tpg","Pantone 13-0905 TPG",[0,10,15,0],T],["13-1404tpg","Pantone 13-1404 TPG",[0,20,25,0],T],["13-2005tpg","Pantone 13-2005 TPG",[10,30,15,0],T],["13-4411tpg","Pantone 13-4411 TPG",[30,10,25,0],T],
+    ["14-3207tpg","Pantone 14-3207 TPG",[20,40,15,0],T],["14-3911tpg","Pantone 14-3911 TPG",[40,30,10,0],T],["14-4313tpg","Pantone 14-4313 TPG",[50,5,20,0],T],
+    ["15-1305tpg","Pantone 15-1305 TPG",[10,25,30,0],T],["15-2212tpg","Pantone 15-2212 TPG",[15,35,20,0],T],["15-3912tpg","Pantone 15-3912 TPG",[45,40,20,0],T],
+    ["16-1106tpg","Pantone 16-1106 TPG",[15,25,35,10],T],["16-1338tpg","Pantone 16-1338 TPG",[10,40,55,0],T],["16-1719tpg","Pantone 16-1719 TPG",[0,50,40,0],T],["16-2120tpg","Pantone 16-2120 TPG",[10,45,20,0],T],
+    ["17-1230tpg","Pantone 17-1230 TPG",[0,40,80,0],T],["17-1535tpg","Pantone 17-1535 TPG",[15,45,55,10],T],["17-3628tpg","Pantone 17-3628 TPG",[35,55,0,0],T],["17-4408tpg","Pantone 17-4408 TPG",[30,25,30,10],T],
+    ["18-0517tpg","Pantone 18-0517 TPG",[30,50,60,40],T],["18-1662tpg","Pantone 18-1662 TPG",[0,80,75,5],T],["18-4214tpg","Pantone 18-4214 TPG",[55,35,30,10],T],["18-6028tpg","Pantone 18-6028 TPG",[70,0,80,5],T],
+    ["19-0303tpg","Pantone 19-0303 TPG",[60,55,55,55],T],["19-1620tpg","Pantone 19-1620 TPG",[10,80,55,25],T],["19-3910tpg","Pantone 19-3910 TPG",[40,50,45,30],T],
+    ["19-4023tpg","Pantone 19-4023 TPG",[55,45,40,35],T],["19-4053tpg","Pantone 19-4053 TPG",[100,80,30,30],T],["19-3920tpg","Pantone 19-3920 TPG",[35,45,55,30],T]
+  ];
+  const o={};
+  defs.forEach(([k,name,cmyk,paper])=>{
+    const rgb=cmykToRgb(cmyk[0],cmyk[1],cmyk[2],cmyk[3]);
+    const hex=rgbToHex(rgb[0],rgb[1],rgb[2]);
+    o[k]={name,cmyk,rgb,hex,paper};
+  });
+  return o;
+}
+function normPantone(s){
+  return s.toLowerCase().replace(/pantone/g,"").replace(/\s+/g,"").replace(/c$/,"c").replace(/u$/,"u").replace(/tpx$/,"tpg");
+}
+function queryPantone(){
+  const raw=document.getElementById("pantoneInput").value;
+  const key=normPantone(raw);
+  const res=document.getElementById("pantoneRes");
+  if(!raw.trim()){res.innerHTML='<div style="color:#d9803e;font-size:13px">请输入色号，例如：185 C</div>';return;}
+  const d=pantoneDB[key];
+  if(!d){
+    res.innerHTML=`<div class="card" style="margin:0;box-shadow:none;border:1px dashed #d7e0e8">
+      <div style="font-size:14px;font-weight:700">未收录「${raw.trim()}」</div>
+      <div style="font-size:12.5px;color:#7a8a99;margin-top:6px;line-height:1.6">
+      该色号暂未入库或格式不匹配。支持格式：<b>185 C</b> / <b>286 U</b> / <b>11-0601 TPG</b>。<br>
+      你可直接在下方「色卡总览」用搜索定位，或用「色值互算」手动换算，也可前往
+      <a href="https://www.pantone.com/color-finder" target="_blank" class="ilink">潘通官网查询 ↗</a>。</div></div>`;
+    return;
+  }
+  renderPantone(d);
+}
+function renderPantone(d){
+  document.getElementById("pantoneRes").innerHTML=`<div class="card" style="margin:0;box-shadow:none;border:1px solid var(--line)">
+    <div style="display:flex;gap:14px;align-items:center">
+      <div style="width:80px;height:80px;border-radius:16px;background:${d.hex};box-shadow:var(--shadow-sm)"></div>
+      <div>
+        <div style="font-size:16px;font-weight:700">${d.name}</div>
+        <div style="font-size:12px;color:#7a8a99;margin-top:3px">纸张：${d.paper}${d.note?' · '+d.note:''}</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px">
+      <div style="background:#FAFBFF;border-radius:12px;padding:10px"><div style="font-size:11px;color:#93A3B3">CMYK</div><div style="font-weight:700">${d.cmyk.join(" ")}</div></div>
+      <div style="background:#FAFBFF;border-radius:12px;padding:10px"><div style="font-size:11px;color:#93A3B3">RGB</div><div style="font-weight:700">${d.rgb.join(", ")}</div></div>
+      <div style="background:#FAFBFF;border-radius:12px;padding:10px"><div style="font-size:11px;color:#93A3B3">HEX</div><div style="font-weight:700">${d.hex}</div></div>
+    </div>
+    <div style="font-size:12px;color:#d9803e;margin-top:10px">⚠ 专色与四色换算存在色差，品牌主色请尽量提供专色号交付印刷厂。</div>
+  </div>`;
+}
+function renderGallery(){
+  const q=(document.getElementById("galSearch").value||"").toLowerCase().trim();
+  const f=curFilter.gal;
+  const g=document.getElementById("m7gallery");
+  const keys=Object.keys(pantoneDB).filter(k=>{
+    if(f!=="全部"&&!k.endsWith(f))return false;
+    if(q&&!(k.indexOf(q)>=0||pantoneDB[k].name.toLowerCase().indexOf(q)>=0))return false;
+    return true;
+  });
+  g.innerHTML=keys.map(k=>{
+    const d=pantoneDB[k];
+    const paper=d.paper.replace(/ .*/,"");
+    return `<div class="gsw" style="background:${d.hex}" title="点击查看 ${d.name} 详情" onclick="renderPantone(pantoneDB['${k}'])">
+      <div class="gv"><b>${d.name.replace('Pantone ','')}</b><span class="gpaper">${paper} · ${d.hex}</span></div></div>`;
+  }).join("");
+}
+
+/* ---- 色值互算 ---- */
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function cmykToRgb(c,m,y,k){
+  c/=100;m/=100;y/=100;k/=100;
+  return [Math.round(255*(1-c)*(1-k)),Math.round(255*(1-m)*(1-k)),Math.round(255*(1-y)*(1-k))];
+}
+function rgbToCmyk(r,g,b){
+  r/=255;g/=255;b/=255;
+  let k=1-Math.max(r,g,b);
+  let c=(1-r-k)/(1-k),m=(1-g-k)/(1-k),y=(1-b-k)/(1-k);
+  if(k===1){c=m=y=0;}
+  return [Math.round(c*100),Math.round(m*100),Math.round(y*100),Math.round(k*100)];
+}
+function rgbToHex(r,g,b){
+  return "#"+[r,g,b].map(x=>clamp(x,0,255).toString(16).padStart(2,"0")).join("").toUpperCase();
+}
+function hexToRgb(h){
+  h=h.replace("#","");
+  if(h.length===3)h=h.split("").map(x=>x+x).join("");
+  return [parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)];
+}
+function setSwatch(hex){document.getElementById("cvtSwatch").style.background=hex;document.getElementById("cvtSwatch").textContent=hex;}
+function fromCMYK(){
+  const c=+document.getElementById("cC").value||0,m=+document.getElementById("cM").value||0,y=+document.getElementById("cY").value||0,k=+document.getElementById("cK").value||0;
+  if([c,m,y,k].some(v=>v<0||v>100))return;
+  const [r,g,b]=cmykToRgb(c,m,y,k);
+  document.getElementById("rR").value=r;document.getElementById("rG").value=g;document.getElementById("rB").value=b;
+  document.getElementById("hX").value=rgbToHex(r,g,b);
+  setSwatch(rgbToHex(r,g,b));
+  document.getElementById("cvtWarn").textContent="提示：高 K 值（黑）会降低整体明度，印刷时大面积深色注意叠印与干燥。";
+}
+function fromRGB(){
+  const r=+document.getElementById("rR").value||0,g=+document.getElementById("rG").value||0,b=+document.getElementById("rB").value||0;
+  if([r,g,b].some(v=>v<0||v>255))return;
+  const [c,m,y,k]=rgbToCmyk(r,g,b);
+  document.getElementById("cC").value=c;document.getElementById("cM").value=m;document.getElementById("cY").value=y;document.getElementById("cK").value=k;
+  document.getElementById("hX").value=rgbToHex(r,g,b);
+  setSwatch(rgbToHex(r,g,b));
+  document.getElementById("cvtWarn").textContent="提示：屏幕 RGB 转印刷 CMYK 通常会变暗，亮蓝/亮绿/荧光色色差最明显。";
+}
+function fromHEX(){
+  const h=document.getElementById("hX").value.trim();
+  if(!/^#?[0-9a-fA-F]{6}$/.test(h)&&!/^#?[0-9a-fA-F]{3}$/.test(h))return;
+  const hh=h.startsWith("#")?h:"#"+h;
+  const [r,g,b]=hexToRgb(hh);
+  document.getElementById("rR").value=r;document.getElementById("rG").value=g;document.getElementById("rB").value=b;
+  const [c,m,y,k]=rgbToCmyk(r,g,b);
+  document.getElementById("cC").value=c;document.getElementById("cM").value=m;document.getElementById("cY").value=y;document.getElementById("cK").value=k;
+  setSwatch(hh);
+  document.getElementById("cvtWarn").textContent="提示：HEX 为屏幕色，印刷请以 CMYK 为准并打样确认。";
+}
+
+/* ---- 成套配色库 ---- */
+const palettes=[
+  /* ---- ins清新风 ---- */
+  {cat:"ins清新风",name:"海盐薄荷",desc:"低饱和清透感，适合美妆/家居",colors:["#BFE3D6","#A8D5E2","#F7F3E8","#E8C7C7","#9BB8C9"]},
+  {cat:"ins清新风",name:"奶油初夏",desc:"奶白+浅粉，温柔日系",colors:["#FDF6EC","#F7D9D9","#CDE7D6","#BFD8E8","#E5C9A8"]},
+  {cat:"ins清新风",name:"冰川蓝白",desc:"冷调通透，科技/母婴",colors:["#DCEEFB","#BBDDF2","#F5FBFF","#A7C7E7","#E8F1F8"]},
+  {cat:"ins清新风",name:"抹茶微风",desc:"浅草绿+米白，健康轻食",colors:["#E7EFC8","#C9DCA3","#F4F8E8","#A7C08A","#DDE8C4"]},
+  /* ---- 复古美式 ---- */
+  {cat:"复古美式",name:"落日西部",desc:"暖橘棕调，复古海报感",colors:["#C45B3C","#E0A458","#7C4A2D","#D98E4A","#3E2A1E"]},
+  {cat:"复古美式",name:"胶片记忆",desc:"褪色暖调，怀旧质感",colors:["#B07D56","#D9B38C","#6B4F3A","#A65D3E","#E8D5B7"]},
+  {cat:"复古美式",name:"复古酒红",desc:"勃艮第+米色，轻奢",colors:["#7B2D3A","#A4455A","#3E1F26","#C97B7B","#E4C9C0"]},
+  {cat:"复古美式",name:"复古橄榄",desc:"军工绿调，户外工装",colors:["#5C5A2E","#8A8242","#2E2C16","#B5A85A","#D9CF9A"]},
+  /* ---- 鞋业潮牌 ---- */
+  {cat:"鞋业潮牌",name:"街头高饱和",desc:"撞色潮牌，年轻活力",colors:["#FF4D4D","#1A1A1A","#FFD400","#00C2A8","#3B6BE5"]},
+  {cat:"鞋业潮牌",name:"夜跑荧光",desc:"荧光点缀暗底，运动感",colors:["#0F0F1B","#39FF14","#FF2E63","#00E5FF","#FFAA00"]},
+  {cat:"鞋业潮牌",name:"赛博紫电",desc:"紫蓝霓虹，未来潮鞋",colors:["#1A0B2E","#7B2FF7","#00F0FF","#FF2E97","#E6E6E6"]},
+  {cat:"鞋业潮牌",name:"复古做旧",desc:"磨砂牛皮+铜色，工装靴",colors:["#3A2E1F","#C18A4E","#7A5A36","#E0C089","#1F1810"]},
+  /* ---- 简约商务 ---- */
+  {cat:"简约商务",name:"高级灰蓝",desc:"沉稳专业，企业VI",colors:["#2C3E50","#34495E","#5D6D7E","#AEB6BF","#ECF0F1"]},
+  {cat:"简约商务",name:"极简墨白",desc:"黑白+一点金，克制高级",colors:["#1C1C1C","#FFFFFF","#C9A227","#8A8A8A","#2E2E2E"]},
+  {cat:"简约商务",name:"晨雾蓝灰",desc:"灰蓝层次，金融/咨询",colors:["#DDE6EC","#AEBAC4","#6E7C88","#3E4A54","#F2F5F7"]},
+  {cat:"简约商务",name:"质感米金",desc:"米金+深棕，地产/律所",colors:["#F3EAD9","#D9C9A8","#B89B6E","#7A6442","#2E2618"]},
+  /* ---- 马卡龙少女 ---- */
+  {cat:"马卡龙少女",name:"甜心马卡龙",desc:"粉嫩糖果色，少女品牌",colors:["#FFB3C6","#FFD6E0","#C8B6E2","#B5EAD7","#FFF1A8"]},
+  {cat:"马卡龙少女",name:"棉花糖梦",desc:"软糯渐变，童装/甜品",colors:["#FBC4D0","#D9C2F0","#C2E9FB","#FCE9C9","#F7C8C8"]},
+  {cat:"马卡龙少女",name:"莓果气泡",desc:"莓粉+丁香，美妆个护",colors:["#F7A8C4","#C9A7E8","#A8D8EA","#FBC6C6","#E8C9E0"]},
+  {cat:"马卡龙少女",name:"蜜桃奶冻",desc:"蜜桃+奶白，甜品包装",colors:["#FFD9C0","#FFB6B9","#FFE0AC","#F8C8DC","#FCE4D0"]},
+  /* ---- 工业深色 ---- */
+  {cat:"工业深色",name:"暗夜机械",desc:"深灰底+冷光，硬核风",colors:["#121417","#1E242B","#3A4750","#00B4D8","#5A6470"]},
+  {cat:"工业深色",name:"炭黑岩层",desc:"层叠灰黑，建筑/科技",colors:["#0D0D0D","#1A1A1A","#2B2B2B","#404040","#6E6E6E"]},
+  {cat:"工业深色",name:"赛博暗夜",desc:"极暗+青绿高光，电竞",colors:["#0A0E14","#15212B","#1F3A4D","#00E0C6","#3A4A57"]},
+  {cat:"工业深色",name:"熔岩黑金",desc:"黑底+古铜金，高端",colors:["#0D0D0D","#1A1310","#3A2A1A","#D4A24E","#5A4A3A"]},
+  /* ---- 莫兰迪色系 ---- */
+  {cat:"莫兰迪色系",name:"雾感莫兰迪",desc:"灰调高级，服装/室内",colors:["#A8A39B","#C2B8A3","#9CA3A0","#B5A6A6","#D5C7BC"]},
+  {cat:"莫兰迪色系",name:"静谧灰绿",desc:"低饱和绿灰，禅意",colors:["#8C9A8E","#B0B8A8","#6E7B73","#CDD3C7","#9AA39D"]},
+  {cat:"莫兰迪色系",name:"灰粉豆沙",desc:"豆沙+藕粉，温柔职场",colors:["#C9A9A6","#D8C3C0","#A8908C","#E6D6D2","#B7A0A0"]},
+  {cat:"莫兰迪色系",name:"雾蓝灰紫",desc:"蓝灰紫过渡，文艺",colors:["#9AA3B2","#B8BCCB","#7E8799","#CDD2DD","#A8B0BE"]},
+  /* ---- 撞色设计 ---- */
+  {cat:"撞色设计",name:"互补撞色",desc:"强对比，吸睛海报",colors:["#FF3B30","#34C759","#007AFF","#FFCC00","#AF52DE"]},
+  {cat:"撞色设计",name:"三原色爆",desc:"红黄蓝经典撞色",colors:["#E60012","#FFD500","#0067C0","#000000","#FFFFFF"]},
+  {cat:"撞色设计",name:"霓虹撞色",desc:"荧光撞色，潮流活动",colors:["#FF006E","#00FFC6","#FBFF12","#3A0CA3","#FF5400"]},
+  {cat:"撞色设计",name:"粉青对撞",desc:"粉+青强对比，社媒",colors:["#FF5D8F","#00C2A8","#FFD23F","#5C27FE","#0AA1DD"]},
+  /* ---- 国潮风 ---- */
+  {cat:"国潮风",name:"国潮朱砂",desc:"朱红+石青，新中式",colors:["#C8242B","#E8B04B","#1B3A5B","#2E6E4F","#F2E3C6"]},
+  {cat:"国潮风",name:"青花瓷韵",desc:"青花蓝+留白，文创",colors:["#2C5F8A","#5B9BC4","#F2F6FA","#1B3A5B","#A9C7DF"]},
+  /* ---- 北欧极简 ---- */
+  {cat:"北欧极简",name:"北欧原木",desc:"原木+米白，家居",colors:["#EDE6DA","#D6C7B0","#B7A98E","#8C7B63","#F5F1E8"]},
+  {cat:"北欧极简",name:"北欧冷灰",desc:"冷灰层次，极简风",colors:["#E8EBED","#C7CDD1","#9AA2A8","#5F676D","#F4F6F7"]},
+  /* ---- 日系原木 ---- */
+  {cat:"日系原木",name:"日系和风",desc:"和纸米+焦茶，杂货",colors:["#F0E9DD","#DCC9A8","#BFA980","#8A7355","#E3D5BD"]},
+  {cat:"日系原木",name:"樱雾粉",desc:"樱花粉雾，春日感",colors:["#FBE4EC","#F6CFD9","#E8B7C4","#C98FA0","#FDEAF1"]},
+  /* ---- 森系自然 ---- */
+  {cat:"森系自然",name:"森系苔绿",desc:"苔绿+嫩芽，户外",colors:["#A3B18A","#C9D6B8","#7C8A5E","#5C6B45","#E6ECD9"]},
+  {cat:"森系自然",name:"原野秋黄",desc:"秋黄+褐，农产包装",colors:["#D9C27E","#B89B5E","#8C7A45","#E8D9A8","#6E5C30"]},
+  /* ---- 美拉德 ---- */
+  {cat:"美拉德",name:"美拉德焦糖",desc:"焦糖棕渐层，秋冬",colors:["#8B5E3C","#C08A4E","#E0B07A","#5C3A22","#3A2415"]},
+  {cat:"美拉德",name:"咖啡拿铁",desc:"拿铁棕+奶白，温暖",colors:["#C8A87C","#A07B52","#E8D3B8","#6E5236","#3D2C1C"]},
+  /* ---- 多巴胺 ---- */
+  {cat:"多巴胺",name:"多巴胺亮彩",desc:"高饱和亮色，活力",colors:["#FF595E","#FFCA3A","#8AC926","#1982C4","#6A4C93"]},
+  {cat:"多巴胺",name:"糖果多巴胺",desc:"糖果亮色，童趣",colors:["#FF66C4","#4ECDC4","#FFE66D","#1A936F","#FF9F1C"]},
+  /* ---- 克莱因蓝 ---- */
+  {cat:"克莱因蓝",name:"克莱因蓝调",desc:"经典深蓝，艺术感",colors:["#002FA7","#1B4FB0","#5A7FD0","#C9D6EF","#0A1A3F"]},
+  {cat:"克莱因蓝",name:"深蓝静谧",desc:"深蓝层次，科技",colors:["#0B1E3F","#1C3A6E","#3A5C9A","#8FA8D0","#E3EAF5"]},
+  /* ---- 莫奈花园 ---- */
+  {cat:"莫奈花园",name:"莫奈睡莲",desc:"柔雾印象派，文艺",colors:["#7BA7BC","#C2D6C8","#E4C9A6","#A8B5C0","#5E7C8A"]},
+  {cat:"莫奈花园",name:"莫奈晨光",desc:"晨光暖调，插画",colors:["#E8C99B","#D9A86C","#B6D0C2","#C9A9C0","#F0E2C8"]},
+  /* ---- 科技未来 ---- */
+  {cat:"科技未来",name:"科技霓虹",desc:"深空+霓虹，互联网",colors:["#0B132B","#1C2541","#3A86FF","#5E60CE","#FF006E"]},
+  {cat:"科技未来",name:"极光紫蓝",desc:"极光紫渐变，AI产品",colors:["#240046","#3C096C","#5A189A","#7B2CBF","#9D4EDD"]},
+  /* ---- 婚礼喜庆 ---- */
+  {cat:"婚礼喜庆",name:"婚礼香槟",desc:"香槟金+奶油，婚庆",colors:["#F5E6D3","#E8C9A0","#C9A36A","#8A6B4A","#FBEEDD"]},
+  {cat:"婚礼喜庆",name:"喜庆正红",desc:"正红+金，节庆",colors:["#C8102E","#E84B3A","#F2C14E","#7A1018","#F5D6C0"]},
+  /* ---- 母婴柔和 ---- */
+  {cat:"母婴柔和",name:"母婴柔粉",desc:"柔粉+奶白，婴儿",colors:["#FCE4EC","#F8C8D8","#E0B0C0","#BFA0B0","#FDEAF1"]},
+  {cat:"母婴柔和",name:"婴蓝浅紫",desc:"浅蓝+淡紫，安抚",colors:["#DCEEFB","#C9D6F0","#B8C8E8","#A0B0D0","#EAF1FB"]},
+  /* ---- 大地色 ---- */
+  {cat:"大地色",name:"大地陶土",desc:"陶土+赤陶，手作",colors:["#B5654A","#C98A6E","#8A5A42","#D9B89C","#5C3A2A"]},
+  {cat:"大地色",name:"沙丘米色",desc:"沙丘米+驼色，自然",colors:["#E8DCC8","#D2BE9E","#B59C78","#8C7350","#F2EAD8"]},
+];
+function renderPalettes(f){
+  const g=document.getElementById("m7grid");
+  const list=palettes.filter(x=>f==="全部"||x.cat===f);
+  g.innerHTML=list.map(p=>{
+    const sws=p.colors.map(c=>{
+      const [cc,mm,yy,kk]=rgbToCmyk(...hexToRgb(c));
+      return `<div class="s" style="background:${c}" title="${c} 点击复制 HEX/CMYK" onclick="copyColor('${c}')">
+        <span class="cmyk">C${cc} M${mm} Y${yy} K${kk}</span>
+        <span class="hex">${c.toUpperCase()}</span></div>`;
+    }).join("");
+    return `<div class="palette"><div class="ph">${p.name}<small>${p.cat} · ${p.desc}</small></div><div class="sws">${sws}</div></div>`;
+  }).join("");
+}
+function copyColor(c){
+  const hex=c.toUpperCase();
+  if(navigator.clipboard){navigator.clipboard.writeText(hex).then(showTip);}
+  else{showTip();}
+  function showTip(){
+    const t=document.getElementById("copyTip");
+    t.textContent="已复制 "+hex;t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"),1300);
+  }
+}
+
+/* ====== 初始化 ====== */
+fillCitySel("m2citySel","m2");
+fillCitySel("m4citySel","m4");
+renderDramas("全部");
+renderHouses();
+renderNews("全部");
+renderJobs();
+renderDeals("全部");
+renderPalettes("全部");
+renderGallery();
+aiReset();
+updateTime();
+// 默认色值互算填入一个示例
+(function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
+
+/* 实时更新：每模块卡片头加「实时」指示；每秒刷新时钟，每15秒自动刷新内容 */
+document.querySelectorAll('.card-head').forEach(h=>{
+  const s=document.createElement('span');s.className='live';s.innerHTML='<span class="dot"></span>实时';
+  const r=h.querySelector('.refresh');
+  if(r)h.insertBefore(s,r);else h.appendChild(s);
+});
+function liveRefresh(){
+  updateTime();
+  const r=arr=>Math.floor(Math.random()*arr.length);
+  renderDramas(curFilter.m1,r(dramas));
+  renderHouses(null,r(houses));
+  renderNews(curFilter.m3,r(news));
+  renderJobs(null,r(jobs));
+  renderDeals(curFilter.m6,r(deals));
+  renderGallery();
+}
+setInterval(liveRefresh,15000);
+setInterval(updateTime,1000);
+</script>
+</body>
+</html>
