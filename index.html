@@ -917,6 +917,18 @@ function refreshMod(m){
   if(m==="m6")renderDeals(curFilter.m6);
 }
 
+/* ====== 详情弹窗数据 & 控制器（站内预览，禁止自动跳转） ====== */
+const DETAILS={};
+function openDetail(key){
+  const d=DETAILS[key]; if(!d)return;
+  document.getElementById("dmTitle").textContent=d.title;
+  document.getElementById("dmBody").innerHTML=d.html;
+  document.getElementById("dmFoot").innerHTML = d.src ? '<a class="go" href="'+d.src+'" target="_blank" rel="noopener">前往原网页 / 来源：'+d.srcName+' ↗</a>' : '';
+  document.getElementById("detailModal").classList.add("show");
+}
+function closeDetail(){document.getElementById("detailModal").classList.remove("show");}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDetail();});
+
 /* ====== Module 1: 追剧 ====== */
 const dramas=[
   {t:"《人间烟火》",p:"腾讯视频",s:"连载",g:"治愈",pay:true,link:"https://v.qq.com",d:"小城早餐铺的温情群像，慢节奏治愈系，适合睡前放松。"},
@@ -970,11 +982,21 @@ function renderDramas(f,hi){
   g.innerHTML=list.map((x,i)=>{
     const tag=x.pay?'<span class="tag pay">付费</span>':'<span class="tag free">免费</span>';
     const fresh=i===fi?'<div class="fresh">🔥 刚刚热播</div>':'';
-    return `<div class="item"><span class="tag ${x.s==='完结'?'done':(x.s==='免费'?'free':'seri')}">${x.s}</span>${tag}${fresh}
+    const key="m1_"+i;
+    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.d}</p>
+      <div class="dm-grid">
+        <div><span>剧名</span><b>${x.t}</b></div>
+        <div><span>播放平台</span><b>${x.p}</b></div>
+        <div><span>状态</span><b>${x.s}</b></div>
+        <div><span>类型</span><b>${x.g}向</b></div>
+        <div><span>观看方式</span><b>${x.pay?'付费会员':'免费'}</b></div>
+      </div>
+      <p class="dm-note">本页为站内预览，点击右下「前往原网页 / 来源」可跳转至 ${x.p} 官方站点观看。</p>`, src:x.link, srcName:x.p};
+    return `<div class="item" onclick="openDetail('${key}')"><span class="tag ${x.s==='完结'?'done':(x.s==='免费'?'free':'seri')}">${x.s}</span>${tag}${fresh}
       <h3>${x.t}</h3>
       <div class="meta">平台：<b>${x.p}</b> · 类型：<b>${x.g}向</b></div>
       <div class="desc">${x.d}</div>
-      <a class="go" href="${x.link}" target="_blank">正版直达 →</a></div>`;
+      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">观看来源 ↗</a></div>`;
   }).join("");
 }
 
@@ -1030,7 +1052,23 @@ function renderHouses(_,hi){
     const fresh=i===fi?'<div class="fresh">🔥 刚刚上新</div>':'';
     const pros=x.pros.map(p=>`<div class="pro">＋ ${p}</div>`).join("");
     const cons=x.cons.map(c=>`<div class="con">－ ${c}</div>`).join("");
-    return `<div class="item">${tag}${fresh}
+    const key="m2_"+i;
+    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.t} · ${x.city}${x.dist}</p>
+      <div class="dm-grid">
+        <div><span>交易类型</span><b>${x.cat}</b></div>
+        <div><span>城市/区域</span><b>${x.city}·${x.dist}</b></div>
+        <div><span>房型</span><b>${x.rooms}</b></div>
+        <div><span>面积</span><b>${x.sqm}㎡</b></div>
+        <div><span>价格</span><b>${priceStr}</b></div>
+        <div><span>天然气</span><b>${x.gas?'带天然气':'无天然气'}</b></div>
+        <div><span>楼龄</span><b>${2026-x.year}年（${x.year}交房）</b></div>
+        <div><span>数据来源</span><b>${x.src}</b></div>
+      </div>
+      <div class="dm-sec"><h4>配套</h4><p>${x.fac}</p></div>
+      <div class="dm-sec"><h4 class="dm-pros">优点</h4><p>${x.pros.join('、')}</p></div>
+      <div class="dm-sec"><h4 class="dm-cons">缺点</h4><p>${x.cons.join('、')}</p></div>
+      <p class="dm-note">本页为站内预览示例数据，点击「前往原网页 / 来源」可跳转至 ${x.src} 官网查看真实房源。</p>`, src:x.link, srcName:x.src};
+    return `<div class="item" onclick="openDetail('${key}')">${tag}${fresh}
       <h3>${x.t}</h3>
       <div class="meta">${x.city}·${x.dist} · 来源：<b>${x.src}</b></div>
       <div class="meta">房型：<b>${x.rooms}</b> · 面积：<b>${x.sqm}㎡</b> · ${x.gas?'<b>带天然气</b>':'无天然气'}</div>
@@ -1038,7 +1076,7 @@ function renderHouses(_,hi){
       <div class="desc" style="font-size:15px;color:var(--text);font-weight:700">${priceStr}</div>
       <div class="pc"><b class="pro">优点</b>${pros}</div>
       <div class="pc"><b class="con">缺点</b>${cons}</div>
-      <a class="go" href="${x.link}" target="_blank">房源详情 →</a></div>`;
+      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">来源官网 ↗</a></div>`;
   }).join("");
 }
 function priceMatch(p,unit,sel){
@@ -1099,10 +1137,18 @@ function renderNews(f,hi){
   const fi=hi==null?-1:hi%list.length;
   g.innerHTML=list.map((x,i)=>{
     const fresh=i===fi?' <span style="color:#2f9e5e;font-weight:700">· 🔥刚刚</span>':'';
-    return `<div class="row">
+    const key="m3_"+i;
+    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.d}</p>
+      <div class="dm-grid">
+        <div><span>分类</span><b>${x.cat}</b></div>
+        <div><span>来源</span><b>${x.src}</b></div>
+        <div><span>发布时间</span><b>${x.time}</b></div>
+      </div>
+      <p class="dm-note">本页为站内预览，点击「前往原网页 / 来源」可跳转至 ${x.src} 阅读原文。</p>`, src:x.link, srcName:x.src};
+    return `<div class="row" onclick="openDetail('${key}')">
     <span class="cat" style="background:${catColor(x.cat)};color:${catText(x.cat)}">${x.cat}</span>
     <div class="body"><h3>${x.t}</h3><p>${x.d}</p>
-    <div class="src">${x.time}${fresh} · 来源 <a href="${x.link}" target="_blank">${x.src} ↗</a></div></div></div>`;
+    <div class="src">${x.time}${fresh} · 来源 <a href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.src} ↗</a></div></div></div>`;
   }).join("");
 }
 function catColor(c){return {财经:"#E4F0FB",生活:"#EAF7EE",娱乐:"#FBEFF6",本地:"#FEF6E0"}[c]||"#EEF4F8";}
@@ -1156,12 +1202,23 @@ function renderJobs(_,hi){
   g.innerHTML=list.map((x,i)=>{
     const tag=x.type==="散单"?'<span class="tag seri">短期散单</span>':'<span class="tag free">长期稳定</span>';
     const fresh=i===fi?'<div class="fresh">🔥 刚刚发布</div>':'';
-    return `<div class="item">${tag}<span class="tag pay" style="right:auto;left:12px;top:12px">${x.skill}</span>${fresh}
+    const key="m4_"+i;
+    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.t}</p>
+      <div class="dm-grid">
+        <div><span>技能</span><b>${x.skill}</b></div>
+        <div><span>类型</span><b>${x.type}</b></div>
+        <div><span>城市</span><b>${x.city}</b></div>
+        <div><span>酬劳</span><b>${x.pay}</b></div>
+        <div><span>对接渠道</span><b>${x.ch}</b></div>
+      </div>
+      <div class="dm-sec"><h4>要求</h4><p>${x.req}</p></div>
+      <p class="dm-note">本页为站内预览，点击「前往原网页 / 来源」可跳转至 ${x.ch} 官网接单。</p>`, src:x.link, srcName:x.ch};
+    return `<div class="item" onclick="openDetail('${key}')">${tag}<span class="tag pay" style="right:auto;left:12px;top:12px">${x.skill}</span>${fresh}
       <h3 style="padding-left:54px">${x.t}</h3>
       <div class="meta">城市：<b>${x.city}</b> · 酬劳：<b style="color:#d9803e">${x.pay}</b></div>
       <div class="meta">要求：${x.req}</div>
       <div class="desc">对接渠道：<b>${x.ch}</b></div>
-      <a class="go" href="${x.link}" target="_blank">${x.ch} 接单入口 →</a></div>`;
+      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.ch} 接单来源 ↗</a></div>`;
   }).join("");
 }
 function jobPayMatch(n,sel){
@@ -1193,12 +1250,23 @@ function renderDeals(f,hi){
   const tagMap={红包:'pay',券:'seri',一分购:'free',会员:'done'};
   g.innerHTML=list.map((x,i)=>{
     const fresh=i===fi?'<div class="fresh">🔥 刚刚上新</div>':'';
-    return `<div class="item"><span class="tag ${tagMap[x.type]||'seri'}">${x.type}</span>${fresh}
+    const key="m6_"+i;
+    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.t}</p>
+      <div class="dm-grid">
+        <div><span>平台</span><b>${x.p}</b></div>
+        <div><span>类型</span><b>${x.type}</b></div>
+        <div><span>福利</span><b>${x.reward}</b></div>
+        <div><span>时效</span><b>${x.exp}</b></div>
+        <div><span>门槛</span><b>${x.th}</b></div>
+      </div>
+      <div class="dm-sec"><h4 class="dm-cons">注意事项</h4><p>${x.warn}</p></div>
+      <p class="dm-note">本页为站内预览，点击「前往原网页 / 来源」可跳转至 ${x.p} 官网参与活动。</p>`, src:x.link, srcName:x.p};
+    return `<div class="item" onclick="openDetail('${key}')"><span class="tag ${tagMap[x.type]||'seri'}">${x.type}</span>${fresh}
       <h3>${x.t}</h3>
       <div class="meta">平台：<b>${x.p}</b> · 福利：<b style="color:#d9803e">${x.reward}</b></div>
       <div class="meta">时效：<b>${x.exp}</b> · 门槛：${x.th}</div>
       <div class="desc" style="color:#d9803e">⚠ ${x.warn}</div>
-      <a class="go" href="${x.link}" target="_blank">参与直达 →</a></div>`;
+      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.p} 参与来源 ↗</a></div>`;
   }).join("");
 }
 
@@ -1232,6 +1300,13 @@ function aiAdd(role,html){
   const d=document.createElement("div");
   d.className="msg "+(role==="me"?"me":"bot");
   d.innerHTML=html;
+  if(role!=="me"){
+    const k="ai_"+Date.now()+"_"+Math.random().toString(36).slice(2,7);
+    DETAILS[k]={title:"AI 回复详情", html:'<div class="modal-body">'+html+'</div>', src:null};
+    d.style.cursor="pointer";
+    d.title="点击查看完整回复";
+    d.onclick=function(e){ if(e.target.closest('a'))return; openDetail(k); };
+  }
   chat.appendChild(d);
   chat.scrollTop=chat.scrollHeight;
 }
@@ -1777,14 +1852,18 @@ const palettes=[
 function renderPalettes(f){
   const g=document.getElementById("m7grid");
   const list=palettes.filter(x=>f==="全部"||x.cat===f);
-  g.innerHTML=list.map(p=>{
+  g.innerHTML=list.map((p,idx)=>{
     const sws=p.colors.map(c=>{
       const [cc,mm,yy,kk]=rgbToCmyk(...hexToRgb(c));
-      return `<div class="s" style="background:${c}" title="${c} 点击复制 HEX/CMYK" onclick="copyColor('${c}')">
+      return `<div class="s" style="background:${c}" title="${c} 点击复制 HEX/CMYK" onclick="copyColor('${c}');event.stopPropagation()">
         <span class="cmyk">C${cc} M${mm} Y${yy} K${kk}</span>
         <span class="hex">${c.toUpperCase()}</span></div>`;
     }).join("");
-    return `<div class="palette"><div class="ph">${p.name}<small>${p.cat} · ${p.desc}</small></div><div class="sws">${sws}</div></div>`;
+    const key="m7_"+idx;
+    DETAILS[key]={title:p.name, html:`<p class="dm-lead">${p.cat} · ${p.desc}</p>
+      <div class="dm-grid" style="grid-template-columns:repeat(2,1fr)">${p.colors.map(c=>{const [cc,mm,yy,kk]=rgbToCmyk(...hexToRgb(c));return `<div><span>${c.toUpperCase()}</span><b>C${cc} M${mm} Y${yy} K${kk}</b></div>`;}).join("")}</div>
+      <p class="dm-note">点击色块可复制 HEX；本页为站内预览色卡。</p>`, src:null};
+    return `<div class="palette" onclick="openDetail('${key}')"><div class="ph">${p.name}<small>${p.cat} · ${p.desc}</small></div><div class="sws">${sws}</div></div>`;
   }).join("");
 }
 function copyColor(c){
@@ -1832,5 +1911,36 @@ function liveRefresh(){
 setInterval(liveRefresh,15000);
 setInterval(updateTime,1000);
 </script>
+<div id="detailModal" class="modal" onclick="if(event.target===this)closeDetail()">
+  <div class="modal-card">
+    <button class="modal-x" onclick="closeDetail()" aria-label="关闭">×</button>
+    <h2 id="dmTitle"></h2>
+    <div id="dmBody" class="modal-body"></div>
+    <div id="dmFoot" class="modal-foot"></div>
+  </div>
+</div>
+<style>
+.modal{position:fixed;inset:0;background:rgba(70,45,55,.40);backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;z-index:999;padding:48px 16px;overflow:auto}
+.modal.show{display:flex}
+.modal-card{background:#fff;border-radius:24px;max-width:660px;width:100%;padding:26px 26px 22px;box-shadow:0 26px 64px rgba(180,120,150,.30);border:2px dashed #F0D3E0;position:relative;animation:pop .18s ease}
+@keyframes pop{from{transform:translateY(12px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.modal-x{position:absolute;right:16px;top:12px;border:none;background:#FBEFF4;color:#b07d92;width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;line-height:1}
+.modal-card h2{font-size:20px;color:#574B53;padding-right:42px;margin-bottom:12px;line-height:1.4}
+.modal-body{font-size:15px;color:#6a5a62;line-height:1.85}
+.dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;margin:14px 0}
+.dm-grid>div{background:#FBF1F3;border-radius:14px;padding:10px 12px}
+.dm-grid span{display:block;font-size:12px;color:#A8969E;margin-bottom:2px}
+.dm-grid b{color:#574B53;font-size:14px}
+.dm-lead{margin:6px 0 4px;color:#574B53}
+.dm-note{margin-top:10px;color:#9a8a92;font-size:13px;background:#FBF1F3;border-radius:12px;padding:10px 12px}
+.dm-sec{margin-top:14px}
+.dm-sec h4{font-size:14px;color:#b07d92;margin-bottom:6px}
+.dm-pros{color:#2f9e5e}.dm-cons{color:#d9803e}
+.modal-foot{margin-top:18px}
+.modal-foot .go{display:inline-block}
+.item{cursor:pointer}
+.row{cursor:pointer}
+.palette{cursor:pointer}
+</style>
 </body>
 </html>
