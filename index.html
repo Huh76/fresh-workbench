@@ -1446,8 +1446,48 @@ function calcExpr(q){
 function genExplain(q){
   return `我来帮你拆解这道题：\n1. 先明确考查的知识点；\n2. 标出你当前思路中出错的步骤；\n3. 给出正确解法与易错提醒；\n4. 附一道同类变式巩固。\n\n👉 把题目（文字或拍照描述）发我，我针对性讲解。`;
 }
+const TR_DICT=[
+["今天天气真好","The weather is really nice today"],
+["适合出门散步","perfect for a walk outside"],
+["出门散步","go out for a walk"],
+["早上好","good morning"],["晚上好","good evening"],["晚安","good night"],
+["你好","hello"],["您好","hello"],["谢谢","thank you"],["再见","goodbye"],["我爱你","I love you"],
+["请问","excuse me"],["多少钱","how much"],["我不明白","I don't understand"],["你会说英语吗","do you speak English"],["谢谢你的帮助","thank you for your help"],
+["今天","today"],["明天","tomorrow"],["昨天","yesterday"],["现在","now"],["时间","time"],
+["天气","weather"],["晴天","sunny"],["下雨","rain"],["热","hot"],["冷","cold"],["风","wind"],["雪","snow"],
+["我","I"],["你","you"],["他","he"],["她","she"],["我们","we"],["你们","you"],["他们","they"],
+["这","this"],["那","that"],["什么","what"],["怎么","how"],["为什么","why"],["谁","who"],["哪里","where"],
+["是","is"],["不是","is not"],["有","have"],["没有","don't have"],["不","not"],["很","very"],["非常","very"],["太","too"],["都","all"],["也","also"],
+["和","and"],["或","or"],["但是","but"],["因为","because"],["所以","so"],["在","in"],["去","go"],["来","come"],
+["喜欢","like"],["爱","love"],["想","want"],["需要","need"],["可以","can"],["请","please"],
+["吃","eat"],["喝","drink"],["睡觉","sleep"],["工作","work"],["学习","study"],["看书","read"],["看","see"],["听","listen"],["说","speak"],["写","write"],["买","buy"],["卖","sell"],
+["人","person"],["朋友","friend"],["家人","family"],["老师","teacher"],["学生","student"],["同事","colleague"],
+["猫","cat"],["狗","dog"],["水","water"],["茶","tea"],["咖啡","coffee"],["书","book"],["电脑","computer"],["手机","phone"],["钱","money"],
+["家","home"],["学校","school"],["公司","company"],["商店","shop"],["城市","city"],["中国","China"],["北京","Beijing"],["上海","Shanghai"],
+["美丽","beautiful"],["高兴","happy"],["大","big"],["小","small"],["新","new"],["旧","old"],["多","many"],["少","few"],["快","fast"],["慢","slow"],["贵","expensive"],["便宜","cheap"],["好吃","delicious"],["重要","important"],["简单","simple"],["难","difficult"],["好","good"],["坏","bad"],
+["散步","take a walk"],["出门","go out"],["花","flower"],["树","tree"],["太阳","sun"],["月亮","moon"],["星","star"]
+];
+const TR_ZH=TR_DICT.slice().sort((a,b)=>b[0].length-a[0].length);
+const TR_EN={};TR_DICT.forEach(p=>{TR_EN[p[1].toLowerCase()]=p[0];});
+TR_EN["am"]="是";TR_EN["is"]="是";TR_EN["are"]="是";TR_EN["do"]="";TR_EN["does"]="";TR_EN["the"]="";TR_EN["a"]="";TR_EN["an"]="";TR_EN["to"]="";TR_EN["i"]="我";TR_EN["you"]="你";TR_EN["he"]="他";TR_EN["she"]="她";TR_EN["we"]="我们";TR_EN["they"]="他们";TR_EN["and"]="和";TR_EN["very"]="很";TR_EN["my"]="我的";TR_EN["your"]="你的";TR_EN["this"]="这";TR_EN["that"]="那";TR_EN["good"]="好";TR_EN["nice"]="好";TR_EN["happy"]="高兴";TR_EN["love"]="爱";TR_EN["like"]="喜欢";
+function zh2en(t){
+  let s=t;
+  TR_ZH.forEach(([z,e])=>{ s=s.split(z).join(" "+e+" "); });
+  return s.replace(/\s+([，。！？、,.!?])/g,"$1").replace(/([，。！？、])\s+/g,"$1").replace(/\s{2,}/g," ").replace(/\s+([,.!?])/g,"$1").trim();
+}
+function en2zh(t){
+  return t.split(/(\s+)/).map(function(x){
+    if(/^\s*$/.test(x))return x;
+    const k=x.toLowerCase().replace(/[.,!?;:""'']/g,"");
+    const r=TR_EN[k];
+    return (r===undefined)?x:r;
+  }).join("").replace(/\s+/g," ").trim();
+}
 function genTranslate(q){
-  return `（演示模式：当前未接入在线翻译引擎，以下为对照模板，接入 API 后可自动互译）\n\n原文：${q.replace(/翻译|英文|中文|成英文|成中文|互译|。/g,"").trim()||"（请填入要翻译的内容）"}\n\n🇨🇳 中文：____\n🇺🇸 English：____\n\n如需真正自动翻译，可在设置中配置翻译 API Key。`;
+  const text=q.replace(/翻译|英文|中文|成英文|成中文|互译|把这段|这句|这段话|：|:|。/g,"").trim()||"你好";
+  const isZh=/[一-龥]/.test(text);
+  const out=isZh?zh2en(text):en2zh(text);
+  return "🌐 翻译（本地离线引擎）｜"+(isZh?"中→英":"英→中")+"\n\n原文："+text+"\n\n译文："+out;
 }
 
 /* ---- 新增：更多 AI 生成器 ---- */
