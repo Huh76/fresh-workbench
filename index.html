@@ -695,6 +695,7 @@
         <div class="card-head">
           <div class="ttl"><span class="emo">🤖</span>全能 AI 助手</div>
           <button class="refresh" onclick="aiReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>清空</button>
+          <button class="refresh" onclick="toggleCfg()">⚙ 接入真实 AI</button>
         </div>
         <div class="ai-ex" id="aiEx">
           <span class="ai-tool" data-q="帮我写一段手冲咖啡推广海报文案">📝 海报文案</span>
@@ -705,6 +706,14 @@
           <span class="ai-tool" data-q="把这段中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
         </div>
         <div class="ai-hint">💡 输入问题后，AI 会直接在本页下方回答，无需跳转外部页面。</div>
+        <div id="aiCfgBox" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.08);border-radius:12px;font-size:12px">
+          <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseReal"> 启用真实大模型（页内作答，不跳转）</label></div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">接口</span><input id="aiBase" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="https://api.deepseek.com/v1"></div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">Key</span><input id="aiKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="sk-..."></div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">模型</span><input id="aiModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="deepseek-chat"></div>
+          <div style="margin-bottom:4px"><button class="refresh" onclick="saveCfg()">保存</button> <span id="aiCfgMsg"></span></div>
+          <div style="color:#888;font-size:11px">支持 OpenAI 兼容接口（DeepSeek / 通义 / 智谱 / 本地 Ollama）。Key 仅存本机浏览器，不会上传。</div>
+        </div>
       </div>
       <div class="card ai-wrap">
         <div class="chat" id="chat"></div>
@@ -1324,12 +1333,113 @@ document.getElementById("aiEx").querySelectorAll(".ai-tool").forEach(t=>{
 aiText.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();aiSend();}
 });
+function stripCmd(q,words){
+  let s=q;
+  words.forEach(function(w){ s=s.split(w).join(""); });
+  return s.replace(/\s{2,}/g," ").trim();
+}
+function stripTags(s){return String(s).replace(/<br\s*\/?>/gi,"\n").replace(/<[^>]+>/g,"").trim();}
+function loadCfg(){try{return JSON.parse((window.localStorage&&localStorage.getItem("aiCfg"))||"null");}catch(e){return null;}}
+function saveCfg(){
+  const c={useReal:document.getElementById("aiUseReal").checked,base:document.getElementById("aiBase").value.trim(),key:document.getElementById("aiKey").value.trim(),model:document.getElementById("aiModel").value.trim()||"deepseek-chat"};
+  try{localStorage.setItem("aiCfg",JSON.stringify(c));}catch(e){}
+  document.getElementById("aiCfgMsg").textContent="已保存 ✓（仅存本机）";
+}
+function toggleCfg(){
+  const b=document.getElementById("aiCfgBox");
+  b.style.display=b.style.display==="none"?"block":"none";
+  if(b.style.display==="block"){
+    const c=loadCfg()||{};
+    document.getElementById("aiUseReal").checked=!!c.useReal;
+    document.getElementById("aiBase").value=c.base||"https://api.deepseek.com/v1";
+    document.getElementById("aiKey").value=c.key||"";
+    document.getElementById("aiModel").value=c.model||"deepseek-chat";
+  }
+}
+function aiReal(q,cfg){
+  const ty=document.createElement("div");
+  ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
+  chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
+  const messages=[{role:"system",content:"你是一个有帮助的中文助手，回答简洁有条理、用中文。"}];
+  for(let i=0;i+1<aiMem.length;i+=2){
+    messages.push({role:"user",content:aiMem[i]});
+    messages.push({role:"assistant",content:aiMem[i+1]});
+  }
+  messages.push({role:"user",content:q});
+  const url=cfg.base.replace(/\/$/,"")+"/chat/completions";
+  fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+cfg.key},body:JSON.stringify({model:cfg.model||"deepseek-chat",messages:messages,stream:false})})
+   .then(function(r){return r.json();})
+   .then(function(d){
+     ty.remove();
+     let txt="";
+     if(d&&d.choices&&d.choices[0]&&d.choices[0].message)txt=d.choices[0].message.content;
+     else if(d&&d.error)txt="（模型返回错误："+((d.error.message)||"未知")+"）";
+     else txt="（模型未返回内容）";
+     txt=String(txt).replace(/</g,"&lt;").replace(/\n/g,"<br>");
+     aiAdd("bot",txt);
+     aiMem.push(stripTags(txt));
+   })
+   .catch(function(e){
+     ty.remove();
+     let fb=aiRespond(q);fb=String(fb==null?"":fb).replace(/\n/g,"<br>");
+     aiAdd("bot","⚠️ 调用真实 AI 失败："+String(e&&e.message||e)+"<br><br>已回退本地引擎：<br>"+fb);
+   });
+}
+const CONCEPTS={
+ "人工智能":"（AI）让机器模拟人类智能的技术总称，含机器学习、深度学习等，典型应用有语音识别、图像分类、对话机器人与内容生成。",
+ "机器学习":"AI 的子领域，让计算机从数据中自动学习规律而不依赖显式编程，分监督、无监督与强化学习。",
+ "深度学习":"基于多层神经网络的机器学习方法，擅长处理图像、语音、文本等复杂数据。",
+ "大模型":"参数规模巨大的神经网络模型（如 GPT 系列），经海量文本预训练，能理解与生成自然语言。",
+ "区块链":"去中心化的分布式账本技术，数据以区块链式存储、不可篡改，典型应用有加密货币与智能合约。",
+ "比特币":"最早的去中心化加密货币，基于区块链，总量上限 2100 万枚。",
+ "以太坊":"支持智能合约的区块链平台，代币为 ETH。",
+ "通货膨胀":"物价总水平持续上涨、货币购买力下降的现象，常用 CPI 衡量。",
+ "gdp":"国内生产总值，衡量一国在一定时期生产的最终商品与服务总价值。",
+ "复利":"利息计入本金再计息，长期呈指数增长，被称为「世界第八大奇迹」。",
+ "碳中和":"净碳排放为零，通过减排与碳抵消实现。",
+ "元宇宙":"融合 VR/AR 与互联网的沉浸式虚拟空间概念。",
+ "过拟合":"模型在训练集表现好、测试集差，记住了噪声而非规律，可用正则化与交叉验证缓解。",
+ "缓存":"把高频访问数据放到更快的存储层以减少延迟，如浏览器缓存、CDN。",
+ "索引":"类似书的目录，加速数据库查询，但占用空间并拖慢写入。",
+ "tcp":"传输层可靠协议，三次握手建立连接，保证有序无错传输。",
+ "http":"应用层协议，浏览器与服务器通信的基础，HTTPS 为其加密版本。",
+ "css":"层叠样式表，控制网页外观与布局。",
+ "javascript":"网页前端脚本语言，可实现交互与动态内容。",
+ "python":"易读且通用的高级语言，广泛用于数据、AI 与自动化。",
+ "sql":"结构化查询语言，用于操作关系型数据库。",
+ "api":"应用程序接口，不同软件之间通信的约定。",
+ "cdn":"内容分发网络，把资源缓存到就近节点以加速访问。",
+ "光合作用":"植物利用光能将二氧化碳和水合成有机物并释放氧气的过程，是地球生命能量基础。",
+ "量子计算":"基于量子比特（可叠加）的计算范式，在特定问题上有望远超经典计算机。",
+ "神经网络":"受生物神经元启发的计算模型，由多层节点组成，是深度学习的基础。"
+};
+function genConcept(q){
+  const term=stripCmd(q,["什么是","什么叫","什么意思","是啥","的定义","解释","讲解","讲讲","说说","介绍","理解","给我讲","一下","的","？","?","。","，",",",".","和","与"]).replace(/[？?]/g,"").trim();
+  if(term){
+    const hit=Object.keys(CONCEPTS).find(function(k){return term.indexOf(k)>=0||k.indexOf(term)>=0;});
+    if(hit)return "📚 "+hit+"："+CONCEPTS[hit]+"\n\n还想深入哪方面，或换个别的词问我都行。";
+  }
+  return "关于「"+(term||q.replace(/<.*?>/g,""))+"」，我先帮你理一下：\n• 它通常属于哪一类概念 / 问题；\n• 核心要素是什么；\n• 常见误区或关键点有哪些。\n\n👉 你是想了解它的「定义 / 原理 / 应用场景」还是「和别的对比」？告诉我方向我讲得更准。也可以直接问具体词，比如「什么是人工智能 / 区块链 / 复利」。";
+}
+function genChat(q){
+  const t=q.toLowerCase();
+  if(/^(你好|您好|hi|hello|在吗|在不在|嗨)/.test(t)||/你好|在吗/.test(q))return "你好呀 👋 我是本页内的 AI 助手，有什么想聊或想让我帮你生成的？文案、翻译、代码、周报、起名……直接说就行～";
+  if(/谢谢|感谢|辛苦|棒|厉害|赞/.test(q))return "不客气，能帮到你就好 😊 还想让我做点什么随时说～";
+  if(/你是谁|你是什么|你能干|你会什么|怎么用|你叫/.test(q))return "我是这个工作台里的本地 AI 助手 🤖 直接在对话框说需求，我就在本页回答，不跳外部页面。我能写文案 / 邮件 / 周报、翻译、起名、解释代码、做计划、算数、给建议……也可以接入你自己的大模型 Key 变得更聪明（点「⚙ 接入真实 AI」）。";
+  if(/怎么|如何|为什么|怎样|建议|办法|技巧|提升|提高|做好|解决/.test(q)){
+    const kw=stripCmd(q,["怎么","如何","为什么","怎样","建议","办法","技巧","才能","可以","我想","我想知道","请问","？","?","。","，",",",".","的","提高","提升","做好","解决","有","什么"]).trim();
+    return "关于「"+(kw||"这个问题")+"」，给你一个可落地的思路：\n1. 先明确目标与现状差距；\n2. 拆成 2-3 个关键动作并排优先级；\n3. 设一个可衡量的小目标先跑通；\n4. 复盘后再放大。\n👉 说说你的具体场景（比如「怎么提升短视频完播率」），我给更针对性的步骤。";
+  }
+  return null;
+}
 function aiSend(){
   const v=aiText.value.trim();
   if(!v)return;
   aiAdd("me",v.replace(/</g,"&lt;"));
   aiMem.push(v);
   aiText.value="";
+  const cfg=loadCfg();
+  if(cfg&&cfg.useReal&&cfg.key&&cfg.base){ aiReal(v,cfg); return; }
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
   chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
@@ -1338,6 +1448,7 @@ function aiSend(){
     let out=aiRespond(v);
     out=String(out==null?"":out).replace(/\n/g,"<br>");
     aiAdd("bot",out);
+    aiMem.push(stripTags(out));
   },420);
 }
 function hl(s){return '<span class="hl">'+s+'</span>';}
@@ -1348,6 +1459,9 @@ function aiRespond(q){
     return "好的，换一个思路给你：\n\n"+lastGen.fn(q, true);
   }
   let fn=null;
+  if(/怎么|如何|怎样|建议|技巧|提升|提高|做好|解决|怎么办|办呢/.test(q) && !/(写|生成|创作|做|脚本|文案|起名|命名|邮件|周报|简历|翻译|代码|海报|笔记|故事|旅行|大纲|健身|数据|法律|会议|排版|话术|润色|表格)/.test(q)){
+    const adv=genChat(q); if(adv)return scenePrefix()+adv;
+  }
   if(/提示词|prompt|绘画|生图|画图|ai画/.test(q)){fn=genPrompt;}
   else if(/小红书|xhs|种草笔记|笔记/.test(q)){fn=genXHS;}
   else if(/文案|海报|广告语|宣传|推文|卖点|朋友圈/.test(q)){fn=genCopy;}
@@ -1374,8 +1488,11 @@ function aiRespond(q){
   else if(/[\d\.\+\-\*\/\(\)]+/.test(q)&&/[\+\-\*\/]/.test(q)){const r=calcExpr(q);if(r!==null)return "🧮 计算结果：\n\n"+r;}
   else if(/错题|解析|这道题|为什么错|讲解/.test(q)){fn=genExplain;}
   if(fn){lastGen={fn,q};return scenePrefix()+fn(q,false);}
-  // 默认
-  return "收到你的问题：「"+q.replace(/</g,"&lt;")+"」<br><br>我已在<b>本页面内</b>为你生成回答 ✨<br><br>内置引擎覆盖：海报文案 / 绘画提示词 / 品牌起名 / 小红书笔记 / 邮件 / 周报 / 简历 / 短视频脚本 / 商品标题与 SEO / 会议纪要 / 代码解释 / 祝福话术 / 翻译 / 表格 / 计算 / 润色 / 旅行攻略 / 论文大纲 / 数据分析 / 健身计划 / 法律常识 / 错题解析 等。说出具体需求，我会直接在这里作答。";
+  if(/什么(是|叫|意思)|是啥|定义|解释|讲解|讲讲|说说|介绍(一下)?|如何理解|原理|是什么/.test(q)){
+    const c=genConcept(q); if(c)return c;
+  }
+  const ch=genChat(q); if(ch)return ch;
+  return "收到你的问题：「"+q.replace(/</g,"&lt;")+"」\n\n我已在<b>本页面内</b>作答。内置引擎覆盖：文案 / 海报 / 邮件 / 周报 / 简历 / 会议纪要 / 代码解读 / 起名 / 故事 / 旅行 / 大纲 / 数据分析 / 健身 / 法律常识 / 翻译 / 计算 / 润色 等，也能解释常见概念（人工智能、区块链、复利…）和给建议。\n\n👉 这样问会更准：\n· 「帮我润色：<贴原文>」\n· 「解释这段代码：<贴代码>」\n· 「什么是人工智能」\n· 「怎么提升短视频完播率」";
 }
 function scenePrefix(){
   if(aiScene==="通用")return "";
@@ -1416,7 +1533,19 @@ function typesetKnow(q){
   return `常见印刷排版要点：\n• 色彩模式用 CMYK，非 RGB；\n• 图片分辨率 ≥ 300dpi（远处喷绘可 100-150dpi）；\n• 文字转曲（创建轮廓）避免缺字；\n• 黑色文字用单色黑（K100）而非四色黑；\n• 留 3mm 出血、5mm 安全边；\n• 导出 PDF/X-4 交付印刷厂。\n有具体问题（专色/烫金/覆膜）可继续问。`;
 }
 function genPolish(q){
-  return `已为你做结构化润色建议：\n1. 删减冗余口语，保留核心信息；\n2. 将长句拆分为要点，提升可读性；\n3. 统一术语与语气（商务/亲和二选一）；\n4. 若为合同：补充责任边界、交付节点、违约条款等要素。\n\n👉 把需要润色的原文贴给我，我可以直接帮你改出成稿。`;
+  const raw=stripCmd(q,["帮我","请","润色","改一下","改写","优化","重述","措辞","一下","这段","这篇","文字","文章","文案","邮件","。","，",",",".","的","把"]);
+  if(raw.length<6)return "把需要润色的原文直接发给我，我会：① 去掉冗余口语、② 把长句拆成要点、③ 统一语气，并给你一版可直接用的成稿。";
+  const redun=["然后","那个","就是","其实呢","嗯","啊","的话","就是说","说白了","基本上","大概","可能","应该","感觉","我觉得","怎么说呢","这个","那个","对吧","是不是"];
+  let clean=raw;
+  redun.forEach(function(w){ clean=clean.split(w).join(""); });
+  clean=clean.replace(/\s{2,}/g," ").replace(/[，,]\s*[，,]/g,"，").trim();
+  const sentences=raw.split(/[。！？!?\n]/).map(function(s){return s.trim();}).filter(function(s){return s.length>2;});
+  let out="✅ 已读入你的原文（"+raw.length+" 字），处理如下：\n\n";
+  out+="【精简版】\n"+clean+"\n\n";
+  out+="【要点拆解】\n";
+  sentences.slice(0,6).forEach(function(s,i){ out+=(i+1)+". "+s+"\n"; });
+  out+="\n【优化建议】\n1. 已删去口语 filler，信息密度提升；\n2. 长句已分段，更易读；\n3. 面向正式场合可再压一压感叹 / 口语词。\n\n👉 需要更商务 / 更口语 / 更简短，告诉我语气即可。";
+  return out;
 }
 function genTable(q){
   // 尝试从文本提取「名称+评价」结构
@@ -1444,7 +1573,10 @@ function calcExpr(q){
   }catch(e){return null;}
 }
 function genExplain(q){
-  return `我来帮你拆解这道题：\n1. 先明确考查的知识点；\n2. 标出你当前思路中出错的步骤；\n3. 给出正确解法与易错提醒；\n4. 附一道同类变式巩固。\n\n👉 把题目（文字或拍照描述）发我，我针对性讲解。`;
+  if(/题|解题|错题|这道题|为什么错|讲解|步骤/.test(q)){
+    return "我来帮你拆这道题：\n1. 先明确考查的知识点；\n2. 标出你思路里出错的步骤；\n3. 给正确解法 + 易错提醒；\n4. 附一道同类变式巩固。\n\n👉 把题目（文字或描述）发我，我针对性讲；如果是「为什么错」，告诉我你的解法和答案。";
+  }
+  return genConcept(q);
 }
 const TR_DICT=[
 ["今天天气真好","The weather is really nice today"],
@@ -1496,13 +1628,16 @@ function genXHS(q){
   return `📕 小红书笔记 · ${kw}\n\n【标题】挖到宝了！${kw}真的绝✨（附清单）\n\n【正文】\n最近入了 ${kw}，亲测真香🔥\n✅ 颜值在线，拍照超出片\n✅ 性价比拉满，学生党也友好\n✅ 使用感细腻，回购预定\n\n姐妹们冲鸭，链接放评论区啦～\n\n#${kw} #好物分享 #平价推荐 #种草 #生活记录`;
 }
 function genEmail(q){
-  return `主题：关于${q.includes("报价")?"新品报价":"合作事宜"}的跟进\n\n尊敬的客户，您好：\n\n感谢您此前的关注。就您关心的需求，我们已准备好对应方案/报价单，核心要点如下：\n1. 交付周期与您的时间线匹配；\n2. 可提供样品/小批量试单；\n3. 价格随量级阶梯优惠。\n\n方便的话我们约个时间细聊，期待与您达成合作。\n\n祝商祺\n[你的名字]`;
+  const subj=stripCmd(q,["帮我","写","一封","邮件","回信","给","的","邮件撰写","跟进","客户","商务","。","，",",",".","关于","主题","：",":"]).slice(0,20)||"合作事宜";
+  const isQuote=/报价|价格|多少钱|费用|报价单/.test(q);
+  return "主题：关于"+subj+"的"+(isQuote?"报价":"跟进")+"\n\n尊敬的"+(/客户|先生|女士|老师/.test(q)?"客户":"合作伙伴")+"，您好：\n\n感谢您对"+subj+"的关注。就您关心的需求，我们已准备好对应方案"+(isQuote?"与报价单":"与资料")+"，核心要点：\n1. 交付周期与您的时间线匹配；\n2. "+(isQuote?"价格随量级阶梯优惠，量大从优":"可提供样品 / 小批量试单")+"；\n3. 售后与响应有保障。\n\n方便的话约个时间细聊，期待合作。\n\n祝商祺\n[你的名字]";
 }
 function genReport(q){
   return `【本周工作周报】\n一、核心进展\n  · 竞品分析：完成 3 家对标，输出差异点清单\n  · 首页改版：完成高保真稿，已进入评审\n二、数据亮点\n  · 关键指标环比 +12%\n三、风险/卡点\n  · 设计资源紧张，已协调排期\n四、下周计划\n  · 推动改版评审通过并启动开发`;
 }
 function genResume(q){
-  return `【简历优化要点】\n· 一句话定位：${q.replace(/帮我优化一份|简历|，.*/g,"").trim()||"资深从业者"}，X 年经验，擅长从 0 到 1\n· 经历用「动作+数据」重写：如「主导XX项目，GMV 提升 30%」\n· 技能按岗位 JD 对齐，突出关键词\n· 教育/证书精简，控制在 1 页\n\n👉 把你的原始简历贴给我，我直接帮你改成成稿。`;
+  const kw=stripCmd(q,["帮我","优化","一份","简历","的","求职","，.*","。","，",",",".","：",":"]) || "资深从业者";
+  return "【简历优化 · 围绕「"+kw+"」】\n· 一句话定位："+kw+"，X 年经验，擅长从 0 到 1 落地\n· 经历改写公式：动作动词 + 量化结果（如「主导XX，GMV +30%」「搭建XX，效率 ×2」）\n· 技能按目标岗位 JD 对齐，突出关键词（ATS 友好）\n· 教育 / 证书精简，控制在 1 页 A4\n\n👉 把你的原始简历（或几段经历）贴给我，我直接帮你改成可投递成稿。";
 }
 function genVideo(q){
   const kw=q.replace(/帮我写(一个)?|30秒|短视频|口播脚本|卖|。|，/g,"").trim()||"产品";
@@ -1513,10 +1648,21 @@ function genProduct(q){
   return `【${kw} 商品标题 ×5】\n1. 2026新款${kw} 大容量便携 长效保温 礼物推荐\n2. 高颜值${kw} 316不锈钢 24h锁温 学生上班族\n3. 网红同款${kw} 一键开盖 防漏设计 情侣款\n4. 简约风${kw} 商务办公 便携随身 送礼佳品\n5. 平价好物${kw} 实测保温 性价比之王\n\n【SEO关键词】${kw}、保温杯推荐、便携水杯、316不锈钢、生日礼物、学生水杯`;
 }
 function genMeeting(q){
-  return `【会议纪要】\n时间：____  参会：____\n一、Q3 目标：营收 +20%，新品上线 2 款\n二、分工：A 负责设计（7/10 前）；B 负责渠道（7/15 前）；C 跟进数据\n三、风险：供应链交期紧张，需备选方案\n四、下次会议：____\n（把实际讨论内容发我，我帮你整理成正式纪要）`;
+  const info=stripCmd(q,["帮我","写","整理","一份","会议纪要","会议记录","会议","。","，",",",".","关于","主题","：",":"]);
+  return "【会议纪要】\n时间：____  地点 / 线上：____  参会：____\n\n一、会议主题："+(info||"____")+"\n二、核心结论：\n  · ____\n  · ____\n三、行动项与责任人 / 截止：\n  · A：____（__前）\n  · B：____（__前）\n四、风险与待决：____\n五、下次会议：____\n\n👉 把实际讨论要点发我，我直接帮你填成正式纪要（可导出）。";
 }
 function genCode(q){
-  return `这段代码的作用是：接收两个参数 a 与 b，将它们相加后返回结果。\n\n解析：\n· def 定义名为 add 的函数；\n· 参数 a、b 为输入；\n· return a+b 执行求和并输出。\n\n示例：add(2,3) → 5。\n（把你的真实代码贴给我，我可以逐行讲解、找 bug 或优化）`;
+  const code=stripCmd(q,["解释","这段代码","帮我","看看","这段代码的作用是","什么意思","讲解","分析","找bug","优化","一下","的","。","，",",",".","说","说一下"]);
+  const hasCode=/[;{}=]|function\s|def\s|import\s|<\/?[a-z]+|=>|console\.|print\(|public\s|class\s|#include|select\s|from\s|let |const |var /i.test(code);
+  if(!hasCode)return "把你的真实代码贴给我（支持 Python/JS/Java/C/SQL/HTML 等），我可以：① 逐行讲解做了什么；② 找潜在 bug；③ 给优化建议。直接发代码即可。";
+  const lines=code.split(/\n/).filter(function(s){return s.trim();}).length;
+  const lang=/def\s|import\s/.test(code)?"Python":/function\s|=>|console\./.test(code)?"JavaScript":/public\s|class\s|#include/.test(code)?"Java/C++":/<\/?[a-z]+/.test(code)?"HTML/标记":/select\s[\s\S]*from/i.test(code)?"SQL":"代码";
+  const fns=code.match(/(?:function\s+([a-zA-Z_$][\w$]*)|def\s+([a-zA-Z_][\w]*)|([a-zA-Z_$][\w$]*)\s*\([^)]*\)\s*=>)/g)||[];
+  let out="🔍 已读入你的 "+lang+"（约 "+lines+" 行有效代码），初步分析：\n\n";
+  if(fns.length)out+="· 识别到函数 / 方法："+fns.slice(0,6).map(function(s){return s.replace(/\s*\([\s\S]*$/,"").replace(/(function|def)\s*/,"").trim();}).join("、")+(fns.length>6?" 等":"")+"\n";
+  out+="· 结构包含："+(code.indexOf("{")>=0?"代码块 / 作用域 ":"")+(/if|for|while|switch/.test(code)?"分支或循环 ":"")+(/return/.test(code)?"返回值 ":"")+"\n";
+  out+="\n【逐行解读框架】\n1. 入口与输入输出；\n2. 关键变量 / 数据结构；\n3. 控制流（判断 / 循环）；\n4. 边界与 bug（空值、越界、异步）。\n\n👉 想让我逐行讲，把代码发全即可；想找 bug 就说明「预期 vs 实际」表现。";
+  return out;
 }
 function genBless(q){
   return `【中秋客户祝福 · 温馨商务】\n值此中秋佳节，谨向您致以最诚挚的问候。\n感谢一路以来的信任与支持，愿明月常圆、事业圆满、阖家安康。\n未来可期，期待与您继续同行，共赴新程。🌕`;
@@ -1534,8 +1680,17 @@ function genOutline(q){
   return `📑 论文大纲 · 《${kw}》\n\n一、绪论\n  1.1 研究背景与意义\n  1.2 国内外研究现状\n  1.3 研究问题与思路\n二、文献综述\n三、研究方法\n四、分析与讨论\n五、结论与展望\n参考文献\n\n💡 每章可继续让我展开成二级/三级标题与要点。`;
 }
 function genData(q){
-  const kw=q.replace(/帮我分析|这组|销售|数据|并给出|提升建议|。|，/g,"").trim()||"业务数据";
-  return `📈 数据分析建议 · ${kw}\n\n① 现状：当前月销 1.2 万、复购率 18%，属健康但增长平缓区间；\n② 机会点：复购率偏低 → 做会员/私域复购钩子；新客获客成本需监控；\n③ 提升建议：A. 搭建复购券体系拉升复购至 25%+；B. 用爆款带长尾提升客单；C. 分层运营高价值用户；\n④ 监控指标：ROI、复购率、留存、客单价。\n（把你的真实数据发我，我按数据给出具体动作）`;
+  const nums=(q.match(/-?\d+(\.\d+)?/g)||[]).map(Number);
+  const kw=stripCmd(q,["帮我","分析","这组","销售","数据","并给出","提升建议","。","，",",",".","和","的","数字","如下","：",":","给出"])||"业务";
+  let out="📈 数据分析 · "+kw+"\n\n";
+  if(nums.length>=2){
+    const sum=nums.reduce(function(a,b){return a+b;},0);
+    const avg=sum/nums.length;
+    const mx=Math.max.apply(null,nums), mn=Math.min.apply(null,nums);
+    out+="· 你提供的数据点 "+nums.length+" 个：平均 "+avg.toFixed(2)+"、最大 "+mx+"、最小 "+mn+"、合计 "+sum+"\n";
+  }
+  out+="① 现状诊断：先看趋势与结构，定位增长 / 流失的主要来源；\n② 机会点：复购 / 留存偏低 → 做会员与私域钩子；获客成本需监控；\n③ 提升建议：A. 搭建复购券体系拉升复购；B. 爆款带长尾提升客单；C. 分层运营高价值用户；\n④ 监控指标：ROI、复购率、留存、客单价。\n\n👉 把你的真实数据（带维度更好）发我，我按数据给具体动作与图表建议。";
+  return out;
 }
 function genFitness(q){
   const kw=q.replace(/帮我写|一份|健身|减脂|的|每周|训练|计划|。|，/g,"").trim()||"减脂塑形";
