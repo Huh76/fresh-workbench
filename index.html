@@ -704,6 +704,7 @@
           <span class="ai-tool" data-q="帮我写一封跟进客户的商务邮件">✉️ 邮件撰写</span>
           <span class="ai-tool" data-q="帮我写本周工作周报">📋 周报生成</span>
           <span class="ai-tool" data-q="把这段中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
+          <span class="ai-tool" data-q="画一只在雪地里奔跑的橘猫，高清摄影风">🖼️ 文生图</span>
         </div>
         <div class="ai-hint">💡 输入问题后，AI 会直接在本页下方回答，无需跳转外部页面。</div>
         <div id="aiCfgBox" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.08);border-radius:12px;font-size:12px">
@@ -711,6 +712,13 @@
           <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">接口</span><input id="aiBase" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="https://api.deepseek.com/v1"></div>
           <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">Key</span><input id="aiKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="sk-..."></div>
           <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">模型</span><input id="aiModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="deepseek-chat"></div>
+          <div style="border-top:1px dashed rgba(0,0,0,.12);margin:8px 0 6px;padding-top:7px">
+            <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseImg"> 启用图像生成（文生图，页内出图不跳转）</label></div>
+            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图接口</span><input id="aiImgBase" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="https://api.siliconflow.cn/v1"></div>
+            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图Key</span><input id="aiImgKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="sk-..."></div>
+            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图模型</span><input id="aiImgModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="black-forest-labs/FLUX.1-schnell"></div>
+            <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center"><span style="width:46px">尺寸</span><input id="aiImgSize" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="1024x1024"></div>
+          </div>
           <div style="margin-bottom:4px"><button class="refresh" onclick="saveCfg()">保存</button> <span id="aiCfgMsg"></span></div>
           <div style="color:#888;font-size:11px">支持 OpenAI 兼容接口（DeepSeek / 通义 / 智谱 / 本地 Ollama）。Key 仅存本机浏览器，不会上传。</div>
         </div>
@@ -1341,7 +1349,8 @@ function stripCmd(q,words){
 function stripTags(s){return String(s).replace(/<br\s*\/?>/gi,"\n").replace(/<[^>]+>/g,"").trim();}
 function loadCfg(){try{return JSON.parse((window.localStorage&&localStorage.getItem("aiCfg"))||"null");}catch(e){return null;}}
 function saveCfg(){
-  const c={useReal:document.getElementById("aiUseReal").checked,base:document.getElementById("aiBase").value.trim(),key:document.getElementById("aiKey").value.trim(),model:document.getElementById("aiModel").value.trim()||"deepseek-chat"};
+  const c={useReal:document.getElementById("aiUseReal").checked,base:document.getElementById("aiBase").value.trim(),key:document.getElementById("aiKey").value.trim(),model:document.getElementById("aiModel").value.trim()||"deepseek-chat",
+    useImg:document.getElementById("aiUseImg").checked,imgBase:document.getElementById("aiImgBase").value.trim(),imgKey:document.getElementById("aiImgKey").value.trim(),imgModel:document.getElementById("aiImgModel").value.trim(),imgSize:document.getElementById("aiImgSize").value.trim()};
   try{localStorage.setItem("aiCfg",JSON.stringify(c));}catch(e){}
   document.getElementById("aiCfgMsg").textContent="已保存 ✓（仅存本机）";
 }
@@ -1354,6 +1363,11 @@ function toggleCfg(){
     document.getElementById("aiBase").value=c.base||"https://api.deepseek.com/v1";
     document.getElementById("aiKey").value=c.key||"";
     document.getElementById("aiModel").value=c.model||"deepseek-chat";
+    document.getElementById("aiUseImg").checked=!!c.useImg;
+    document.getElementById("aiImgBase").value=c.imgBase||"https://api.siliconflow.cn/v1";
+    document.getElementById("aiImgKey").value=c.imgKey||"";
+    document.getElementById("aiImgModel").value=c.imgModel||"black-forest-labs/FLUX.1-schnell";
+    document.getElementById("aiImgSize").value=c.imgSize||"1024x1024";
   }
 }
 function aiReal(q,cfg){
@@ -1383,6 +1397,46 @@ function aiReal(q,cfg){
      ty.remove();
      let fb=aiRespond(q);fb=String(fb==null?"":fb).replace(/\n/g,"<br>");
      aiAdd("bot","⚠️ 调用真实 AI 失败："+String(e&&e.message||e)+"<br><br>已回退本地引擎：<br>"+fb);
+   });
+}
+function isImageIntent(q){
+  if(/(提示词|prompt|文案|脚本|怎么画|如何画|画大饼)/i.test(q))return false;
+  return /(文生图|ai生图|生图|出图|绘制|来张图|一张图|壁纸|头像|插画|照片|图像生成|高清图|配图|生成.{0,6}(图|图片|照片|图像)|画)/i.test(q);
+}
+function aiImage(q,cfg){
+  const ty=document.createElement("div");
+  ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
+  chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
+  if(!cfg||!cfg.imgKey||!cfg.imgBase){
+    ty.remove();
+    aiAdd("bot","🖼️ 你提到了生成图片，但还没接入图像生成接口。<br><br>点 AI 卡片右上角 <b>⚙ 接入真实 AI</b> → 勾选「启用图像生成」，填入：<br>• 图接口（国内推荐 SiliconFlow <code>https://api.siliconflow.cn/v1</code>，或 OpenAI <code>https://api.openai.com/v1</code>）<br>• 图Key、图模型（如 <code>black-forest-labs/FLUX.1-schnell</code> 或 <code>dall-e-3</code>）<br>保存后回来说「画一只在雪地里的橘猫」，我就在本页出图，不跳转 ✨");
+    return;
+  }
+  const prompt=stripCmd(q,["帮我","请","生成","画","绘制","一张","一幅","图片","图像","照片","插画","壁纸","头像","配图","出图","来张","高清","的","图","。","，",",",".","!","！","?","？"]).trim()||q;
+  const safeP=prompt.replace(/</g,"&lt;");
+  const body={model:cfg.imgModel||"black-forest-labs/FLUX.1-schnell",prompt:prompt,n:1};
+  if(cfg.imgSize)body.size=cfg.imgSize;
+  const url=cfg.imgBase.replace(/\/$/,"")+"/images/generations";
+  fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+cfg.imgKey},body:JSON.stringify(body)})
+   .then(function(r){return r.json();})
+   .then(function(d){
+     ty.remove();
+     let src=null;
+     if(d&&d.data&&d.data[0])src=d.data[0].url||(d.data[0].b64_json?("data:image/png;base64,"+d.data[0].b64_json):null);
+     if(!src&&d&&d.images&&d.images[0])src=d.images[0].url||(d.images[0].b64_json?("data:image/png;base64,"+d.images[0].b64_json):null);
+     if(src){
+       src=src.replace(/"/g,"%22");
+       const html='🖼️ 已为你生成（'+safeP+'）：<br><img src="'+src+'" style="max-width:100%;border-radius:12px;margin-top:8px;border:1px solid rgba(0,0,0,.1)" referrerpolicy="no-referrer"><br><a href="'+src+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px;color:#e26a9c;text-decoration:underline">🔗 查看 / 保存原图 ↗</a>';
+       aiAdd("bot",html);
+     }else if(d&&d.error){
+       aiAdd("bot","⚠️ 图像生成失败："+((d.error.message)||JSON.stringify(d.error)));
+     }else{
+       aiAdd("bot","⚠️ 图像生成未返回图片（响应："+JSON.stringify(d).slice(0,200)+"）");
+     }
+   })
+   .catch(function(e){
+     ty.remove();
+     aiAdd("bot","⚠️ 调用图像接口失败："+String(e&&e.message||e)+"<br><br>请检查图接口地址、Key、模型是否匹配，或网络是否可达。");
    });
 }
 const CONCEPTS={
@@ -1439,6 +1493,7 @@ function aiSend(){
   aiMem.push(v);
   aiText.value="";
   const cfg=loadCfg();
+  if(isImageIntent(v)){ aiImage(v,(cfg&&cfg.useImg)?cfg:null); return; }
   if(cfg&&cfg.useReal&&cfg.key&&cfg.base){ aiReal(v,cfg); return; }
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
