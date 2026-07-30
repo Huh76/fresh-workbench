@@ -350,6 +350,15 @@
   .ai-tool:hover{background:var(--m5);color:#fff}
   .ai-model{background:linear-gradient(180deg,#FFFCFE,#F8F1FD);border:2px dashed #E6DAF4;font-family:var(--hand)}
   .ai-model:hover{border-color:var(--m5)}
+  .ai-model.sel{border-color:var(--acc);background:linear-gradient(180deg,#FFF,#EFE6FB);box-shadow:0 0 0 3px rgba(157,127,214,.25)}
+  .mchip{display:inline-flex;align-items:center;gap:4px;margin:4px 6px 4px 0;padding:6px 12px;border-radius:999px;background:#F3ECFB;border:1.5px solid #E3D6F3;color:#6a4f8c;text-decoration:none;font-size:13px;cursor:pointer;transition:.15s}
+  .mchip:hover{background:var(--m5);color:#fff;border-color:var(--m5)}
+  .solve{margin-top:12px;padding:12px 14px;background:#fff;border:2px dashed #E6DAF4;border-radius:14px}
+  .solve-t{font-weight:700;color:#6a4f8c;margin-bottom:8px}
+  .mchips{display:flex;flex-wrap:wrap;gap:2px}
+  .solve-n{margin-top:8px;font-size:12px;color:#9a86b4}
+  .ai-toast{position:fixed;left:50%;bottom:38px;transform:translateX(-50%) translateY(20px);background:rgba(80,60,110,.95);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:2000}
+  .ai-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .ai-model .mn{color:#6a4f8c}
   .ai-model .ml{color:var(--m5)}
   .msg.bot{background:#FBEFF6;font-family:var(--hand)}
@@ -724,7 +733,7 @@
         </div>
         <div class="ai-models-wrap" style="margin-top:18px">
           <div class="bar-title">🚀 主流 AI 模型 · 官网直达</div>
-          <div class="ai-models">
+          <div class="ai-models" id="aiModels">
             <a class="ai-model" href="https://chat.openai.com" target="_blank"><span class="mn">🟢 ChatGPT</span><span class="md">OpenAI 通用大模型</span><span class="ml">官网直达 ↗</span></a>
             <a class="ai-model" href="https://claude.ai" target="_blank"><span class="mn">🟣 Claude</span><span class="md">Anthropic 长文本推理</span><span class="ml">官网直达 ↗</span></a>
             <a class="ai-model" href="https://www.deepseek.com" target="_blank"><span class="mn">🔷 DeepSeek</span><span class="md">国产深度推理模型</span><span class="ml">官网直达 ↗</span></a>
@@ -1314,6 +1323,57 @@ function aiReset(){
   chat.innerHTML="";aiMem=[];lastGen=null;
   aiAdd("bot","你好，我是你的全能 AI 助手 👋<br>已支持 <b>25+</b> 项功能：海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、合同润色、排版答疑、话术定制、故事创作、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等。<br><br>顶部可切换 <b>场景</b>（电商运营/职场办公/设计行业/日常聊天），我会据此调整语气；支持多轮上下文，可直接说「换一个 / 再来一条」让我重新生成 ✨ 也可点下方「AI 模型直达」前往任意大模型官网。");
 }
+/* ====== 真实 AI 模型路由：输入问题后可一键调用任意模型（带入问题） ====== */
+const MODELS=[
+ {id:"chatgpt",name:"ChatGPT",icon:"🟢",desc:"OpenAI 通用大模型",url:"https://chat.openai.com/",q:null},
+ {id:"claude",name:"Claude",icon:"🟣",desc:"Anthropic 长文本推理",url:"https://claude.ai/new",q:"q"},
+ {id:"deepseek",name:"DeepSeek",icon:"🔷",desc:"国产深度推理",url:"https://chat.deepseek.com/",q:null},
+ {id:"kimi",name:"Kimi",icon:"🟢",desc:"超长上下文助手",url:"https://kimi.moonshot.cn/",q:null},
+ {id:"wenxin",name:"文心一言",icon:"🔵",desc:"百度知识增强",url:"https://yiyan.baidu.com/",q:null},
+ {id:"qwen",name:"通义千问",icon:"🟠",desc:"阿里全场景",url:"https://tongyi.aliyun.com/qianwen/",q:null},
+ {id:"doubao",name:"豆包",icon:"🟡",desc:"字节 AI 助手",url:"https://www.doubao.com/",q:null},
+ {id:"glm",name:"智谱清言",icon:"🟦",desc:"智谱 GLM 系列",url:"https://chat.zhipuai.cn/",q:null},
+ {id:"spark",name:"讯飞星火",icon:"🔶",desc:"科大讯飞认知",url:"https://xinghuo.xfyun.cn/",q:null},
+ {id:"gemini",name:"Gemini",icon:"🟠",desc:"Google 多模态",url:"https://gemini.google.com/app",q:"q"},
+ {id:"copilot",name:"Copilot",icon:"🔵",desc:"微软 AI 助手",url:"https://copilot.microsoft.com/",q:null},
+ {id:"perplexity",name:"Perplexity",icon:"🟦",desc:"对话式搜索",url:"https://www.perplexity.ai/",q:"q"},
+ {id:"mj",name:"Midjourney",icon:"🟣",desc:"AI 绘画生成",url:"https://www.midjourney.com/",q:null,img:true},
+ {id:"jimeng",name:"即梦 AI",icon:"🟡",desc:"字节图像/视频",url:"https://jimeng.jianying.com/",q:null,img:true},
+ {id:"kling",name:"可灵 AI",icon:"🟣",desc:"快手视频生成",url:"https://kling.kuaishou.com/",q:null,img:true},
+ {id:"sd",name:"Stable Diffusion",icon:"🟢",desc:"开源扩散模型",url:"https://stability.ai/",q:null,img:true}
+];
+let aiModelId=null;
+function modelById(id){return MODELS.find(m=>m.id===id);}
+function modelUrl(m,text){return m.q?(m.url+(m.url.includes("?")?"&":"?")+m.q+"="+encodeURIComponent(text)):m.url;}
+function openModel(id,enc){
+  const m=modelById(id);if(!m)return;
+  const text=enc?decodeURIComponent(enc):(aiText.value.trim()||"你好，请帮我解答这个问题。");
+  if(m.q){window.open(modelUrl(m,text),"_blank");}
+  else{
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>toast("问题已复制，去 "+m.name+" 粘贴即可 ✨")).catch(()=>{});}
+    window.open(m.url,"_blank");
+  }
+  aiModelId=id;setModelSel();
+}
+function setModelSel(){
+  document.querySelectorAll("#aiModels .ai-model").forEach(a=>{a.classList.toggle("sel",a.dataset.id===aiModelId);});
+}
+function toast(msg){
+  let t=document.getElementById("aiToast");
+  if(!t){t=document.createElement("div");t.id="aiToast";t.className="ai-toast";document.body.appendChild(t);}
+  t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),2200);
+}
+function routeBlock(q){
+  const enc=encodeURIComponent(q);
+  const chips=MODELS.map(m=>`<a class="mchip" href="javascript:void(0)" onclick="event.stopPropagation();openModel('${m.id}','${enc}')" title="${m.q?'带问题直达':'打开并复制问题'}">${m.icon} ${m.name}</a>`).join("");
+  return `<div class="solve"><div class="solve-t">🚀 用真实 AI 模型求解此问题（点任意模型，已带入你的问题）：</div><div class="mchips">${chips}</div><div class="solve-n">支持链接直带问题的模型：${MODELS.filter(m=>m.q).map(m=>m.name).join("、")}；其余模型会打开官网并自动复制问题，粘贴即用。</div></div>`;
+}
+function renderAIModels(){
+  const box=document.getElementById("aiModels");if(!box)return;
+  box.innerHTML=MODELS.map(m=>`<a class="ai-model" data-id="${m.id}" href="javascript:void(0)" onclick="openModel('${m.id}', encodeURIComponent(aiText.value.trim()))"><span class="mn">${m.icon} ${m.name}</span><span class="md">${m.desc}</span><span class="ml">带问题前往 ↗</span></a>`).join("");
+  setModelSel();
+}
 document.getElementById("aiTools").querySelectorAll(".ai-tool").forEach(t=>{
   t.onclick=()=>{aiText.value=t.dataset.q;aiSend();};
 });
@@ -1330,7 +1390,7 @@ function aiSend(){
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
   chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{ty.remove();aiAdd("bot",aiRespond(v));},650);
+  setTimeout(()=>{ty.remove();aiAdd("bot",aiRespond(v)+routeBlock(v));},650);
 }
 function hl(s){return '<span class="hl">'+s+'</span>';}
 function aiRespond(q){
@@ -1367,7 +1427,7 @@ function aiRespond(q){
   else if(/错题|解析|这道题|为什么错|讲解/.test(q)){fn=genExplain;}
   if(fn){lastGen={fn,q};return scenePrefix()+fn(q,false);}
   // 默认
-  return "收到～我是你的全能 AI 助手，已支持 25+ 功能：海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、合同润色、排版答疑、话术定制、故事创作、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等。\n\n你可以直接说需求，例如：「帮奶茶店写朋友圈推广」「生成国潮插画提示词」「(120+80)*0.9 算一下」。当前场景：「"+aiScene+"」，可切换后我按该场景调整语气 ✨ 也可以点上方「AI 模型直达」前往任意大模型官网。";
+  return "收到你的问题：「"+q.replace(/</g,"&lt;")+"」<br><br>我已为你接入 <b>真实 AI 模型</b>：在对话下方点任意模型，会带上你的问题自动前往对应大模型求解 ✨<br><br>站内也支持 25+ 项生成（海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、润色、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等），说出需求即可。";
 }
 function scenePrefix(){
   if(aiScene==="通用")return "";
@@ -1888,6 +1948,7 @@ renderDeals("全部");
 renderPalettes("全部");
 renderGallery();
 aiReset();
+renderAIModels();
 updateTime();
 // 默认色值互算填入一个示例
 (function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
