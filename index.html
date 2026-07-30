@@ -162,7 +162,9 @@
 
   /* ---------- AI module ---------- */
   .ai-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:420px}
-  .ai-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .ai-ex{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
+  .ai-modelbar{display:flex;align-items:center;gap:8px;margin:10px 0 2px;font-size:13px;color:#8a7a8f}
+  .ai-modelbar select{padding:7px 10px;border-radius:12px;border:1.5px solid #E5DAF5;background:#fff;color:#6a4f8c;font-size:13px;cursor:pointer;font-family:inherit}
   .ai-tool{font-size:12.5px;padding:6px 13px;border-radius:14px;background:#F1F6FA;color:#6b7c8c;cursor:pointer;border:1px solid transparent;transition:.2s}
   .ai-tool:hover{background:var(--m5);color:#fff}
   .chat{flex:1;overflow-y:auto;padding:6px 4px;display:flex;flex-direction:column;gap:14px}
@@ -691,73 +693,28 @@
     <section class="module" id="m5">
       <div class="card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">🤖</span>全能 AI 助手 · 一站式智能办公</div>
-          <button class="refresh" onclick="aiReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>清空对话</button>
+          <div class="ttl"><span class="emo">🤖</span>全能 AI 助手</div>
+          <button class="refresh" onclick="aiReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>清空</button>
         </div>
-        <div class="sub">文案 / 作图提示词 / 翻译 / 排版答疑 / 表格整理 / 计算 / 合同改写 / 邮件 / 周报 / 简历 全能覆盖，支持多轮上下文记忆与场景智能切换。</div>
-        <div class="ai-bar">
-          <span class="lbl">🎯 场景：</span>
-          <select id="aiScene" onchange="aiScene=this.value">
-            <option value="通用">通用全能</option>
-            <option value="电商运营">电商运营</option>
-            <option value="职场办公">职场办公</option>
-            <option value="设计行业">设计行业</option>
-            <option value="日常聊天">日常聊天</option>
-          </select>
-          <span class="lbl" style="margin-left:auto">点击快捷功能，或直接在输入框描述需求（支持「换一个 / 再来一条」多轮追问）</span>
-        </div>
-        <div class="ai-tools" id="aiTools">
-          <span class="ai-tool" data-q="帮我写一段产品推广海报文案，产品是手冲咖啡">📝 海报文案</span>
+        <div class="ai-ex" id="aiEx">
+          <span class="ai-tool" data-q="帮我写一段手冲咖啡推广海报文案">📝 海报文案</span>
           <span class="ai-tool" data-q="生成一个赛博朋克城市夜景的AI绘画提示词">🎨 绘画提示词</span>
-          <span class="ai-tool" data-q="给一家卖鲜花的店起几个品牌名">🏷️ 品牌起名</span>
-          <span class="ai-tool" data-q="印刷排版中CMYK和专色的区别是什么？">📐 排版知识</span>
-          <span class="ai-tool" data-q="把这段客户评价整理成表格：张三满意度高 李四一般 王五很满意">📊 表格整理</span>
-          <span class="ai-tool" data-q="算一下 (1280+560)*0.85-200">🧮 数据计算</span>
-          <span class="ai-tool" data-q="帮我写一封跟进客户的商务邮件，主题是新品报价">✉️ 邮件撰写</span>
-          <span class="ai-tool" data-q="帮我写一份本周工作周报，做了竞品分析和首页改版">📋 周报生成</span>
-          <span class="ai-tool" data-q="帮我优化一份电商运营简历，3年经验">📄 简历优化</span>
-          <span class="ai-tool" data-q="帮我写一篇小红书种草笔记，主题平价好物分享">📕 小红书笔记</span>
-          <span class="ai-tool" data-q="帮我写一个30秒短视频口播脚本，卖防晒霜">🎬 短视频脚本</span>
-          <span class="ai-tool" data-q="帮我想5个淘宝商品标题和SEO关键词，卖保温杯">🛒 商品标题/SEO</span>
-          <span class="ai-tool" data-q="帮我整理一份会议纪要，讨论了Q3目标与分工">🗒️ 会议纪要</span>
-          <span class="ai-tool" data-q="解释这段Python代码的作用：def add(a,b): return a+b">💻 代码解释</span>
-          <span class="ai-tool" data-q="写一段中秋节客户祝福语，温馨商务">💌 祝福话术</span>
-          <span class="ai-tool" data-q="把这段文案润色得更商务专业一些">✨ 文案润色</span>
-          <span class="ai-tool" data-q="帮我把这句中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
-          <span class="ai-tool" data-q="帮我创作一个关于勇敢小狐狸的睡前童话故事">📖 故事创作</span>
-          <span class="ai-tool" data-q="帮我做一份成都3日旅行攻略，预算2000元">🧳 旅行攻略</span>
-          <span class="ai-tool" data-q="帮我写一份论文大纲，主题是短视频对青少年的影响">📑 论文大纲</span>
-          <span class="ai-tool" data-q="帮我分析这组销售数据并给出提升建议：月销1.2万，复购率18%">📈 数据分析</span>
-          <span class="ai-tool" data-q="帮我写一份健身减脂的每周训练计划">💪 健身计划</span>
-          <span class="ai-tool" data-q="租房合同里房东提前收房算违约吗？简单科普">⚖️ 法律常识</span>
+          <span class="ai-tool" data-q="给一家花店起几个品牌名">🏷️ 品牌起名</span>
+          <span class="ai-tool" data-q="帮我写一封跟进客户的商务邮件">✉️ 邮件撰写</span>
+          <span class="ai-tool" data-q="帮我写本周工作周报">📋 周报生成</span>
+          <span class="ai-tool" data-q="把这段中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
         </div>
-        <div class="ai-models-wrap" style="margin-top:18px">
-          <div class="bar-title">🚀 主流 AI 模型 · 官网直达</div>
-          <div class="ai-models" id="aiModels">
-            <a class="ai-model" href="https://chat.openai.com" target="_blank"><span class="mn">🟢 ChatGPT</span><span class="md">OpenAI 通用大模型</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://claude.ai" target="_blank"><span class="mn">🟣 Claude</span><span class="md">Anthropic 长文本推理</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://www.deepseek.com" target="_blank"><span class="mn">🔷 DeepSeek</span><span class="md">国产深度推理模型</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://kimi.moonshot.cn" target="_blank"><span class="mn">🟢 Kimi</span><span class="md">超长上下文助手</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://yiyan.baidu.com" target="_blank"><span class="mn">🔵 文心一言</span><span class="md">百度知识增强大模型</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://tongyi.aliyun.com" target="_blank"><span class="mn">🟠 通义千问</span><span class="md">阿里全场景大模型</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://www.doubao.com" target="_blank"><span class="mn">🟡 豆包</span><span class="md">字节跳动 AI 助手</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://chatglm.cn" target="_blank"><span class="mn">🟦 智谱清言</span><span class="md">智谱 GLM 系列</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://xinghuo.xfyun.cn" target="_blank"><span class="mn">🔶 讯飞星火</span><span class="md">科大讯飞认知大模型</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://gemini.google.com" target="_blank"><span class="mn">🟠 Gemini</span><span class="md">Google 多模态模型</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://copilot.microsoft.com" target="_blank"><span class="mn">🔵 Copilot</span><span class="md">微软 AI 助手</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://www.perplexity.ai" target="_blank"><span class="mn">🟦 Perplexity</span><span class="md">AI 对话式搜索</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://www.midjourney.com" target="_blank"><span class="mn">🟣 Midjourney</span><span class="md">AI 绘画生成</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://jimeng.jianying.com" target="_blank"><span class="mn">🟡 即梦 AI</span><span class="md">字节 AI 图像/视频</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://kling.kuaishou.com" target="_blank"><span class="mn">🟣 可灵 AI</span><span class="md">快手视频生成</span><span class="ml">官网直达 ↗</span></a>
-            <a class="ai-model" href="https://stability.ai" target="_blank"><span class="mn">🟢 Stable Diffusion</span><span class="md">开源图像扩散模型</span><span class="ml">官网直达 ↗</span></a>
-          </div>
+        <div class="ai-modelbar">
+          <span>用</span>
+          <select id="aiModelSel"></select>
+          <span>解答 · 发送即前往</span>
         </div>
       </div>
       <div class="card ai-wrap">
         <div class="chat" id="chat"></div>
         <div class="ai-input">
-          <textarea id="aiText" placeholder="输入需求，例如：帮我把这段文案润色得更商务一些…（Enter 发送 / Shift+Enter 换行）"></textarea>
-          <button onclick="aiSend()">发送</button>
+          <textarea id="aiText" placeholder="输入问题，回车发送（将用所选模型打开解答）…"></textarea>
+          <button onclick="aiSend()">发送并前往</button>
         </div>
       </div>
     </section>
@@ -1321,7 +1278,7 @@ function aiAdd(role,html){
 }
 function aiReset(){
   chat.innerHTML="";aiMem=[];lastGen=null;
-  aiAdd("bot","你好，我是你的全能 AI 助手 👋<br>已支持 <b>25+</b> 项功能：海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、合同润色、排版答疑、话术定制、故事创作、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等。<br><br>顶部可切换 <b>场景</b>（电商运营/职场办公/设计行业/日常聊天），我会据此调整语气；支持多轮上下文，可直接说「换一个 / 再来一条」让我重新生成 ✨ 也可点下方「AI 模型直达」前往任意大模型官网。");
+  aiAdd("bot","你好，我是你的全能 AI 助手 👋<br>先选择想用的 AI 模型，输入问题后点「发送并前往」，我会带着你的问题直接打开该模型求解；也可以点上方示例快速体验 ✨");
 }
 /* ====== 真实 AI 模型路由：输入问题后可一键调用任意模型（带入问题） ====== */
 const MODELS=[
@@ -1353,10 +1310,7 @@ function openModel(id,enc){
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(()=>toast("问题已复制，去 "+m.name+" 粘贴即可 ✨")).catch(()=>{});}
     window.open(m.url,"_blank");
   }
-  aiModelId=id;setModelSel();
-}
-function setModelSel(){
-  document.querySelectorAll("#aiModels .ai-model").forEach(a=>{a.classList.toggle("sel",a.dataset.id===aiModelId);});
+  aiModelId=id;
 }
 function toast(msg){
   let t=document.getElementById("aiToast");
@@ -1364,17 +1318,11 @@ function toast(msg){
   t.textContent=msg;t.classList.add("show");
   clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),2200);
 }
-function routeBlock(q){
-  const enc=encodeURIComponent(q);
-  const chips=MODELS.map(m=>`<a class="mchip" href="javascript:void(0)" onclick="event.stopPropagation();openModel('${m.id}','${enc}')" title="${m.q?'带问题直达':'打开并复制问题'}">${m.icon} ${m.name}</a>`).join("");
-  return `<div class="solve"><div class="solve-t">🚀 用真实 AI 模型求解此问题（点任意模型，已带入你的问题）：</div><div class="mchips">${chips}</div><div class="solve-n">支持链接直带问题的模型：${MODELS.filter(m=>m.q).map(m=>m.name).join("、")}；其余模型会打开官网并自动复制问题，粘贴即用。</div></div>`;
+function renderModelSelect(){
+  const sel=document.getElementById("aiModelSel");if(!sel)return;
+  sel.innerHTML=MODELS.map(function(m){return '<option value="'+m.id+'">'+m.icon+' '+m.name+'</option>';}).join("");
 }
-function renderAIModels(){
-  const box=document.getElementById("aiModels");if(!box)return;
-  box.innerHTML=MODELS.map(m=>`<a class="ai-model" data-id="${m.id}" href="javascript:void(0)" onclick="openModel('${m.id}', encodeURIComponent(aiText.value.trim()))"><span class="mn">${m.icon} ${m.name}</span><span class="md">${m.desc}</span><span class="ml">带问题前往 ↗</span></a>`).join("");
-  setModelSel();
-}
-document.getElementById("aiTools").querySelectorAll(".ai-tool").forEach(t=>{
+document.getElementById("aiEx").querySelectorAll(".ai-tool").forEach(t=>{
   t.onclick=()=>{aiText.value=t.dataset.q;aiSend();};
 });
 aiText.addEventListener("keydown",e=>{
@@ -1386,11 +1334,13 @@ function aiSend(){
   aiAdd("me",v.replace(/</g,"&lt;"));
   aiMem.push(v);
   aiText.value="";
-  // typing
+  const sel=document.getElementById("aiModelSel").value||"chatgpt";
+  const m=modelById(sel)||MODELS[0];
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
   chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
-  setTimeout(()=>{ty.remove();aiAdd("bot",aiRespond(v)+routeBlock(v));},650);
+  openModel(sel, encodeURIComponent(v));
+  setTimeout(function(){ty.remove();aiAdd("bot","正在用 <b>"+m.name+"</b> 为你解答 ✅<br>已在新页面带入你的问题，直接继续对话即可；回来可切换其它模型再发一次。");},500);
 }
 function hl(s){return '<span class="hl">'+s+'</span>';}
 function aiRespond(q){
@@ -1948,7 +1898,7 @@ renderDeals("全部");
 renderPalettes("全部");
 renderGallery();
 aiReset();
-renderAIModels();
+renderModelSelect();
 updateTime();
 // 默认色值互算填入一个示例
 (function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
