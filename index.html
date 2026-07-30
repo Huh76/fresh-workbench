@@ -178,6 +178,13 @@
   .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
   @keyframes b{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
   .ai-input{display:flex;gap:10px;margin-top:12px}
+  .ai-roles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .role-chip{font-size:12px;padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.1);cursor:pointer;user-select:none;transition:.2s}
+  .role-chip.active{background:#e26a9c;color:#fff;border-color:#e26a9c}
+  .ai-imgs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+  .img-chip{font-size:12px;padding:3px 10px;border-radius:10px;background:rgba(226,106,156,.12);color:#e26a9c;cursor:pointer}
+  .icon-btn{padding:8px 10px;border:none;background:#F1F6FA;border-radius:10px;cursor:pointer;font-size:15px}
+  .icon-btn:hover{background:#e3ecf3}
   .ai-input textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-family:inherit;font-size:13.5px;outline:none;height:52px;background:#FDF8FB}
   .ai-input textarea:focus{border-color:var(--m5)}
   .ai-input button{border:none;background:var(--m5);color:#3a2d5c;font-weight:700;padding:0 22px;border-radius:14px;cursor:pointer;font-size:14px}
@@ -709,6 +716,7 @@
         <div class="ai-hint">💡 输入问题后，AI 会直接在本页下方回答，无需跳转外部页面。</div>
         <div id="aiCfgBox" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.08);border-radius:12px;font-size:12px">
           <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseReal"> 启用真实大模型（页内作答，不跳转）</label></div>
+          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">预设</span><select id="aiProv" onchange="applyProv()" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px"><option value="">自定义</option><option value="deepseek">DeepSeek</option><option value="qwen">通义千问</option><option value="zhipu">智谱 GLM</option><option value="silicon">SiliconFlow</option><option value="openai">OpenAI</option></select></div>
           <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">接口</span><input id="aiBase" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="https://api.deepseek.com/v1"></div>
           <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">Key</span><input id="aiKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="sk-..."></div>
           <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">模型</span><input id="aiModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="deepseek-chat"></div>
@@ -719,15 +727,32 @@
             <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图模型</span><input id="aiImgModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="black-forest-labs/FLUX.1-schnell"></div>
             <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center"><span style="width:46px">尺寸</span><input id="aiImgSize" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="1024x1024"></div>
           </div>
+          <div style="border-top:1px dashed rgba(0,0,0,.12);margin:8px 0 6px;padding-top:6px">
+            <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseSearch"> 联网搜索（实时信息）</label></div>
+            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">搜索</span><select id="aiSearchEng" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px"><option value="serper">Serper</option><option value="tavily">Tavily</option></select></div>
+            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">搜Key</span><input id="aiSearchKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="搜索 API Key（可选）"></div>
+          </div>
           <div style="margin-bottom:4px"><button class="refresh" onclick="saveCfg()">保存</button> <span id="aiCfgMsg"></span></div>
-          <div style="color:#888;font-size:11px">支持 OpenAI 兼容接口（DeepSeek / 通义 / 智谱 / 本地 Ollama）。Key 仅存本机浏览器，不会上传。</div>
+          <div style="color:#888;font-size:11px">支持 OpenAI 兼容接口（DeepSeek / 通义 / 智谱 / SiliconFlow / 本地 Ollama）。视觉模型（通义千问VL / GLM-4V / GPT-4o）可上传图片识图；开启联网可答实时信息。Key 仅存本机浏览器，不会上传。</div>
         </div>
       </div>
       <div class="card ai-wrap">
+        <div class="ai-roles" id="aiRoles">
+          <span class="role-chip active" data-role="general" onclick="setRole('general')">通用</span>
+          <span class="role-chip" data-role="translator" onclick="setRole('translator')">翻译官</span>
+          <span class="role-chip" data-role="coder" onclick="setRole('coder')">程序员</span>
+          <span class="role-chip" data-role="writer" onclick="setRole('writer')">文案</span>
+          <span class="role-chip" data-role="teacher" onclick="setRole('teacher')">老师</span>
+        </div>
         <div class="chat" id="chat"></div>
+        <div class="ai-imgs" id="aiImgChips"></div>
         <div class="ai-input">
-          <textarea id="aiText" placeholder="输入问题，回车发送，AI 直接在本页回答…"></textarea>
+          <button class="icon-btn" title="上传图片" onclick="document.getElementById('aiFile').click()">📎</button>
+          <button class="icon-btn" title="语音输入" onclick="startVoice()">🎤</button>
+          <textarea id="aiText" placeholder="输入问题，回车发送；可📎上传图片让 AI 识图；点🎤语音输入…"></textarea>
           <button onclick="aiSend()">发送</button>
+          <button class="icon-btn" title="朗读回复" onclick="speakLast()">🔊</button>
+          <input type="file" id="aiFile" accept="image/*" style="display:none" onchange="onImg(this)">
         </div>
       </div>
     </section>
@@ -1287,6 +1312,7 @@ function aiAdd(role,html){
     d.onclick=function(e){ if(e.target.closest('a'))return; openDetail(k); };
   }
   chat.appendChild(d);
+  if(role!=="me")lastBotText=stripTags(html);
   chat.scrollTop=chat.scrollHeight;
 }
 function aiReset(){
@@ -1350,7 +1376,7 @@ function stripTags(s){return String(s).replace(/<br\s*\/?>/gi,"\n").replace(/<[^
 function loadCfg(){try{return JSON.parse((window.localStorage&&localStorage.getItem("aiCfg"))||"null");}catch(e){return null;}}
 function saveCfg(){
   const c={useReal:document.getElementById("aiUseReal").checked,base:document.getElementById("aiBase").value.trim(),key:document.getElementById("aiKey").value.trim(),model:document.getElementById("aiModel").value.trim()||"deepseek-chat",
-    useImg:document.getElementById("aiUseImg").checked,imgBase:document.getElementById("aiImgBase").value.trim(),imgKey:document.getElementById("aiImgKey").value.trim(),imgModel:document.getElementById("aiImgModel").value.trim(),imgSize:document.getElementById("aiImgSize").value.trim()};
+    useImg:document.getElementById("aiUseImg").checked,imgBase:document.getElementById("aiImgBase").value.trim(),imgKey:document.getElementById("aiImgKey").value.trim(),imgModel:document.getElementById("aiImgModel").value.trim(),imgSize:document.getElementById("aiImgSize").value.trim(),useSearch:document.getElementById("aiUseSearch").checked,searchEng:document.getElementById("aiSearchEng").value,searchKey:document.getElementById("aiSearchKey").value.trim(),role:(typeof curRole!=="undefined")?curRole:"general"};
   try{localStorage.setItem("aiCfg",JSON.stringify(c));}catch(e){}
   document.getElementById("aiCfgMsg").textContent="已保存 ✓（仅存本机）";
 }
@@ -1368,20 +1394,109 @@ function toggleCfg(){
     document.getElementById("aiImgKey").value=c.imgKey||"";
     document.getElementById("aiImgModel").value=c.imgModel||"black-forest-labs/FLUX.1-schnell";
     document.getElementById("aiImgSize").value=c.imgSize||"1024x1024";
+    document.getElementById("aiUseSearch").checked=!!c.useSearch;
+    document.getElementById("aiSearchEng").value=c.searchEng||"serper";
+    document.getElementById("aiSearchKey").value=c.searchKey||"";
+    curRole=c.role||"general"; setRole(curRole,true);
   }
 }
-function aiReal(q,cfg){
+let curRole="general";
+let pendingImgs=[];
+let lastBotText="";
+function roleSystem(role){
+  const m={
+    general:"你是一个有帮助的中文助手，回答简洁有条理、用中文。",
+    translator:"你是一名专业中英翻译官，准确、自然、符合语境，直接给译文，可附简短说明。",
+    coder:"你是一名资深程序员，给出可运行代码与清晰解释，用中文回答。",
+    writer:"你是一名文案策划，擅长海报文案、小红书、邮件等，风格活泼有转化力。",
+    teacher:"你是一名耐心老师，循序渐进、用例子讲解，鼓励提问。"
+  };
+  return m[role]||m.general;
+}
+function applyProv(){
+  const p=document.getElementById("aiProv").value;
+  const map={
+    deepseek:{base:"https://api.deepseek.com/v1",model:"deepseek-chat"},
+    qwen:{base:"https://dashscope.aliyuncs.com/compatible-mode/v1",model:"qwen-plus"},
+    zhipu:{base:"https://open.bigmodel.cn/api/paas/v4",model:"glm-4-flash"},
+    silicon:{base:"https://api.siliconflow.cn/v1",model:"deepseek-ai/DeepSeek-V3"},
+    openai:{base:"https://api.openai.com/v1",model:"gpt-4o"}
+  };
+  if(map[p]){document.getElementById("aiBase").value=map[p].base;document.getElementById("aiModel").value=map[p].model;}
+}
+function setRole(r,silent){
+  curRole=r;
+  const chips=document.querySelectorAll("#aiRoles .role-chip");
+  for(let i=0;i<chips.length;i++){chips[i].classList.toggle("active",chips[i].getAttribute("data-role")===r);}
+  if(!silent){const c=loadCfg()||{};c.role=r;try{localStorage.setItem("aiCfg",JSON.stringify(c));}catch(e){}}
+}
+function onImg(input){
+  const f=input.files&&input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=function(){pendingImgs.push(r.result);renderImgChips();input.value="";};
+  r.readAsDataURL(f);
+}
+function renderImgChips(){
+  const box=document.getElementById("aiImgChips");if(!box)return;
+  box.innerHTML=pendingImgs.map(function(s,i){return '<span class="img-chip" onclick="removeImg('+i+')">🖼️图'+(i+1)+' ✕</span>';}).join("");
+}
+function removeImg(i){pendingImgs.splice(i,1);renderImgChips();}
+function startVoice(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){alert("当前浏览器不支持语音输入，请用 Chrome / Edge");return;}
+  const rec=new SR();rec.lang="zh-CN";rec.interimResults=false;rec.maxAlternatives=1;
+  rec.onresult=function(e){const t=e.results[0][0].transcript;aiText.value=(aiText.value?aiText.value+" ":"")+t;};
+  rec.onerror=function(e){toast("语音识别失败："+e.error);};
+  try{rec.start();}catch(e){}
+}
+function speakLast(){
+  if(!('speechSynthesis' in window)){toast("当前浏览器不支持语音播报");return;}
+  const txt=lastBotText.replace(/<[^>]+>/g,"").trim();
+  if(!txt)return;
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(txt);u.lang="zh-CN";u.rate=1;u.pitch=1;speechSynthesis.speak(u);
+}
+function webSearch(q,cfg){
+  const eng=cfg.searchEng||"serper";
+  const key=cfg.searchKey;
+  let url,opts;
+  if(eng==="serper"){url="https://google.serper.dev/search";opts={method:"POST",headers:{"X-API-KEY":key,"Content-Type":"application/json"},body:JSON.stringify({q:q})};}
+  else{url="https://api.tavily.com/search";opts={method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({api_key:key,query:q,max_results:5})};}
+  return fetch(url,opts).then(function(r){return r.json();}).then(function(d){
+    let items=[];
+    if(eng==="serper"){items=(d.organic||[]).slice(0,5).map(function(o){return (o.title||"")+"："+(o.snippet||"");});}
+    else{items=(d.results||[]).slice(0,5).map(function(o){return (o.title||"")+"："+(o.content||o.snippet||"");});}
+    return items.join("\n");
+  });
+}
+
+async function aiReal(q,cfg,imgs){
+  imgs=imgs||[];
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
   chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
-  const messages=[{role:"system",content:"你是一个有帮助的中文助手，回答简洁有条理、用中文。"}];
+  let sys=roleSystem(cfg.role||curRole||"general");
+  let userQ=q;
+  if(q.length>300 && !/(写|生成|创作|翻译|解释代码|润色|比较|列|分析这段|总结)/.test(q)){ userQ="请总结以下内容的要点（用中文、分条列出）：\n\n"+q; }
+  if(cfg.useSearch && cfg.searchKey){
+    try{const snips=await webSearch(q,cfg);if(snips)userQ="【联网搜索结果】\n"+snips+"\n\n【用户问题】"+q;}catch(e){}
+  }
+  const messages=[{role:"system",content:sys}];
   for(let i=0;i+1<aiMem.length;i+=2){
     messages.push({role:"user",content:aiMem[i]});
     messages.push({role:"assistant",content:aiMem[i+1]});
   }
-  messages.push({role:"user",content:q});
+  if(imgs.length){
+    const content=[{type:"text",text:userQ}];
+    imgs.forEach(function(src){content.push({type:"image_url",image_url:{url:src}});});
+    messages.push({role:"user",content:content});
+  }else{
+    messages.push({role:"user",content:userQ});
+  }
+  const body={model:cfg.model||"deepseek-chat",messages:messages,stream:false};
+  if(cfg.useSearch) body.enable_search=true;
   const url=cfg.base.replace(/\/$/,"")+"/chat/completions";
-  fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+cfg.key},body:JSON.stringify({model:cfg.model||"deepseek-chat",messages:messages,stream:false})})
+  fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+cfg.key},body:JSON.stringify(body)})
    .then(function(r){return r.json();})
    .then(function(d){
      ty.remove();
@@ -1389,7 +1504,7 @@ function aiReal(q,cfg){
      if(d&&d.choices&&d.choices[0]&&d.choices[0].message)txt=d.choices[0].message.content;
      else if(d&&d.error)txt="（模型返回错误："+((d.error.message)||"未知")+"）";
      else txt="（模型未返回内容）";
-     txt=String(txt).replace(/</g,"&lt;").replace(/\n/g,"<br>");
+     txt=String(txt==null?"":txt).replace(/</g,"&lt;").replace(/\n/g,"<br>");
      aiAdd("bot",txt);
      aiMem.push(stripTags(txt));
    })
@@ -1488,23 +1603,28 @@ function genChat(q){
 }
 function aiSend(){
   const v=aiText.value.trim();
-  if(!v)return;
-  aiAdd("me",v.replace(/</g,"&lt;"));
-  aiMem.push(v);
+  const hasImg=pendingImgs.length>0;
+  if(!v && !hasImg)return;
+  const text=v||"请描述这张图片";
+  aiAdd("me",(v?v.replace(/</g,"&lt;"):"")+(hasImg?" 📎["+pendingImgs.length+"张图]":""));
+  aiMem.push(text);
   aiText.value="";
   const cfg=loadCfg();
-  if(isImageIntent(v)){ aiImage(v,(cfg&&cfg.useImg)?cfg:null); return; }
-  if(cfg&&cfg.useReal&&cfg.key&&cfg.base){ aiReal(v,cfg); return; }
+  const realOk=cfg&&cfg.useReal&&cfg.key&&cfg.base;
+  if(isImageIntent(text) && !hasImg){ aiImage(text,(cfg&&cfg.useImg)?cfg:null); return; }
+  if(hasImg && !realOk){ aiAdd("bot","🖼️ 要让 AI 看懂图片，请先点 ⚙ 接入真实 AI 并启用（需支持视觉的模型，如通义千问 VL / GLM-4V / GPT-4o）。"); pendingImgs=[]; renderImgChips(); return; }
+  if(realOk){ aiReal(text,cfg,pendingImgs.slice()); pendingImgs=[]; renderImgChips(); return; }
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
   chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
   setTimeout(function(){
     ty.remove();
-    let out=aiRespond(v);
+    let out=aiRespond(text);
     out=String(out==null?"":out).replace(/\n/g,"<br>");
     aiAdd("bot",out);
     aiMem.push(stripTags(out));
   },420);
+  pendingImgs=[]; renderImgChips();
 }
 function hl(s){return '<span class="hl">'+s+'</span>';}
 function aiRespond(q){
