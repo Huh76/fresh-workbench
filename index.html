@@ -704,17 +704,13 @@
           <span class="ai-tool" data-q="帮我写本周工作周报">📋 周报生成</span>
           <span class="ai-tool" data-q="把这段中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
         </div>
-        <div class="ai-modelbar">
-          <span>用</span>
-          <select id="aiModelSel"></select>
-          <span>解答 · 发送即前往</span>
-        </div>
+        <div class="ai-hint">💡 输入问题后，AI 会直接在本页下方回答，无需跳转外部页面。</div>
       </div>
       <div class="card ai-wrap">
         <div class="chat" id="chat"></div>
         <div class="ai-input">
-          <textarea id="aiText" placeholder="输入问题，回车发送（将用所选模型打开解答）…"></textarea>
-          <button onclick="aiSend()">发送并前往</button>
+          <textarea id="aiText" placeholder="输入问题，回车发送，AI 直接在本页回答…"></textarea>
+          <button onclick="aiSend()">发送</button>
         </div>
       </div>
     </section>
@@ -1278,7 +1274,7 @@ function aiAdd(role,html){
 }
 function aiReset(){
   chat.innerHTML="";aiMem=[];lastGen=null;
-  aiAdd("bot","你好，我是你的全能 AI 助手 👋<br>先选择想用的 AI 模型，输入问题后点「发送并前往」，我会带着你的问题直接打开该模型求解；也可以点上方示例快速体验 ✨");
+  aiAdd("bot","你好，我是你的全能 AI 助手 👋<br>直接在下方输入问题，我会<b>在本页内</b>为你生成回答，无需跳转任何外部页面；也可以点上方示例快速体验 ✨");
 }
 /* ====== 真实 AI 模型路由：输入问题后可一键调用任意模型（带入问题） ====== */
 const MODELS=[
@@ -1334,13 +1330,15 @@ function aiSend(){
   aiAdd("me",v.replace(/</g,"&lt;"));
   aiMem.push(v);
   aiText.value="";
-  const sel=document.getElementById("aiModelSel").value||"chatgpt";
-  const m=modelById(sel)||MODELS[0];
   const ty=document.createElement("div");
   ty.className="typing";ty.innerHTML="<span></span><span></span><span></span>";
   chat.appendChild(ty);chat.scrollTop=chat.scrollHeight;
-  openModel(sel, encodeURIComponent(v));
-  setTimeout(function(){ty.remove();aiAdd("bot","正在用 <b>"+m.name+"</b> 为你解答 ✅<br>已在新页面带入你的问题，直接继续对话即可；回来可切换其它模型再发一次。");},500);
+  setTimeout(function(){
+    ty.remove();
+    let out=aiRespond(v);
+    out=String(out==null?"":out).replace(/\n/g,"<br>");
+    aiAdd("bot",out);
+  },420);
 }
 function hl(s){return '<span class="hl">'+s+'</span>';}
 function aiRespond(q){
@@ -1377,7 +1375,7 @@ function aiRespond(q){
   else if(/错题|解析|这道题|为什么错|讲解/.test(q)){fn=genExplain;}
   if(fn){lastGen={fn,q};return scenePrefix()+fn(q,false);}
   // 默认
-  return "收到你的问题：「"+q.replace(/</g,"&lt;")+"」<br><br>我已为你接入 <b>真实 AI 模型</b>：在对话下方点任意模型，会带上你的问题自动前往对应大模型求解 ✨<br><br>站内也支持 25+ 项生成（海报文案、绘画提示词、品牌起名、小红书笔记、邮件、周报、简历、短视频脚本、商品标题/SEO、会议纪要、代码解释、祝福话术、翻译、表格、计算、润色、旅行攻略、论文大纲、数据分析、健身计划、法律常识、错题解析等），说出需求即可。";
+  return "收到你的问题：「"+q.replace(/</g,"&lt;")+"」<br><br>我已在<b>本页面内</b>为你生成回答 ✨<br><br>内置引擎覆盖：海报文案 / 绘画提示词 / 品牌起名 / 小红书笔记 / 邮件 / 周报 / 简历 / 短视频脚本 / 商品标题与 SEO / 会议纪要 / 代码解释 / 祝福话术 / 翻译 / 表格 / 计算 / 润色 / 旅行攻略 / 论文大纲 / 数据分析 / 健身计划 / 法律常识 / 错题解析 等。说出具体需求，我会直接在这里作答。";
 }
 function scenePrefix(){
   if(aiScene==="通用")return "";
@@ -1898,7 +1896,6 @@ renderDeals("全部");
 renderPalettes("全部");
 renderGallery();
 aiReset();
-renderModelSelect();
 updateTime();
 // 默认色值互算填入一个示例
 (function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
