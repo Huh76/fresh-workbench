@@ -467,6 +467,44 @@
     .ai-grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
     .main{padding:12px 10px 60px}
   }
+
+  /* ---------- 生活规划 / 全能问答 交互模块 ---------- */
+  .assist{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+  .acards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .acard{display:flex;flex-direction:column;align-items:flex-start;gap:5px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:13px 14px;cursor:pointer;transition:.18s;text-align:left;font-family:inherit;color:inherit}
+  .acard:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .acard .ai{font-size:22px;line-height:1}
+  .acard .at{font-size:14px;font-weight:700;color:#574B53}
+  .acard .ad{font-size:11.5px;color:#A8969E;line-height:1.4}
+  #m5 .acard:hover{border-color:var(--m5)}
+  #m6 .acard:hover{border-color:var(--m6)}
+  .amsg{display:flex;flex-direction:column;gap:12px}
+  .bub{border-radius:16px;padding:12px 15px;font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word;max-width:100%}
+  .bub.u{background:var(--acc);color:#3a2e44;align-self:flex-end;border-bottom-right-radius:5px;max-width:88%}
+  .bub.a{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:5px}
+  .bub.a h4{font-size:14.5px;color:#574B53;margin:10px 0 4px}
+  .bub.a h4:first-child{margin-top:0}
+  .bub.a h5{font-size:13.5px;color:var(--acc);margin:8px 0 3px}
+  .bub.a ul{margin:4px 0 6px;padding-left:18px}
+  .bub.a li{margin:3px 0}
+  .bub.a p{margin:5px 0}
+  .bub.a .tip{color:#8d7a82;font-size:12.5px;background:#FBF1F3;border-radius:10px;padding:8px 10px;margin-top:8px;white-space:pre-wrap}
+  .aactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .aact{font-size:12.5px;padding:6px 14px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:#9a7d8a;cursor:pointer;font-family:inherit;transition:.15s}
+  .aact:hover{background:#FBEFF3;border-color:var(--acc);color:#7a5a6a}
+  .ainput{display:flex;gap:10px;align-items:flex-end;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px 12px;margin-top:6px}
+  .ainput textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-family:inherit;font-size:13.5px;outline:none;height:52px;background:#FDF8FB;line-height:1.5}
+  #m5 .ainput textarea:focus{border-color:var(--m5)}
+  #m6 .ainput textarea:focus{border-color:var(--m6)}
+  .ainput .send{border:none;background:var(--acc);color:#fff;font-weight:700;padding:0 20px;border-radius:14px;cursor:pointer;font-size:14px;height:52px;font-family:inherit}
+  .ainput .send:hover{filter:brightness(.96)}
+  .assist-empty{color:#A8969E;font-size:13px;text-align:center;padding:10px 0}
+  @media(max-width:600px){
+    .acards{grid-template-columns:repeat(2,1fr)}
+    .acard{padding:12px 11px}
+    .acard .ad{display:none}
+    .bub.u{max-width:92%}
+  }
 </style>
 </head>
 <body>
@@ -520,6 +558,14 @@
     <button class="nav-btn" data-mod="m4" style="--acc:var(--m4)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/><path d="M14 14l4 4M18 14l-4 4"/></svg></span>
       <span>排版兼职</span>
+    </button>
+    <button class="nav-btn" data-mod="m5" style="--acc:var(--m5)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
+      <span>生活规划</span>
+    </button>
+    <button class="nav-btn" data-mod="m6" style="--acc:var(--m6)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10h8M8 14h5" stroke="currentColor" fill="none"/></svg></span>
+      <span>全能问答</span>
     </button>
     <button class="nav-btn" data-mod="m7" style="--acc:var(--m7)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-1-2-3-4-4-1.5-1-2-4-5-5z"/><circle cx="8.5" cy="11.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
@@ -693,8 +739,44 @@
       <div class="grid" id="m4grid"></div>
     </section>
 
-    <!-- ===== Module 5: AI助手 ===== -->
-    <!-- ===== Module 6: 薅羊毛 ===== -->
+    <!-- ===== Module 5: 生活规划 ===== -->
+    <section class="module" id="m5">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🧭</span>生活规划 · 把日子过得更顺手</div>
+          <button class="refresh" onclick="lifeReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>重置对话</button>
+        </div>
+        <div class="sub">覆盖出行、清单、购物、时间、休闲、省钱六大场景。每轮先给菜单；输入卡片名直接进功能，需求模糊会提示你选卡片或直接说想法。</div>
+      </div>
+      <div class="assist" id="lifeAssist">
+        <div class="acards" id="lifeCards"></div>
+        <div class="amsg" id="lifeMsg"><div class="assist-empty">先从下面选一张卡片，或直接描述需求 👇</div></div>
+      </div>
+      <div class="ainput">
+        <textarea id="lifeIn" placeholder="输入卡片名（如：出行方案）或描述需求，回车发送…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();lifeSend();}"></textarea>
+        <button class="send" onclick="lifeSend()">发送</button>
+      </div>
+    </section>
+
+    <!-- ===== Module 6: 全能问答 ===== -->
+    <section class="module" id="m6">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">💬</span>全能问答 · 想清楚再行动</div>
+          <button class="refresh" onclick="qaReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>重置对话</button>
+        </div>
+        <div class="sub">知识科普、问题拆解、利弊分析、疑问解答、思路梳理。客观作答、不编造；需求模糊会提示你选卡片或直接问。</div>
+      </div>
+      <div class="assist" id="qaAssist">
+        <div class="acards" id="qaCards"></div>
+        <div class="amsg" id="qaMsg"><div class="assist-empty">先从下面选一张卡片，或直接提问 👇</div></div>
+      </div>
+      <div class="ainput">
+        <textarea id="qaIn" placeholder="输入卡片名（如：利弊分析）或直接提问，回车发送…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();qaSend();}"></textarea>
+        <button class="send" onclick="qaSend()">发送</button>
+      </div>
+    </section>
+
     <!-- ===== Module 7: 潘通色卡 ===== -->
     <section class="module" id="m7">
       <div class="card">
@@ -797,8 +879,8 @@
 
 <script>
 /* ====== 全局 ====== */
-const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m7:"🎨 潘通色卡&配色库"};
-const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m7:"#C9B9F2"};
+const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m5:"🧭 生活规划",m6:"💬 全能问答",m7:"🎨 潘通色卡&配色库"};
+const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m5:"#B9A6D9",m6:"#E9A99B",m7:"#C9B9F2"};
 
 document.querySelectorAll(".nav-btn").forEach(b=>{
   b.onclick=()=>{
@@ -811,6 +893,8 @@ document.querySelectorAll(".nav-btn").forEach(b=>{
     document.documentElement.style.setProperty("--acc",modAcc[m]);
     updateTime();
     if(m==="m7"){renderPalettes("全部");renderGallery();}
+    if(m==="m5")lifeReset();
+    if(m==="m6")qaReset();
   };
 });
 function updateTime(){
@@ -1510,7 +1594,189 @@ function copyColor(c){
   }
 }
 
+/* ====== Module 5: 生活规划 ====== */
+const LIFE_CARDS=[
+ {k:"出行方案",icon:"🧳",kw:["旅游","旅行","行程","游玩","攻略","度假","周边游","出游","去玩","自由行","跟团","玩"],desc:"目的地行程与预算",prompt:"告诉我目的地、天数、偏好（亲子/美食/拍照/人文…），我出方案。"},
+ {k:"清单规划",icon:"📝",kw:["清单","列表","待办","准备","规划清单","列一下","checklist","备忘"],desc:"分层待办清单",prompt:"说明要规划的事（搬家/考试/出差/婚礼…），我给分层清单。"},
+ {k:"购物参考",icon:"🛒",kw:["购物","买","选购","挑","下单","种草","产品对比"],desc:"选购要点与避坑",prompt:"说想买的东西和预算/用途，我给选购要点与避坑。"},
+ {k:"时间安排",icon:"⏰",kw:["时间","日程","安排","计划表","排期","作息","几点","时间表","规划一下时间"],desc:"把事排成时间表",prompt:"列出要做的几件事或目标，我帮你排时间表。"},
+ {k:"美食影视",icon:"🍜",kw:["美食","影视","电影","剧","吃","看什么","下饭","夜宵","综艺"],desc:"按场景松弛推荐",prompt:"说口味/心情/场景，我按美食+影视两类给你推荐。"},
+ {k:"省钱思路",icon:"💡",kw:["省钱","攒钱","理财","预算控制","记账","攒","薅"],desc:"落地省钱法子",prompt:"说场景（日常/装修/育儿/旅行），我给省钱法。"}
+];
+let lifeMode=null, lifeLast=null;
+function renderLifeCards(){document.getElementById("lifeCards").innerHTML=LIFE_CARDS.map(c=>"<button class='acard' onclick='lifePick(\""+c.k+"\")'><span class='ai'>"+c.icon+"</span><span class='at'>"+c.k+"</span><span class='ad'>"+c.desc+"</span></button>").join("");}
+function lifePick(n){const c=LIFE_CARDS.find(x=>x.k===n);if(!c)return;lifeMode=c.k;appendMsg("lifeMsg","a",mdToHtml("### 已进入【"+c.k+"】\n"+c.prompt));document.getElementById("lifeIn").focus();}
+function lifeReset(){lifeMode=null;lifeLast=null;renderLifeCards();document.getElementById("lifeMsg").innerHTML="<div class='assist-empty'>先从下面选一张卡片，或直接描述需求 👇</div>";}
+function lifeSend(){
+  const ta=document.getElementById("lifeIn");const text=ta.value.trim();if(!text)return;
+  appendMsg("lifeMsg","u",esc(text));ta.value="";
+  const card=matchCard(text,LIFE_CARDS);
+  if(card){lifeMode=card.k;const topic=stripCard(text,card);
+    if(topic){const out=genLife(card.k,topic,"normal");lifeLast={mode:card.k,topic:topic};appendAnswer("lifeMsg",mdToHtml(out),"life");}
+    else{appendMsg("lifeMsg","a",mdToHtml("### 已进入【"+card.k+"】\n"+card.prompt));}
+  }else if(lifeMode){const out=genLife(lifeMode,text,"normal");lifeLast={mode:lifeMode,topic:text};appendAnswer("lifeMsg",mdToHtml(out),"life");}
+  else{appendMsg("lifeMsg","a",mdToHtml("### 想从哪开始？\n- 直接点上面的卡片，或输入卡片名（如「出行方案」）\n- 也可以直接描述需求，我帮你判断用哪个功能。"));}
+  const box=document.getElementById("lifeMsg");box.scrollTop=box.scrollHeight;
+}
+function lifeTransform(v){transformGen(v,"life",genLife,lifeLast);}
+
+/* ====== Module 6: 全能问答 ====== */
+const QA_CARDS=[
+ {k:"知识科普",icon:"📚",kw:["科普","知识","是什么","什么是","何为","的意思","指什么","解释","原理","讲讲","说说"],desc:"用人话讲清概念",prompt:"把想了解的名词或现象发给我，我尽量讲明白。"},
+ {k:"问题拆解",icon:"🔍",kw:["拆解","分解","怎么解决","卡住","分析这个问题"],desc:"复杂问题层层拆",prompt:"描述你卡住的问题，我帮你从目标拆到第一步。"},
+ {k:"利弊分析",icon:"⚖️",kw:["利弊","优缺点","比较","vs","还是","选哪个","对比"],desc:"列清楚再决策",prompt:"说出要比较的两件事（如 A 还是 B），我列利弊。"},
+ {k:"疑问解答",icon:"❓",kw:["怎么","如何","为什么","可以吗","是不是","能否","应该","疑问","解答","怎么办"],desc:"客观答各类疑问",prompt:"直接问，我给思路和提醒；专业问题请以官方为准。"},
+ {k:"思路梳理",icon:"🧠",kw:["梳理","整理","理一理","乱","想法","归纳"],desc:"零散想法理结构",prompt:"把脑子里的事都倒出来，我帮你归成结构。"}
+];
+let qaMode=null, qaLast=null;
+function renderQaCards(){document.getElementById("qaCards").innerHTML=QA_CARDS.map(c=>"<button class='acard' onclick='qaPick(\""+c.k+"\")'><span class='ai'>"+c.icon+"</span><span class='at'>"+c.k+"</span><span class='ad'>"+c.desc+"</span></button>").join("");}
+function qaPick(n){const c=QA_CARDS.find(x=>x.k===n);if(!c)return;qaMode=c.k;appendMsg("qaMsg","a",mdToHtml("### 已进入【"+c.k+"】\n"+c.prompt));document.getElementById("qaIn").focus();}
+function qaReset(){qaMode=null;qaLast=null;renderQaCards();document.getElementById("qaMsg").innerHTML="<div class='assist-empty'>先从下面选一张卡片，或直接提问 👇</div>";}
+function qaSend(){
+  const ta=document.getElementById("qaIn");const text=ta.value.trim();if(!text)return;
+  appendMsg("qaMsg","u",esc(text));ta.value="";
+  const card=matchCard(text,QA_CARDS);
+  if(card){qaMode=card.k;const topic=stripCard(text,card);
+    if(topic){const out=genQA(card.k,topic,"normal");qaLast={mode:card.k,topic:topic};appendAnswer("qaMsg",mdToHtml(out),"qa");}
+    else{appendMsg("qaMsg","a",mdToHtml("### 已进入【"+card.k+"】\n"+card.prompt));}
+  }else if(qaMode){const out=genQA(qaMode,text,"normal");qaLast={mode:qaMode,topic:text};appendAnswer("qaMsg",mdToHtml(out),"qa");}
+  else{appendMsg("qaMsg","a",mdToHtml("### 想从哪开始？\n- 直接点上面的卡片，或输入卡片名（如「利弊分析」）\n- 也可以直接把问题抛过来。"));}
+  const box=document.getElementById("qaMsg");box.scrollTop=box.scrollHeight;
+}
+function qaTransform(v){transformGen(v,"qa",genQA,qaLast);}
+
+/* ====== 共用：卡片匹配 / 渲染 / 转换 ====== */
+function matchCard(text,cards){for(const c of cards){if(text.includes(c.k))return c;for(const kw of c.kw){if(kw&&text.includes(kw))return c;}}return null;}
+function stripCard(text,card){let s=text.replace(card.k,"");card.kw.forEach(kw=>{if(kw)s=s.replace(kw,"");});s=s.replace(/^(我要|我想|请|帮我|帮忙|来一个|做一个|搞个|整一个|关于|说说|讲讲|给个|求|如何|怎么)/,"");return s.replace(/[：:，,。.、]/g," ").replace(/\s+/g," ").trim();}
+function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function mdToHtml(src){const lines=src.split("\n");let html="",listOpen=false,para=[];const closeList=()=>{if(listOpen){html+="</ul>";listOpen=false;}};const flush=()=>{if(para.length){html+="<p>"+para.join("<br>")+"</p>";para=[];}};for(let raw of lines){const line=raw.replace(/\s+$/,"");if(line===""){closeList();flush();continue;}if(line.startsWith("## ")){closeList();flush();html+="<h4>"+esc(line.slice(3))+"</h4>";}else if(line.startsWith("### ")){closeList();flush();html+="<h5>"+esc(line.slice(4))+"</h5>";}else if(line.startsWith("- ")||line.startsWith("• ")){flush();if(!listOpen){html+="<ul>";listOpen=true;}html+="<li>"+esc(line.slice(2))+"</li>";}else if(line.startsWith("> ")){closeList();flush();html+="<div class='tip'>"+esc(line.slice(2))+"</div>";}else{closeList();para.push(esc(line));}}closeList();flush();return html;}
+function appendMsg(boxId,role,html){const box=document.getElementById(boxId);const d=document.createElement("div");d.className="bub "+(role==="u"?"u":"a");d.innerHTML=html;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+function appendAnswer(boxId,html,mod){const d=appendMsg(boxId,"a",html);const acts=document.createElement("div");acts.className="aactions";acts.innerHTML="<button class='aact' onclick='"+mod+"Transform(\"concise\")'>↙ 精简</button><button class='aact' onclick='"+mod+"Transform(\"expand\")'>✎ 扩写</button><button class='aact' onclick='"+mod+"Transform(\"adjust\")'>⇄ 调整</button>";d.appendChild(acts);}
+function transformGen(v,mod,gen,last){
+  if(!last){appendMsg(mod+"Msg","a",mdToHtml("### 还没有可优化的内容\n- 先发一段需求，生成结果后这里会出现「精简 / 扩写 / 调整」。"));return;}
+  if(v==="adjust"){appendMsg(mod+"Msg","a",mdToHtml("### 想调整方向？\n- 直接补充要求再发一次，例如：更省钱版 / 适合带娃 / 更详细 / 3 天版\n- 或点「重置对话」换一张卡片。"));return;}
+  const out=gen(last.mode,last.topic,v);if(!out)return;
+  appendAnswer(mod+"Msg",mdToHtml(out),mod);
+}
+
+/* ====== 生活规划生成器 ====== */
+function genLife(mode,topic,variant){
+  const t=(topic&&topic.trim())?topic.trim():"（请补充你的具体情况，我好给更准的方案）";
+  const concise=variant==="concise", expand=variant==="expand";
+  if(mode==="出行方案"){
+    const m=t.match(/(\d+)\s*(天|日|晚)/);const days=m?m[1]:"";
+    let r=["## 🧳 "+t+" · 出行方案","（"+(days?days+"天 · ":"")+"实用落地版）",
+    "### 一、行前准备","- 证件：身份证/护照/签证，拍照+云备份","- 预订：大交通与住宿先比价，看清退改签","- 天气衣物：查目的地近 7 天天气，按层搭","- 资金：一张信用卡 + 少量现金，开通异地/境外支付",
+    "### 二、行程节奏","- 配比建议：1/3 机动 + 2/3 主线，别排太满","- Day1 抵达+周边轻活动（先休整倒时差）","- 中间日 集中打卡核心主线","- 末日 补漏/购物 + 提前 3 小时到车站机场",
+    "### 三、预算参考（按人）","- 交通 30% · 住宿 30% · 餐饮 20% · 门票其他 20%","- 预留 10–15% 机动金应对突发",
+    "### 四、避坑与贴士","- 景点官方票比第三方稳，警惕「低价一日游」","- 离线地图包先下好，省流量也防迷路","- 随身小药包（肠胃/感冒/创可贴）"];
+    if(expand)r.push("> 进阶：每天只排 2–3 个必去点，剩下留给「走到哪算哪」的惊喜；美食先用地图收藏几家，到了不纠结。");
+    if(concise)r.push("> 精简版：证件+预订+天气三件套先做；行程留 1/3 机动；预算按 30/30/20/20 分。");
+    return r.join("\n");
+  }
+  if(mode==="清单规划"){
+    let extra="";
+    if(/搬家|退房|入住/.test(t))extra="- 物业/水电/宽带 结清与过户\n- 地址变更：证件/银行卡/快递\n- 易碎品单独打包并标记";
+    else if(/考试|学习|考研|公考/.test(t))extra="- 资料与真题按科目分袋\n- 模考节奏 + 错题本\n- 考前作息提前调整";
+    else if(/出差|旅行|出行/.test(t))extra="- 证件/票务/住宿 确认\n- 充电器/药包/必备衣物\n- 工作交接与紧急联系人";
+    else if(/婚礼|结婚/.test(t))extra="- 双方家长确认事项\n- 酒店/婚庆/摄影 合同与档期\n- 宾客名单与座位";
+    else extra="- 目标与截止时间写清楚\n- 资源/预算/人手先盘一遍\n- 风险预案：最坏情况怎么办";
+    let r=["## 📝 "+t+" · 清单规划","### 准备阶段","- 明确目标与截止时间",extra,
+    "### 执行阶段","- 拆成小步骤，按优先级排","- 设检查点（里程碑），完成打勾","- 每日/每周复盘进度",
+    "### 收尾阶段","- 对照验收标准逐项核对","- 归档留存，写一句复盘笔记"];
+    if(expand)r.push("> 小技巧：清单别太长，单条可行动；用「重要×紧急」四象限决定先后。");
+    if(concise)r.push("> 精简：目标→准备/执行/收尾三段；每阶段 3 条最关键的。");
+    return r.join("\n");
+  }
+  if(mode==="购物参考"){
+    let r=["## 🛒 "+t+" · 购物参考","### 选购前先想清","- 真实用途 vs 想要（先防冲动）","- 预算上限 + 是否接受二手",
+    "### 怎么挑","- 看核心参数/口碑，而非营销词","- 横向比 2–3 个渠道（官方/电商大促/线下）","- 看差评比看好评更准",
+    "### 时机与避坑","- 大促节点蹲守，但先记原价防「先涨后降」","- 保留凭证，确认退换政策",
+    "### 预算分层","- 入门 / 主流 / 高端 三档，先定档再选款"];
+    if(expand)r.push("> 进阶：买前写一句「我为什么需要它」，答不上来就先别买；大件优先选保修省心的。");
+    if(concise)r.push("> 精简：定预算→看参数→比 3 渠道→看差评→确认退换。");
+    return r.join("\n");
+  }
+  if(mode==="时间安排"){
+    let r=["## ⏰ "+t+" · 时间安排","### 今天怎么排（时间块法）","- 上午 专注块（2h，做最重要的事）","- 中午 休息+充电","- 下午 协作/杂事块","- 晚上 复盘+放松",
+    "### 周视角","- 固定习惯 > 临时热情","- 给每件事一个「收纳盒」时间，到点就做",
+    "### 提效","- 两分钟能做完→立刻做，别进清单","- 同类任务批处理","- 设手机勿扰时段"];
+    if(expand)r.push("> 进阶：用「吃青蛙」法——最难的事放精力最好的时段；每周留半天空白缓冲。");
+    if(concise)r.push("> 精简：上午专注块做大事，下午处理杂事，晚上复盘；同类批处理。");
+    return r.join("\n");
+  }
+  if(mode==="美食影视"){
+    let r=["## 🍜 "+t+" · 休闲推荐","### 🍽️ 美食（按场景）","- 想解压：热汤/火锅/甜品","- 想健康：轻食/蒸煮/家常小炒","- 想尝鲜：本地小馆/夜市/时令",
+    "### 🎬 影视（按心情）","- 累了一天：轻松综艺/治愈纪录片","- 想动脑：悬疑/烧脑剧","- 想充电：人物传记/知识类",
+    "### 小建议","- 别边吃边刷剧到太晚，第二天的你会感谢你","- 一个人也想好好吃：挑一家没去过的店当奖励"];
+    if(expand)r.push("> 进阶：把「吃饭+看片」当 weekly reset，比盲目刷手机回血快得多。");
+    if(concise)r.push("> 精简：解压吃热乎的，动脑看悬疑，充电看传记；别熬太晚。");
+    return r.join("\n");
+  }
+  if(mode==="省钱思路"){
+    let r=["## 💡 "+t+" · 省钱思路","### 先看见钱","- 记账 30 天，找出「隐形漏点」",
+    "### 砍掉不必要","- 订阅/会员只留真在用的","- 外卖/打车设周额度",
+    "### 聪明买","- 大件等促销+价保；日用品囤刚需","- 二手平台淘 95 新",
+    "### 让钱生钱（保守）","- 先攒 3–6 个月开支作应急金","- 剩余再考虑低风险理财",
+    "### 心态","- 省钱不是不花，是把钱花在更值的地方"];
+    if(expand)r.push("> 进阶：用「想要/需要」二问法，结账前默念一遍；自动转账攒钱比靠自律靠谱。");
+    if(concise)r.push("> 精简：记账找漏点→退闲置订阅→大件等促→先攒应急金。");
+    return r.join("\n");
+  }
+  return "## "+t+"\n- 请选择上方具体卡片，或描述更明确的需求。";
+}
+
+/* ====== 全能问答生成器 ====== */
+const KB={
+ "复利":"复利指利息计入本金后继续生息，即「利滚利」。时间越长、越早开始，差距越惊人——它是普通人最稳的财富杠杆，但要先有本金和耐心。",
+ "通货膨胀":"通货膨胀是整体物价持续上涨、货币购买力下降的现象。名义工资涨但东西也贵了，实际购买力未必增加。应对：让资产收益尽量跑赢通胀，现金长期闲置会被悄悄稀释。",
+ "GDP":"GDP（国内生产总值）是一国/地区一段时间内新创造的最终商品与服务总价值，常用来衡量经济冷热。它不等于「百姓幸福感」，看时要结合收入、就业一起看。",
+ "公积金":"住房公积金是单位和个人按月缴存的长期住房储金，买房/租房/装修可按政策提取或低息贷款。利率通常低于商业贷，是刚需购房的省钱工具。",
+ "个税起征点":"我国个人所得税综合所得基本减除费用标准为 5000 元/月。收入低于此无需缴税，超出部分按超额累进税率计算，还有专项附加扣除可再减。",
+ "光合作用":"绿色植物用叶绿素吸收阳光，把二氧化碳和水转化成养分并放出氧气的过程。它是几乎一切食物链的能量起点，简单记：光+CO₂+水 → 养分+氧气。",
+ "机会成本":"机会成本是你为选 A 而放弃的「次优选项 B 的价值」。它提醒：免费的东西也可能很贵，因为占了你的时间/钱。",
+ "沉没成本":"沉没成本已经发生、收不回的投入。理性决策不应被它绑架——「已经花了」不是继续的理由，该止损就止损。",
+ "边际效用":"边际效用是「每多消费一单位带来的额外满足」，通常递减：第一杯水解渴，第十杯想吐。它解释了为什么稀缺更值钱。",
+ "信用评分":"信用评分是机构根据你的还款、负债、时长等给的「靠谱度」分数。分数高→贷款更易、利率更低。养好它的核心：按时还、别频繁申卡、负债别太高。"
+};
+function genQA(mode,topic,variant){
+  const t=(topic&&topic.trim())?topic.trim():"（请补充你想了解的具体内容）";
+  const concise=variant==="concise", expand=variant==="expand";
+  if(mode==="知识科普"){
+    const key=Object.keys(KB).find(k=>t.includes(k));
+    if(key){let r=["## 📚 知识科普："+key,KB[key]];if(expand)r.push("> 想更系统？查权威来源（教材/官方百科/行业报告），并把概念放到自己的例子里记更牢。");return r.join("\n");}
+    let r=["## 📚 关于「"+t+"」的科普思路","### 一句人话定义","- 先想：它到底是干什么的 / 解决什么问题的","### 为什么重要","- 它影响了你生活的哪一块（钱/时间/健康/关系）","### 生活里的例子","- 找一个熟悉的场景类比，理解会快很多","### 常见误区","- 别和名字相似的概念混为一谈","> 说明：以上为通用科普框架。涉及具体数据/定义，请以权威来源为准，避免以讹传讹。"];
+    if(expand)r.splice(r.length-1,0,"### 怎么学更快\n- 费曼技巧：假装讲给外行听，卡住的地方就是没懂的地方。");
+    return r.join("\n");
+  }
+  if(mode==="问题拆解"){
+    let r=["## 🔍 问题拆解："+t,"### 1. 明确目标","- 你真正想要的结果是什么？尽量可量化","### 2. 拆成要素","- 人 / 钱 / 时间 / 信息 / 关系，各自缺什么、卡在哪","### 3. 找最大不确定性","- 哪一步最没把握？先花最小成本验证它","### 4. 排最小可行步骤","- 今天就能做、成本最低的第一步是什么","### 5. 设检查点","- 每周看进度，不行就换路，别一条道走到黑"];
+    if(expand)r.push("> 进阶：复杂问题先画「目标→障碍→资源」三栏，一眼看清缺哪块。");
+    if(concise)r.push("> 精简：定目标→拆要素→验最大不确定→做最小第一步→周复盘。");
+    return r.join("\n");
+  }
+  if(mode==="利弊分析"){
+    const m=t.match(/(.+?)\s*(vs|还是|和|与|跟|比|对比|选)\s*(.+)/);
+    const subj=m?(m[1].trim()+" vs "+m[3].trim()):t;
+    let r=["## ⚖️ 利弊分析："+subj,"### ✅ 利（为什么选它）","- 收益 / 省时 / 省钱 / 风险低 / 长期更划算","- 和你当前目标最匹配的点","### ⚠️ 弊（要小心的）","- 成本 / 时间 / 不确定性 / 机会成本","- 最坏情况你能不能扛","### 💡 决策建议","- 看优先级：要快选省时的，要稳选风险低的","- 拿不准时，先小成本试，再决定全押"];
+    if(expand)r.push("> 进阶：不是二选一——能否「先 A 后 B」「各取一部分」？折中常是最优解。");
+    return r.join("\n");
+  }
+  if(mode==="疑问解答"){
+    let r=["## ❓ 关于「"+t+"」","### 先理清你真正在问什么","- 是「怎么做」(方法)、「为什么」(原理)，还是「能不能/该不该」(判断)？","### 客观分析","- 把问题拆成可验证的小点，逐条看证据","- 区分「事实」和「观点」，别把别人看法当真相","### 给建议前的提醒","- 涉及健康/法律/投资等专业问题，请以专业人士/官方为准","> 把你的具体情况（背景、目标、限制）补一句，我可以答得更准。"];
+    if(expand)r.push("### 怎么自己找答案\n- 搜「关键词 + 权威来源」，看 2–3 个独立信源是否一致，比看一个点赞高的更靠谱。");
+    return r.join("\n");
+  }
+  if(mode==="思路梳理"){
+    let r=["## 🧠 思路梳理："+t,"### 核心目标","- 你最在意、最想解决的一件事，先写一句","### 关键要素（去重后）","- 把零散想法归成 3–5 类，同类合并","### 关系与优先级","- 哪些互相牵制？先保哪个、可放弃哪个","### 下一步动作","- 写出 3 个明天就能做的具体小事","> 感觉还是乱？把想到的全倒出来也行，我帮你归类。"];
+    if(expand)r.push("### 进阶\n- 用「问题树」：一个大问题往下分三层，到能直接行动为止。");
+    return r.join("\n");
+  }
+  return "## "+t+"\n- 请选择上方具体卡片，或把问题说更具体些。";
+}
+
 /* ====== 初始化 ====== */
+renderLifeCards();renderQaCards();
 fillCitySel("m2citySel","m2");
 fillCitySel("m4citySel","m4");
 renderDramas("全部");
