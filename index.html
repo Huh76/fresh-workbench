@@ -147,16 +147,6 @@
   .item .go{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:#8a4a64;font-weight:700;text-decoration:none;margin-top:8px;background:#FCEFF3;padding:6px 13px;border-radius:12px;transition:.2s}
   .item .go:hover{background:var(--acc);color:#fff}
 
-  /* news / list rows */
-  .row{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
-  .row:last-child{border-bottom:none}
-  .row .cat{font-size:11px;padding:3px 10px;border-radius:10px;height:fit-content;font-weight:600;background:#EEF4F8;color:#5a7a94}
-  .row .body{flex:1}
-  .row .body h3{font-size:14.5px;margin-bottom:4px}
-  .row .body p{font-size:12.5px;color:#7a8a99;line-height:1.6}
-  .row .body .src{font-size:11.5px;color:var(--muted);margin-top:5px}
-  .row .body .src a{color:#8a4a64;font-weight:600;text-decoration:underline;text-underline-offset:2px}
-  .row .body .src a:hover{color:var(--acc)}
   .ilink{color:#8a4a64 !important;font-weight:600;text-decoration:underline;text-underline-offset:2px}
   .ilink:hover{color:var(--acc) !important}
 
@@ -527,10 +517,6 @@
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg></span>
       <span>房源查询</span>
     </button>
-    <button class="nav-btn" data-mod="m3" style="--acc:var(--m3)">
-      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M7 9h10M7 13h7M7 17h5"/></svg></span>
-      <span>热点资讯</span>
-    </button>
     <button class="nav-btn" data-mod="m4" style="--acc:var(--m4)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/><path d="M14 14l4 4M18 14l-4 4"/></svg></span>
       <span>排版兼职</span>
@@ -660,33 +646,6 @@
       <div class="grid" id="m2grid"></div>
     </section>
 
-    <!-- ===== Module 3: 资讯 ===== -->
-    <section class="module" id="m3">
-      <div class="card">
-        <div class="card-head">
-          <div class="ttl"><span class="emo">📰</span>热点资讯 · 每日自动更新</div>
-          <span id="newsTime" style="font-size:12px;color:#9a7d8a;margin-right:4px">最后更新 --:--</span>
-          <button class="refresh" onclick="refreshLiveNews();renderNews(curFilter.m3)"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新资讯</button>
-        </div>
-        <div class="sub">精选权威实时热点、本地便民消息、趣味资讯，剔除冗余繁杂，分类快速阅读。</div>
-        <div class="links">
-          <a class="link" href="https://news.qq.com" target="_blank">腾讯新闻</a>
-          <a class="link" href="https://www.thepaper.cn" target="_blank">澎湃新闻</a>
-          <a class="link" href="https://www.news.cn" target="_blank">新华网</a>
-          <a class="link" href="https://www.xiaohongshu.com" target="_blank">小红书</a>
-          <a class="link" href="https://www.toutiao.com" target="_blank">今日头条</a>
-        </div>
-      </div>
-        <div class="chips" id="m3chips">
-          <span class="chip on" data-f="全部">全部</span>
-          <span class="chip" data-f="最新">最新</span>
-          <span class="chip" data-f="财经">财经</span>
-          <span class="chip" data-f="生活">生活</span>
-          <span class="chip" data-f="娱乐">娱乐</span>
-          <span class="chip" data-f="本地">晋江本地</span>
-        </div>
-      <div class="card" id="m3list"></div>
-    </section>
 
     <!-- ===== Module 4: 排版兼职 ===== -->
     <section class="module" id="m4">
@@ -881,8 +840,8 @@
 
 <script>
 /* ====== 全局 ====== */
-const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m3:"📰 热点资讯",m4:"🎨 排版兼职",m5:"🤖 全能AI助手",m6:"🎁 薅羊毛线报",m7:"🎨 潘通色卡&配色库"};
-const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m3:"#BFE3F2",m4:"#FFF0A8",m5:"#D6C8F0",m6:"#FFC4A3",m7:"#C9B9F2"};
+const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m5:"🤖 全能AI助手",m6:"🎁 薅羊毛线报",m7:"🎨 潘通色卡&配色库"};
+const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m5:"#D6C8F0",m6:"#FFC4A3",m7:"#C9B9F2"};
 
 document.querySelectorAll(".nav-btn").forEach(b=>{
   b.onclick=()=>{
@@ -914,7 +873,6 @@ function refreshMod(m){
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
   if(m==="m1")renderDramas(curFilter.m1);
   if(m==="m2")renderHouses(curFilter.m2);
-  if(m==="m3")renderNews(curFilter.m3);
   if(m==="m4")renderJobs(curFilter.m4);
   if(m==="m6")renderDeals(curFilter.m6);
 }
@@ -946,7 +904,7 @@ const dramas=[
   {t:"《雪国列车》",p:"爱奇艺",s:"连载",g:"悬疑",pay:true,link:"https://so.iqiyi.com/so/q_%E9%9B%AA%E5%9B%BD%E5%88%97%E8%BD%A6",d:"末世悬疑大作，制作精良，追更热门。"},
   {t:"《花间集》",p:"腾讯视频",s:"完结",g:"治愈",pay:false,link:"https://v.qq.com/x/search/?q=%E8%8A%B1%E9%97%B4%E9%9B%86",d:"古风治愈剧，服化道精美，免费收看。"},
 ];
-const curFilter={m1:"全部",m2:"全部",m3:"全部",m4:"全部",m6:"全部",m7:"全部",m2city:"全部",m4city:"全部",gal:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
+const curFilter={m1:"全部",m2:"全部",m4:"全部",m6:"全部",m7:"全部",m2city:"全部",m4city:"全部",gal:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
 /* 城市 → 区域（全面） */
 const cityAreas={
   "北京":["朝阳区","海淀区","东城区","西城区","丰台区","通州区","昌平区","大兴区"],
@@ -1122,7 +1080,6 @@ function fillCitySel(selId,key){
   }
 }
 
-/* ====== Module 3: 资讯 ====== */
 /* ====== 主流 AI 模型直达导航 ====== */
 const AIS=[
   {n:"DeepSeek",ico:"🔷",d:"国产深度推理",u:"https://chat.deepseek.com/"},
@@ -1161,73 +1118,6 @@ function renderAIModels(){
     :'<div class="ai-empty">未找到匹配的模型，换个关键词试试～</div>';
 }
 
-/* ====== 资讯：实时抓取 + 每日自动更新 ====== */
-let liveNews=[];let newsLiveLoaded=false;
-function updateNewsTime(){const e=document.getElementById("newsTime");if(e)e.textContent="最后更新 "+new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"});}
-async function refreshLiveNews(){
-  const feeds=[
-    "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml",
-    "https://sspai.com/feed"
-  ];
-  let items=[];
-  for(const f of feeds){
-    try{
-      const ctrl=new AbortController();const tm=setTimeout(()=>ctrl.abort(),9000);
-      const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(f),{signal:ctrl.signal});
-      clearTimeout(tm);
-      const xml=await r.text();
-      const doc=new DOMParser().parseFromString(xml,"text/xml");
-      const nodes=doc.querySelectorAll("item");
-      nodes.forEach(n=>{
-        const t=n.querySelector("title"),d=n.querySelector("description"),l=n.querySelector("link"),p=n.querySelector("pubDate");
-        const title=t?t.textContent:"";const desc=d?d.textContent:"";const link=l?l.textContent:"";const pub=p?p.textContent:"";
-        if(title)items.push({t:title,d:stripTags(desc).slice(0,160),full:stripTags(desc),link:link,time:pub||"刚刚",src:"实时资讯",cat:"最新"});
-      });
-    }catch(e){}
-    if(items.length>=12)break;
-  }
-  if(items.length){liveNews=items;newsLiveLoaded=true;updateNewsTime();if(curFilter.m3==="最新"||curFilter.m3==="全部")renderNews(curFilter.m3);}
-}
-
-const news=[
-  {t:"央行最新LPR报价出炉，房贷利率迎年内第三次下调",cat:"财经",src:"新华网",time:"2小时前",d:"5年期以上 LPR 下调至 3.45%，首套房贷成本进一步降低，业内预计将带动刚需购房回暖。",link:"https://www.news.cn"},
-  {t:"晋江国际鞋纺城秋季采购季开启，本土鞋企订单回暖",cat:"本地",src:"澎湃新闻",time:"4小时前",d:"多家本土鞋企表示海外订单环比增长，新材料与环保工艺成为本届采购季关键词。",link:"https://www.thepaper.cn/searchResult?searchWord=%E6%99%8B%E6%B1%9F%E5%9B%BD%E9%99%85%E9%9E%8B%E7%BA%BA%E5%9F%8E%E7%A7%8B%E5%AD%A3%E9%87%87%E8%B4%AD%E5%AD%A3%E5%BC%80%E5%90%AF%EF%BC%8C%E6%9C%AC%E5%9C%9F%E9%9E%8B%E4%BC%81%E8%AE%A2%E5%8D%95%E5%9B%9E%E6%9A%96"},
-  {t:"国产动画电影票房破纪录，治愈系画风获年轻人好评",cat:"娱乐",src:"腾讯新闻",time:"6小时前",d:"上映两周票房突破 18 亿，水墨与治愈系美术风格引发社交平台二创热潮。",link:"https://news.qq.com"},
-  {t:"三部门联合发文，推进社区嵌入式养老服务设施建设",cat:"生活",src:"新华网",time:"昨天",d:"鼓励在老旧小区改造中配建日间照料中心，重点解决独居老人就近养老难题。",link:"https://www.news.cn"},
-  {t:"暑期文旅消费数据发布，县域小城游热度同比上涨六成",cat:"财经",src:"澎湃新闻",time:"昨天",d:"反向旅游持续走热，晋江、泉州等县域目的地酒店预订量创历史新高。",link:"https://www.thepaper.cn/searchResult?searchWord=%E6%9A%91%E6%9C%9F%E6%96%87%E6%97%85%E6%B6%88%E8%B4%B9%E6%95%B0%E6%8D%AE%E5%8F%91%E5%B8%83%EF%BC%8C%E5%8E%BF%E5%9F%9F%E5%B0%8F%E5%9F%8E%E6%B8%B8%E7%83%AD%E5%BA%A6%E5%90%8C%E6%AF%94%E4%B8%8A%E6%B6%A8%E5%85%AD%E6%88%90"},
-  {t:"本地便民：晋江多条公交线路下周起优化调整",cat:"本地",src:"腾讯新闻",time:"2天前",d:"新增 3 条微循环线路覆盖新建社区，市民可通过官方小程序实时查询到站。",link:"https://news.qq.com"},
-  {t:"新中式茶饮频出爆款，年轻人爱上「轻养生」",cat:"生活",src:"腾讯新闻",time:"2天前",d:"草本、五谷类饮品搜索量同比翻倍，健康化成为新茶饮赛道新竞争点。",link:"https://news.qq.com"},
-  {t:"口碑剧集收官，主创访谈揭秘悬疑叙事巧思",cat:"娱乐",src:"澎湃新闻",time:"3天前",d:"编剧透露采用多线并行结构，观众二刷可发现大量埋线细节。",link:"https://www.thepaper.cn/searchResult?searchWord=%E5%8F%A3%E7%A2%91%E5%89%A7%E9%9B%86%E6%94%B6%E5%AE%98%EF%BC%8C%E4%B8%BB%E5%88%9B%E8%AE%BF%E8%B0%88%E6%8F%AD%E7%A7%98%E6%82%AC%E7%96%91%E5%8F%99%E4%BA%8B%E5%B7%A7%E6%80%9D"},
-];
-function renderNews(f,hi){
-  const g=document.getElementById("m3list");
-  let list;
-  if(f==="最新"){
-    list=liveNews;
-    if(!list.length){ g.innerHTML='<div style="color:#9a7d8a;padding:26px;text-align:center">正在获取最新实时资讯…</div>'; if(!newsLiveLoaded)refreshLiveNews(); return; }
-  }else{
-    list=news.filter(x=>f==="全部"||x.cat===f);
-  }
-  const fi=hi==null?-1:hi%list.length;
-  g.innerHTML=list.map((x,i)=>{
-    const fresh=i===fi?' <span style="color:#2f9e5e;font-weight:700">· 🔥刚刚</span>':'';
-    const key="m3_"+f+"_"+i;
-    const full=x.full||x.d;
-    DETAILS[key]={title:x.t, html:'<p class="dm-lead">'+full+'</p>'
-      +'<div class="dm-grid">'
-      +'<div><span>分类</span><b>'+x.cat+'</b></div>'
-      +'<div><span>来源</span><b>'+x.src+'</b></div>'
-      +'<div><span>发布时间</span><b>'+x.time+'</b></div></div>'
-      +'<p class="dm-note">以上为站内直接可读内容，无需点击来源链接；如需查看原文可点下方来源。</p>', src:x.link, srcName:x.src};
-    return '<div class="row" onclick="openDetail(\''+key+'\')">'
-      +'<span class="cat" style="background:'+catColor(x.cat)+';color:'+catText(x.cat)+'">'+x.cat+'</span>'
-      +'<div class="body"><h3>'+x.t+'</h3><p>'+x.d+'</p>'
-      +'<div class="src">'+x.time+fresh+'</div></div></div>';
-  }).join("");
-  if(f==="最新")updateNewsTime();
-}
-function catColor(c){return {财经:"#E4F0FB",生活:"#EAF7EE",娱乐:"#FBEFF6",本地:"#FEF6E0",最新:"#EFEAFB"}[c]||"#EEF4F8";}
-function catText(c){return {财经:"#3a7bc0",生活:"#2f9e5e",娱乐:"#b85fa0",本地:"#c79a2f",最新:"#7a5cc0"}[c]||"#5a7a94";}
 
 /* ====== Module 4: 排版兼职 ====== */
 const jobs=[
@@ -1358,7 +1248,6 @@ function bindChips(id,cb,key){
 }
 bindChips("m1chips",renderDramas,"m1");
 bindChips("m2cat",renderHouses,"m2");
-bindChips("m3chips",renderNews,"m3");
 bindChips("m4chips",renderJobs,"m4");
 bindChips("m6chips",renderDeals,"m6");
 bindChips("m7chips",renderPalettes,"m7");
@@ -2339,13 +2228,11 @@ fillCitySel("m2citySel","m2");
 fillCitySel("m4citySel","m4");
 renderDramas("全部");
 renderHouses();
-renderNews("全部");
 renderJobs();
 renderDeals("全部");
 renderPalettes("全部");
 renderGallery();
 renderAIModels();
-refreshLiveNews();
 updateTime();
 // 默认色值互算填入一个示例
 (function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
@@ -2361,14 +2248,12 @@ function liveRefresh(){
   const r=arr=>Math.floor(Math.random()*arr.length);
   renderDramas(curFilter.m1,r(dramas));
   renderHouses(null,r(houses));
-  renderNews(curFilter.m3,r(news));
   renderJobs(null,r(jobs));
   renderDeals(curFilter.m6,r(deals));
   renderGallery();
 }
 setInterval(liveRefresh,15000);
 setInterval(updateTime,1000);
-setInterval(function(){ if(newsLiveLoaded) refreshLiveNews(); }, 30*60*1000);
 </script>
 <div id="detailModal" class="modal" onclick="if(event.target===this)closeDetail()">
   <div class="modal-card">
