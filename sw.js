@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
 const CACHE = "fresh-workbench-v1";
-const ASSETS = ["./", "index.html", "manifest.webmanifest", "icons/icon-512.png"];
+const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(
