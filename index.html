@@ -445,6 +445,38 @@
     .nav-btn{width:62px;height:78px}
     .nav-btn svg{width:26px;height:26px}
   }
+
+  /* ====== 移动端增强补丁（手机适配·修复导航错位 + 紧凑布局） ====== */
+  @media (max-width:760px){
+    html,body{overflow-x:hidden}
+    .app{height:100vh;height:100dvh}
+    /* 导航整齐网格，去除阶梯错位（brand 在手机端隐藏仍占 nth-child 序号导致偏移） */
+    .sidebar{flex-wrap:wrap;justify-content:center;gap:10px 12px;overflow:visible}
+    .nav-btn{width:64px;height:78px;transform:none!important;flex:0 0 auto}
+    .nav-btn:nth-child(even),
+    .nav-btn.active:nth-child(even),
+    .nav-btn.active:nth-child(odd){transform:none!important}
+    .nav-btn.active{transform:scale(1.06)!important}
+    .nav-btn::after{font-size:14px;top:-6px;right:-3px}
+    .main{padding:14px 13px 64px}
+    /* AI 模型墙小屏更紧凑 */
+    .ai-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px}
+    .ai-model{padding:11px 12px;font-size:12.5px}
+    /* 模态框贴近屏幕 */
+    .modal{padding:22px 12px;align-items:flex-start}
+    .modal-card{padding:20px 18px;border-radius:20px}
+    .modal-card h2{font-size:18px}
+    .gallery{grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+    .card-head{flex-wrap:wrap;gap:8px}
+    .topbar .pill{font-size:11px;padding:5px 11px}
+    .filterbar{padding:12px}
+    .fb-row{gap:8px}
+  }
+  @media (max-width:380px){
+    .nav-btn{width:58px;height:72px}
+    .ai-grid{grid-template-columns:repeat(auto-fill,minmax(132px,1fr))}
+    .main{padding:12px 10px 60px}
+  }
 </style>
 </head>
 <body>
