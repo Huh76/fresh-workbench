@@ -1,0 +1,31 @@
+{
+  "name": "清新风一体化多功能工作台",
+  "short_name": "清新工作台",
+  "description": "马卡龙少女风格的一体化工具：休闲追剧、房源查询、排版兼职、潘通色卡",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff5fb",
+  "theme_color": "#ffd9ec",
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
