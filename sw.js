@@ -1,5 +1,5 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v1";
+const CACHE = "fresh-workbench-v2";
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
@@ -28,20 +28,20 @@ self.addEventListener("fetch", function (e) {
   if (e.request.method !== "GET") return;
   const url = new URL(e.request.url);
   if (url.origin !== location.origin) return; // 只处理同源请求
+  // network-first：在线优先取网络最新版，离线才回退缓存（保证安装后打开即最新）
   e.respondWith(
-    caches.match(e.request).then(function (cached) {
-      if (cached) return cached;
-      return fetch(e.request)
-        .then(function (resp) {
-          const copy = resp.clone();
-          caches.open(CACHE).then(function (c) {
-            c.put(e.request, copy);
-          });
-          return resp;
-        })
-        .catch(function () {
-          if (e.request.mode === "navigate") return caches.match("index.html");
+    fetch(e.request)
+      .then(function (resp) {
+        const copy = resp.clone();
+        caches.open(CACHE).then(function (c) {
+          c.put(e.request, copy);
         });
-    })
+        return resp;
+      })
+      .catch(function () {
+        return caches.match(e.request).then(function (cached) {
+          return cached || caches.match("index.html");
+        });
+      })
   );
 });
