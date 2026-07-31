@@ -163,6 +163,16 @@
   /* ---------- AI module ---------- */
   .ai-wrap{display:flex;flex-direction:column;height:calc(100vh - 200px);min-height:420px}
   .ai-ex{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 2px}
+  .ai-search{padding:6px 14px;border:1px solid rgba(0,0,0,.12);border-radius:20px;font-size:13px;width:210px;outline:none;background:#fff;font-family:inherit}
+  .ai-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:2px}
+  .ai-model{display:flex;align-items:center;gap:11px;padding:13px 15px;background:rgba(255,255,255,.72);border:1px solid rgba(0,0,0,.06);border-radius:14px;text-decoration:none;color:inherit;transition:.16s}
+  .ai-model:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(150,120,170,.18);border-color:#e9a9c9}
+  .ai-ico{font-size:22px;line-height:1}
+  .ai-info{display:flex;flex-direction:column;flex:1;min-width:0}
+  .ai-info b{font-size:14px;color:#574B53}
+  .ai-info small{color:#8a7d88;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ai-go{color:#e26a9c;font-weight:700;font-size:15px}
+  .ai-empty{padding:24px;text-align:center;color:#9a7d8a}
   .ai-modelbar{display:flex;align-items:center;gap:8px;margin:10px 0 2px;font-size:13px;color:#8a7a8f}
   .ai-modelbar select{padding:7px 10px;border-radius:12px;border:1.5px solid #E5DAF5;background:#fff;color:#6a4f8c;font-size:13px;cursor:pointer;font-family:inherit}
   .ai-tool{font-size:12.5px;padding:6px 13px;border-radius:14px;background:#F1F6FA;color:#6b7c8c;cursor:pointer;border:1px solid transparent;transition:.2s}
@@ -622,8 +632,9 @@
     <section class="module" id="m3">
       <div class="card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">📰</span>热点资讯 · 每日轻量化推送</div>
-          <button class="refresh" onclick="refreshMod('m3')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新资讯</button>
+          <div class="ttl"><span class="emo">📰</span>热点资讯 · 每日自动更新</div>
+          <span id="newsTime" style="font-size:12px;color:#9a7d8a;margin-right:4px">最后更新 --:--</span>
+          <button class="refresh" onclick="refreshLiveNews();renderNews(curFilter.m3)"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新资讯</button>
         </div>
         <div class="sub">精选权威实时热点、本地便民消息、趣味资讯，剔除冗余繁杂，分类快速阅读。</div>
         <div class="links">
@@ -632,13 +643,14 @@
           <a class="link" href="http://www.news.cn" target="_blank">新华网</a>
         </div>
       </div>
-      <div class="chips" id="m3chips">
-        <span class="chip on" data-f="全部">全部</span>
-        <span class="chip" data-f="财经">财经</span>
-        <span class="chip" data-f="生活">生活</span>
-        <span class="chip" data-f="娱乐">娱乐</span>
-        <span class="chip" data-f="本地">晋江本地</span>
-      </div>
+        <div class="chips" id="m3chips">
+          <span class="chip on" data-f="全部">全部</span>
+          <span class="chip" data-f="最新">最新</span>
+          <span class="chip" data-f="财经">财经</span>
+          <span class="chip" data-f="生活">生活</span>
+          <span class="chip" data-f="娱乐">娱乐</span>
+          <span class="chip" data-f="本地">晋江本地</span>
+        </div>
       <div class="card" id="m3list"></div>
     </section>
 
@@ -700,61 +712,13 @@
     <section class="module" id="m5">
       <div class="card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">🤖</span>全能 AI 助手</div>
-          <button class="refresh" onclick="aiReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>清空</button>
-          <button class="refresh" onclick="toggleCfg()">⚙ 接入真实 AI</button>
+          <div class="ttl"><span class="emo">🤖</span>主流 AI 模型直达</div>
+          <input id="aiSearch" class="ai-search" placeholder="搜索，如 ChatGPT / 文心 / 豆包…" oninput="renderAIModels()">
         </div>
-        <div class="ai-ex" id="aiEx">
-          <span class="ai-tool" data-q="帮我写一段手冲咖啡推广海报文案">📝 海报文案</span>
-          <span class="ai-tool" data-q="生成一个赛博朋克城市夜景的AI绘画提示词">🎨 绘画提示词</span>
-          <span class="ai-tool" data-q="给一家花店起几个品牌名">🏷️ 品牌起名</span>
-          <span class="ai-tool" data-q="帮我写一封跟进客户的商务邮件">✉️ 邮件撰写</span>
-          <span class="ai-tool" data-q="帮我写本周工作周报">📋 周报生成</span>
-          <span class="ai-tool" data-q="把这段中文翻译成英文：今天天气真好，适合出门散步">🌐 中英翻译</span>
-          <span class="ai-tool" data-q="画一只在雪地里奔跑的橘猫，高清摄影风">🖼️ 文生图</span>
-        </div>
-        <div class="ai-hint">💡 输入问题后，AI 会直接在本页下方回答，无需跳转外部页面。</div>
-        <div id="aiCfgBox" style="display:none;margin-top:8px;padding:10px 12px;background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.08);border-radius:12px;font-size:12px">
-          <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseReal"> 启用真实大模型（页内作答，不跳转）</label></div>
-          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">预设</span><select id="aiProv" onchange="applyProv()" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px"><option value="">自定义</option><option value="deepseek">DeepSeek</option><option value="qwen">通义千问</option><option value="zhipu">智谱 GLM</option><option value="silicon">SiliconFlow</option><option value="openai">OpenAI</option></select></div>
-          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">接口</span><input id="aiBase" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="https://api.deepseek.com/v1"></div>
-          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">Key</span><input id="aiKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="sk-..."></div>
-          <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">模型</span><input id="aiModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="deepseek-chat"></div>
-          <div style="border-top:1px dashed rgba(0,0,0,.12);margin:8px 0 6px;padding-top:7px">
-            <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseImg"> 启用图像生成（文生图，页内出图不跳转）</label></div>
-            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图接口</span><input id="aiImgBase" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="https://api.siliconflow.cn/v1"></div>
-            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图Key</span><input id="aiImgKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="sk-..."></div>
-            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">图模型</span><input id="aiImgModel" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="black-forest-labs/FLUX.1-schnell"></div>
-            <div style="display:flex;gap:6px;margin-bottom:4px;align-items:center"><span style="width:46px">尺寸</span><input id="aiImgSize" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="1024x1024"></div>
-          </div>
-          <div style="border-top:1px dashed rgba(0,0,0,.12);margin:8px 0 6px;padding-top:6px">
-            <div style="margin-bottom:6px"><label><input type="checkbox" id="aiUseSearch"> 联网搜索（实时信息）</label></div>
-            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">搜索</span><select id="aiSearchEng" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px"><option value="serper">Serper</option><option value="tavily">Tavily</option></select></div>
-            <div style="display:flex;gap:6px;margin-bottom:6px;align-items:center"><span style="width:46px">搜Key</span><input id="aiSearchKey" type="password" style="flex:1;padding:4px 8px;border:1px solid #ccc;border-radius:8px" placeholder="搜索 API Key（可选）"></div>
-          </div>
-          <div style="margin-bottom:4px"><button class="refresh" onclick="saveCfg()">保存</button> <span id="aiCfgMsg"></span></div>
-          <div style="color:#888;font-size:11px">支持 OpenAI 兼容接口（DeepSeek / 通义 / 智谱 / SiliconFlow / 本地 Ollama）。视觉模型（通义千问VL / GLM-4V / GPT-4o）可上传图片识图；开启联网可答实时信息。Key 仅存本机浏览器，不会上传。</div>
-        </div>
+        <div class="sub">收录主流 AI 模型，点击卡片<b>直达官方站点</b>开启对话；共 <b id="aiCount">0</b> 个，持续扩充。</div>
+        <div class="ai-grid" id="aiGrid"></div>
       </div>
-      <div class="card ai-wrap">
-        <div class="ai-roles" id="aiRoles">
-          <span class="role-chip active" data-role="general" onclick="setRole('general')">通用</span>
-          <span class="role-chip" data-role="translator" onclick="setRole('translator')">翻译官</span>
-          <span class="role-chip" data-role="coder" onclick="setRole('coder')">程序员</span>
-          <span class="role-chip" data-role="writer" onclick="setRole('writer')">文案</span>
-          <span class="role-chip" data-role="teacher" onclick="setRole('teacher')">老师</span>
-        </div>
-        <div class="chat" id="chat"></div>
-        <div class="ai-imgs" id="aiImgChips"></div>
-        <div class="ai-input">
-          <button class="icon-btn" title="上传图片" onclick="document.getElementById('aiFile').click()">📎</button>
-          <button class="icon-btn" title="语音输入" onclick="startVoice()">🎤</button>
-          <textarea id="aiText" placeholder="输入问题，回车发送；可📎上传图片让 AI 识图；点🎤语音输入…"></textarea>
-          <button onclick="aiSend()">发送</button>
-          <button class="icon-btn" title="朗读回复" onclick="speakLast()">🔊</button>
-          <input type="file" id="aiFile" accept="image/*" style="display:none" onchange="onImg(this)">
-        </div>
-      </div>
+      <!-- AI 模块已按需求精简为「主流模型直达导航」，聊天/配置/生成等其余功能已移除 -->
     </section>
 
     <!-- ===== Module 6: 薅羊毛 ===== -->
@@ -1125,6 +1089,78 @@ function fillCitySel(selId,key){
 }
 
 /* ====== Module 3: 资讯 ====== */
+/* ====== 主流 AI 模型直达导航 ====== */
+const AIS=[
+  {n:"ChatGPT",ico:"🟢",d:"OpenAI 通用大模型",u:"https://chat.openai.com/"},
+  {n:"Claude",ico:"🟣",d:"Anthropic 长文本推理",u:"https://claude.ai/new"},
+  {n:"Gemini",ico:"🔵",d:"Google 多模态大模型",u:"https://gemini.google.com/"},
+  {n:"DeepSeek",ico:"🔷",d:"国产深度推理",u:"https://chat.deepseek.com/"},
+  {n:"通义千问",ico:"🟠",d:"阿里全场景助手",u:"https://tongyi.aliyun.com/qianwen/"},
+  {n:"智谱清言",ico:"🟦",d:"智谱 GLM 系列",u:"https://chat.zhipuai.cn/"},
+  {n:"Kimi",ico:"🟢",d:"月之暗面超长上下文",u:"https://kimi.moonshot.cn/"},
+  {n:"文心一言",ico:"🔵",d:"百度知识增强",u:"https://yiyan.baidu.com/"},
+  {n:"豆包",ico:"🌟",d:"字节跳动 AI 助手",u:"https://www.doubao.com/"},
+  {n:"元宝",ico:"💎",d:"腾讯混元大模型",u:"https://yuanbao.tencent.com/"},
+  {n:"Perplexity",ico:"🟣",d:"AI 对话式搜索",u:"https://www.perplexity.ai/"},
+  {n:"Grok",ico:"⚫",d:"xAI 实时联网",u:"https://grok.com/"},
+  {n:"Copilot",ico:"🔷",d:"微软 AI 助手",u:"https://copilot.microsoft.com/"},
+  {n:"Poe",ico:"🟠",d:"多模型聚合平台",u:"https://poe.com/"},
+  {n:"Character.AI",ico:"💜",d:"角色扮演对话",u:"https://character.ai/"},
+  {n:"百川智能",ico:"🔶",d:"Baichuan 大模型",u:"https://www.baichuan-ai.com/chat"},
+  {n:"讯飞星火",ico:"🟢",d:"科大讯飞认知大模型",u:"https://xinghuo.xfyun.cn/"},
+  {n:"天工",ico:"🔵",d:"昆仑万维 AI",u:"https://www.tiangong.cn/"},
+  {n:"秘塔 AI",ico:"🟦",d:"AI 搜索与写作",u:"https://metaso.cn/"},
+  {n:"海螺 AI",ico:"🐚",d:"MiniMax 对话",u:"https://hailuoai.com/"},
+  {n:"阶跃星辰",ico:"⭐",d:"Step 大模型",u:"https://www.stepfun.com/"},
+  {n:"商汤商量",ico:"🟧",d:"SenseTime 多模态",u:"https://chat.sensetime.com/"},
+  {n:"火山方舟",ico:"🌋",d:"字节企业级大模型",u:"https://www.volcengine.com/product/ark"},
+  {n:"Mistral",ico:"🟠",d:"欧洲开源大模型",u:"https://chat.mistral.ai/"},
+  {n:"HuggingChat",ico:"🤗",d:"HuggingFace 开源对话",u:"https://huggingface.co/chat/"},
+  {n:"You.com",ico:"🔴",d:"AI 搜索助手",u:"https://you.com/"},
+  {n:"Phind",ico:"🟢",d:"开发者 AI 搜索",u:"https://www.phind.com/"},
+  {n:"Cursor",ico:"✨",d:"AI 编程编辑器",u:"https://cursor.com/"}
+];
+function renderAIModels(){
+  const kw=((document.getElementById("aiSearch")||{}).value||"").trim().toLowerCase();
+  const list=AIS.filter(m=>!kw||m.n.toLowerCase().indexOf(kw)>=0||m.d.toLowerCase().indexOf(kw)>=0);
+  const cnt=document.getElementById("aiCount");if(cnt)cnt.textContent=AIS.length;
+  const grid=document.getElementById("aiGrid");if(!grid)return;
+  grid.innerHTML=list.length?list.map(m=>
+    '<a class="ai-model" href="'+m.u+'" target="_blank" rel="noopener">'+
+    '<span class="ai-ico">'+m.ico+'</span>'+
+    '<span class="ai-info"><b>'+m.n+'</b><small>'+m.d+'</small></span>'+
+    '<span class="ai-go">↗</span></a>').join("")
+    :'<div class="ai-empty">未找到匹配的模型，换个关键词试试～</div>';
+}
+
+/* ====== 资讯：实时抓取 + 每日自动更新 ====== */
+let liveNews=[];let newsLiveLoaded=false;
+function updateNewsTime(){const e=document.getElementById("newsTime");if(e)e.textContent="最后更新 "+new Date().toLocaleTimeString("zh-CN",{hour:"2-digit",minute:"2-digit"});}
+async function refreshLiveNews(){
+  const feeds=[
+    "https://feeds.bbci.co.uk/zhongwen/simp/rss.xml",
+    "https://sspai.com/feed"
+  ];
+  let items=[];
+  for(const f of feeds){
+    try{
+      const ctrl=new AbortController();const tm=setTimeout(()=>ctrl.abort(),9000);
+      const r=await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(f),{signal:ctrl.signal});
+      clearTimeout(tm);
+      const xml=await r.text();
+      const doc=new DOMParser().parseFromString(xml,"text/xml");
+      const nodes=doc.querySelectorAll("item");
+      nodes.forEach(n=>{
+        const t=n.querySelector("title"),d=n.querySelector("description"),l=n.querySelector("link"),p=n.querySelector("pubDate");
+        const title=t?t.textContent:"";const desc=d?d.textContent:"";const link=l?l.textContent:"";const pub=p?p.textContent:"";
+        if(title)items.push({t:title,d:stripTags(desc).slice(0,160),full:stripTags(desc),link:link,time:pub||"刚刚",src:"实时资讯",cat:"最新"});
+      });
+    }catch(e){}
+    if(items.length>=12)break;
+  }
+  if(items.length){liveNews=items;newsLiveLoaded=true;updateNewsTime();if(curFilter.m3==="最新"||curFilter.m3==="全部")renderNews(curFilter.m3);}
+}
+
 const news=[
   {t:"央行最新LPR报价出炉，房贷利率迎年内第三次下调",cat:"财经",src:"新华网",time:"2小时前",d:"5年期以上 LPR 下调至 3.45%，首套房贷成本进一步降低，业内预计将带动刚需购房回暖。",link:"https://www.news.cn"},
   {t:"晋江国际鞋纺城秋季采购季开启，本土鞋企订单回暖",cat:"本地",src:"澎湃新闻",time:"4小时前",d:"多家本土鞋企表示海外订单环比增长，新材料与环保工艺成为本届采购季关键词。",link:"https://www.thepaper.cn/searchResult?searchWord=%E6%99%8B%E6%B1%9F%E5%9B%BD%E9%99%85%E9%9E%8B%E7%BA%BA%E5%9F%8E%E7%A7%8B%E5%AD%A3%E9%87%87%E8%B4%AD%E5%AD%A3%E5%BC%80%E5%90%AF%EF%BC%8C%E6%9C%AC%E5%9C%9F%E9%9E%8B%E4%BC%81%E8%AE%A2%E5%8D%95%E5%9B%9E%E6%9A%96"},
@@ -1137,26 +1173,33 @@ const news=[
 ];
 function renderNews(f,hi){
   const g=document.getElementById("m3list");
-  const list=news.filter(x=>f==="全部"||x.cat===f);
+  let list;
+  if(f==="最新"){
+    list=liveNews;
+    if(!list.length){ g.innerHTML='<div style="color:#9a7d8a;padding:26px;text-align:center">正在获取最新实时资讯…</div>'; if(!newsLiveLoaded)refreshLiveNews(); return; }
+  }else{
+    list=news.filter(x=>f==="全部"||x.cat===f);
+  }
   const fi=hi==null?-1:hi%list.length;
   g.innerHTML=list.map((x,i)=>{
     const fresh=i===fi?' <span style="color:#2f9e5e;font-weight:700">· 🔥刚刚</span>':'';
-    const key="m3_"+i;
-    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.d}</p>
-      <div class="dm-grid">
-        <div><span>分类</span><b>${x.cat}</b></div>
-        <div><span>来源</span><b>${x.src}</b></div>
-        <div><span>发布时间</span><b>${x.time}</b></div>
-      </div>
-      <p class="dm-note">本页为站内预览，内容可直接在本系统阅读；点击「来源 ↗」可前往原始站点查看。</p>`, src:x.link, srcName:x.src};
-    return `<div class="row" onclick="openDetail('${key}')">
-    <span class="cat" style="background:${catColor(x.cat)};color:${catText(x.cat)}">${x.cat}</span>
-    <div class="body"><h3>${x.t}</h3><p>${x.d}</p>
-    <div class="src">${x.time}${fresh} · 来源 <a href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${x.src} ↗</a></div></div></div>`;
+    const key="m3_"+f+"_"+i;
+    const full=x.full||x.d;
+    DETAILS[key]={title:x.t, html:'<p class="dm-lead">'+full+'</p>'
+      +'<div class="dm-grid">'
+      +'<div><span>分类</span><b>'+x.cat+'</b></div>'
+      +'<div><span>来源</span><b>'+x.src+'</b></div>'
+      +'<div><span>发布时间</span><b>'+x.time+'</b></div></div>'
+      +'<p class="dm-note">以上为站内直接可读内容，无需点击来源链接；如需查看原文可点下方来源。</p>', src:x.link, srcName:x.src};
+    return '<div class="row" onclick="openDetail(\''+key+'\')">'
+      +'<span class="cat" style="background:'+catColor(x.cat)+';color:'+catText(x.cat)+'">'+x.cat+'</span>'
+      +'<div class="body"><h3>'+x.t+'</h3><p>'+x.d+'</p>'
+      +'<div class="src">'+x.time+fresh+'</div></div></div>';
   }).join("");
+  if(f==="最新")updateNewsTime();
 }
-function catColor(c){return {财经:"#E4F0FB",生活:"#EAF7EE",娱乐:"#FBEFF6",本地:"#FEF6E0"}[c]||"#EEF4F8";}
-function catText(c){return {财经:"#3a7bc0",生活:"#2f9e5e",娱乐:"#b85fa0",本地:"#c79a2f"}[c]||"#5a7a94";}
+function catColor(c){return {财经:"#E4F0FB",生活:"#EAF7EE",娱乐:"#FBEFF6",本地:"#FEF6E0",最新:"#EFEAFB"}[c]||"#EEF4F8";}
+function catText(c){return {财经:"#3a7bc0",生活:"#2f9e5e",娱乐:"#b85fa0",本地:"#c79a2f",最新:"#7a5cc0"}[c]||"#5a7a94";}
 
 /* ====== Module 4: 排版兼职 ====== */
 const jobs=[
@@ -1361,12 +1404,11 @@ function renderModelSelect(){
   const sel=document.getElementById("aiModelSel");if(!sel)return;
   sel.innerHTML=MODELS.map(function(m){return '<option value="'+m.id+'">'+m.icon+' '+m.name+'</option>';}).join("");
 }
-document.getElementById("aiEx").querySelectorAll(".ai-tool").forEach(t=>{
-  t.onclick=()=>{aiText.value=t.dataset.q;aiSend();};
-});
-aiText.addEventListener("keydown",e=>{
+const _aiExEl=document.getElementById("aiEx");
+if(_aiExEl){_aiExEl.querySelectorAll(".ai-tool").forEach(t=>{ t.onclick=()=>{aiText.value=t.dataset.q;aiSend();}; });}
+if(typeof aiText!=="undefined"&&aiText){aiText.addEventListener("keydown",e=>{
   if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();aiSend();}
-});
+});}
 function stripCmd(q,words){
   let s=q;
   words.forEach(function(w){ s=s.split(w).join(""); });
@@ -2281,7 +2323,8 @@ renderJobs();
 renderDeals("全部");
 renderPalettes("全部");
 renderGallery();
-aiReset();
+renderAIModels();
+refreshLiveNews();
 updateTime();
 // 默认色值互算填入一个示例
 (function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
@@ -2304,6 +2347,7 @@ function liveRefresh(){
 }
 setInterval(liveRefresh,15000);
 setInterval(updateTime,1000);
+setInterval(function(){ if(newsLiveLoaded) refreshLiveNews(); }, 30*60*1000);
 </script>
 <div id="detailModal" class="modal" onclick="if(event.target===this)closeDetail()">
   <div class="modal-card">
