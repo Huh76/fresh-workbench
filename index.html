@@ -173,9 +173,6 @@
   .msg.bot{background:#F7EFFB;align-self:flex-start;border-bottom-left-radius:5px}
   .msg.me{background:var(--m5);color:#fff;align-self:flex-end;border-bottom-right-radius:5px}
   .msg .hl{background:#fff3b0;padding:0 3px;border-radius:4px}
-  .typing{display:flex;gap:4px;align-self:flex-start;background:#F7EFFB;padding:14px 18px;border-radius:16px}
-  .typing span{width:7px;height:7px;border-radius:50%;background:#c2aee0;animation:b 1s infinite}
-  .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
   @keyframes b{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
   .ai-input{display:flex;gap:10px;margin-top:12px}
   .ai-roles{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
@@ -372,8 +369,6 @@
   .ai-model .ml{color:var(--m5)}
   .msg.bot{background:#FBEFF6;font-family:var(--hand)}
   .msg.me{background:linear-gradient(160deg,var(--m5),#9d7fd6);font-family:var(--hand)}
-  .typing{background:#FBEFF6}
-  .typing span{background:#c2aee0}
   .ai-input textarea{background:#FFF7FB;border-color:#F0D3E0;font-family:var(--hand)}
   .ai-input textarea:focus{border-color:var(--m5)}
   .ai-input button{background:linear-gradient(160deg,var(--m5),#9d7fd6);color:#fff;font-family:var(--hand)}
@@ -468,43 +463,6 @@
     .main{padding:12px 10px 60px}
   }
 
-  /* ---------- 生活规划 / 全能问答 交互模块 ---------- */
-  .assist{display:flex;flex-direction:column;gap:14px;margin-top:4px}
-  .acards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-  .acard{display:flex;flex-direction:column;align-items:flex-start;gap:5px;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:13px 14px;cursor:pointer;transition:.18s;text-align:left;font-family:inherit;color:inherit}
-  .acard:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm)}
-  .acard .ai{font-size:22px;line-height:1}
-  .acard .at{font-size:14px;font-weight:700;color:#574B53}
-  .acard .ad{font-size:11.5px;color:#A8969E;line-height:1.4}
-  #m5 .acard:hover{border-color:var(--m5)}
-  #m6 .acard:hover{border-color:var(--m6)}
-  .amsg{display:flex;flex-direction:column;gap:12px}
-  .bub{border-radius:16px;padding:12px 15px;font-size:14px;line-height:1.75;white-space:pre-wrap;word-break:break-word;max-width:100%}
-  .bub.u{background:var(--acc);color:#3a2e44;align-self:flex-end;border-bottom-right-radius:5px;max-width:88%}
-  .bub.a{background:#fff;border:1px solid var(--line);align-self:flex-start;border-bottom-left-radius:5px}
-  .bub.a h4{font-size:14.5px;color:#574B53;margin:10px 0 4px}
-  .bub.a h4:first-child{margin-top:0}
-  .bub.a h5{font-size:13.5px;color:var(--acc);margin:8px 0 3px}
-  .bub.a ul{margin:4px 0 6px;padding-left:18px}
-  .bub.a li{margin:3px 0}
-  .bub.a p{margin:5px 0}
-  .bub.a .tip{color:#8d7a82;font-size:12.5px;background:#FBF1F3;border-radius:10px;padding:8px 10px;margin-top:8px;white-space:pre-wrap}
-  .aactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-  .aact{font-size:12.5px;padding:6px 14px;border-radius:14px;border:1.5px solid var(--line);background:#fff;color:#9a7d8a;cursor:pointer;font-family:inherit;transition:.15s}
-  .aact:hover{background:#FBEFF3;border-color:var(--acc);color:#7a5a6a}
-  .ainput{display:flex;gap:10px;align-items:flex-end;background:#fff;border:1px solid var(--line);border-radius:18px;padding:10px 12px;margin-top:6px}
-  .ainput textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:14px;padding:11px 13px;font-family:inherit;font-size:13.5px;outline:none;height:52px;background:#FDF8FB;line-height:1.5}
-  #m5 .ainput textarea:focus{border-color:var(--m5)}
-  #m6 .ainput textarea:focus{border-color:var(--m6)}
-  .ainput .send{border:none;background:var(--acc);color:#fff;font-weight:700;padding:0 20px;border-radius:14px;cursor:pointer;font-size:14px;height:52px;font-family:inherit}
-  .ainput .send:hover{filter:brightness(.96)}
-  .assist-empty{color:#A8969E;font-size:13px;text-align:center;padding:10px 0}
-  @media(max-width:600px){
-    .acards{grid-template-columns:repeat(2,1fr)}
-    .acard{padding:12px 11px}
-    .acard .ad{display:none}
-    .bub.u{max-width:92%}
-  }
 </style>
 </head>
 <body>
@@ -558,14 +516,6 @@
     <button class="nav-btn" data-mod="m4" style="--acc:var(--m4)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/><path d="M14 14l4 4M18 14l-4 4"/></svg></span>
       <span>排版兼职</span>
-    </button>
-    <button class="nav-btn" data-mod="m5" style="--acc:var(--m5)">
-      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
-      <span>生活规划</span>
-    </button>
-    <button class="nav-btn" data-mod="m6" style="--acc:var(--m6)">
-      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 10h8M8 14h5" stroke="currentColor" fill="none"/></svg></span>
-      <span>全能问答</span>
     </button>
     <button class="nav-btn" data-mod="m7" style="--acc:var(--m7)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-1-2-3-4-4-1.5-1-2-4-5-5z"/><circle cx="8.5" cy="11.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
@@ -739,48 +689,6 @@
       <div class="grid" id="m4grid"></div>
     </section>
 
-    <!-- ===== Module 5: 生活规划 ===== -->
-    <section class="module" id="m5">
-      <div class="card">
-        <div class="card-head">
-          <div class="ttl"><span class="emo">🧭</span>生活规划 · 把日子过得更顺手</div>
-          <span class="aimode" id="m5Ai">本地模板</span>
-          <button class="gear" onclick="openAISettings()" title="AI 设置">⚙</button>
-          <button class="refresh" onclick="lifeReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>重置对话</button>
-        </div>
-        <div class="sub">覆盖出行、清单、购物、时间、休闲、省钱六大场景。每轮先给菜单；输入卡片名直接进功能，需求模糊会提示你选卡片或直接说想法。</div>
-      </div>
-      <div class="assist" id="lifeAssist">
-        <div class="acards" id="lifeCards"></div>
-        <div class="amsg" id="lifeMsg"><div class="assist-empty">先从下面选一张卡片，或直接描述需求 👇</div></div>
-      </div>
-      <div class="ainput">
-        <textarea id="lifeIn" placeholder="输入卡片名（如：出行方案）或描述需求，回车发送…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();lifeSend();}"></textarea>
-        <button class="send" onclick="lifeSend()">发送</button>
-      </div>
-    </section>
-
-    <!-- ===== Module 6: 全能问答 ===== -->
-    <section class="module" id="m6">
-      <div class="card">
-        <div class="card-head">
-          <div class="ttl"><span class="emo">💬</span>全能问答 · 想清楚再行动</div>
-          <span class="aimode" id="m6Ai">本地模板</span>
-          <button class="gear" onclick="openAISettings()" title="AI 设置">⚙</button>
-          <button class="refresh" onclick="qaReset()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>重置对话</button>
-        </div>
-        <div class="sub">知识科普、问题拆解、利弊分析、疑问解答、思路梳理。客观作答、不编造；需求模糊会提示你选卡片或直接问。</div>
-      </div>
-      <div class="assist" id="qaAssist">
-        <div class="acards" id="qaCards"></div>
-        <div class="amsg" id="qaMsg"><div class="assist-empty">先从下面选一张卡片，或直接提问 👇</div></div>
-      </div>
-      <div class="ainput">
-        <textarea id="qaIn" placeholder="输入卡片名（如：利弊分析）或直接提问，回车发送…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();qaSend();}"></textarea>
-        <button class="send" onclick="qaSend()">发送</button>
-      </div>
-    </section>
-
     <!-- ===== Module 7: 潘通色卡 ===== -->
     <section class="module" id="m7">
       <div class="card">
@@ -883,8 +791,8 @@
 
 <script>
 /* ====== 全局 ====== */
-const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m5:"🧭 生活规划",m6:"💬 全能问答",m7:"🎨 潘通色卡&配色库"};
-const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m5:"#B9A6D9",m6:"#E9A99B",m7:"#C9B9F2"};
+const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m7:"🎨 潘通色卡&配色库"};
+const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m7:"#C9B9F2"};
 
 document.querySelectorAll(".nav-btn").forEach(b=>{
   b.onclick=()=>{
@@ -1598,362 +1506,7 @@ function copyColor(c){
   }
 }
 
-/* ====== Module 5: 生活规划 ====== */
-const LIFE_CARDS=[
- {k:"出行方案",icon:"🧳",kw:["旅游","旅行","行程","游玩","攻略","度假","周边游","出游","去玩","自由行","跟团","玩"],desc:"目的地行程与预算",prompt:"告诉我目的地、天数、偏好（亲子/美食/拍照/人文…），我出方案。"},
- {k:"清单规划",icon:"📝",kw:["清单","列表","待办","准备","规划清单","列一下","checklist","备忘"],desc:"分层待办清单",prompt:"说明要规划的事（搬家/考试/出差/婚礼…），我给分层清单。"},
- {k:"购物参考",icon:"🛒",kw:["购物","买","选购","挑","下单","种草","产品对比"],desc:"选购要点与避坑",prompt:"说想买的东西和预算/用途，我给选购要点与避坑。"},
- {k:"时间安排",icon:"⏰",kw:["时间","日程","安排","计划表","排期","作息","几点","时间表","规划一下时间"],desc:"把事排成时间表",prompt:"列出要做的几件事或目标，我帮你排时间表。"},
- {k:"美食影视",icon:"🍜",kw:["美食","影视","电影","剧","吃","看什么","下饭","夜宵","综艺"],desc:"按场景松弛推荐",prompt:"说口味/心情/场景，我按美食+影视两类给你推荐。"},
- {k:"省钱思路",icon:"💡",kw:["省钱","攒钱","理财","预算控制","记账","攒","薅"],desc:"落地省钱法子",prompt:"说场景（日常/装修/育儿/旅行），我给省钱法。"}
-];
-let lifeMode=null, lifeLast=null;
-function renderLifeCards(){document.getElementById("lifeCards").innerHTML=LIFE_CARDS.map(c=>"<button class='acard' onclick='lifePick(\""+c.k+"\")'><span class='ai'>"+c.icon+"</span><span class='at'>"+c.k+"</span><span class='ad'>"+c.desc+"</span></button>").join("");}
-function lifePick(n){const c=LIFE_CARDS.find(x=>x.k===n);if(!c)return;lifeMode=c.k;appendMsg("lifeMsg","a",mdToHtml("### 已进入【"+c.k+"】\n"+c.prompt));document.getElementById("lifeIn").focus();}
-function lifeReset(){lifeMode=null;lifeLast=null;renderLifeCards();document.getElementById("lifeMsg").innerHTML="<div class='assist-empty'>先从下面选一张卡片，或直接描述需求 👇</div>";}
-function lifeSend(){
-  const ta=document.getElementById("lifeIn");const text=ta.value.trim();if(!text)return;
-  appendMsg("lifeMsg","u",esc(text));ta.value="";
-  const card=matchCard(text,LIFE_CARDS);
-  let mode,topic;
-  if(card){lifeMode=card.k;mode=card.k;topic=stripCard(text,card);
-    if(!topic){appendMsg("lifeMsg","a",mdToHtml("### 已进入【"+card.k+"】\n"+card.prompt));sc("lifeMsg");return;}
-  }else if(lifeMode){mode=lifeMode;topic=text;}
-  else{appendMsg("lifeMsg","a",mdToHtml("### 想从哪开始？\n- 直接点上面的卡片，或输入卡片名（如「出行方案」）\n- 也可以直接描述需求，我帮你判断用哪个功能。"));sc("lifeMsg");return;}
-  lifeLast={mode:mode,topic:topic};
-  if(aiOn()){aiRespond("life","lifeMsg",lifeSys(mode),text,topic);}
-  else{appendAnswer("lifeMsg",mdToHtml(genLife(mode,topic,"normal")),"life");sc("lifeMsg");}
-}
-function lifeTransform(v){transformGen(v,"life",genLife,lifeLast);}
-
-/* ====== Module 6: 全能问答 ====== */
-const QA_CARDS=[
- {k:"知识科普",icon:"📚",kw:["科普","知识","是什么","什么是","何为","的意思","指什么","解释","原理","讲讲","说说"],desc:"用人话讲清概念",prompt:"把想了解的名词或现象发给我，我尽量讲明白。"},
- {k:"问题拆解",icon:"🔍",kw:["拆解","分解","怎么解决","卡住","分析这个问题"],desc:"复杂问题层层拆",prompt:"描述你卡住的问题，我帮你从目标拆到第一步。"},
- {k:"利弊分析",icon:"⚖️",kw:["利弊","优缺点","比较","vs","还是","选哪个","对比"],desc:"列清楚再决策",prompt:"说出要比较的两件事（如 A 还是 B），我列利弊。"},
- {k:"疑问解答",icon:"❓",kw:["怎么","如何","为什么","可以吗","是不是","能否","应该","疑问","解答","怎么办"],desc:"客观答各类疑问",prompt:"直接问，我给思路和提醒；专业问题请以官方为准。"},
- {k:"思路梳理",icon:"🧠",kw:["梳理","整理","理一理","乱","想法","归纳"],desc:"零散想法理结构",prompt:"把脑子里的事都倒出来，我帮你归成结构。"}
-];
-let qaMode=null, qaLast=null;
-function renderQaCards(){document.getElementById("qaCards").innerHTML=QA_CARDS.map(c=>"<button class='acard' onclick='qaPick(\""+c.k+"\")'><span class='ai'>"+c.icon+"</span><span class='at'>"+c.k+"</span><span class='ad'>"+c.desc+"</span></button>").join("");}
-function qaPick(n){const c=QA_CARDS.find(x=>x.k===n);if(!c)return;qaMode=c.k;appendMsg("qaMsg","a",mdToHtml("### 已进入【"+c.k+"】\n"+c.prompt));document.getElementById("qaIn").focus();}
-function qaReset(){qaMode=null;qaLast=null;renderQaCards();document.getElementById("qaMsg").innerHTML="<div class='assist-empty'>先从下面选一张卡片，或直接提问 👇</div>";}
-function qaSend(){
-  const ta=document.getElementById("qaIn");const text=ta.value.trim();if(!text)return;
-  appendMsg("qaMsg","u",esc(text));ta.value="";
-  const card=matchCard(text,QA_CARDS);
-  let mode,topic;
-  if(card){qaMode=card.k;mode=card.k;topic=stripCard(text,card);
-    if(!topic){appendMsg("qaMsg","a",mdToHtml("### 已进入【"+card.k+"】\n"+card.prompt));sc("qaMsg");return;}
-  }else if(qaMode){mode=qaMode;topic=text;}
-  else{appendMsg("qaMsg","a",mdToHtml("### 想从哪开始？\n- 直接点上面的卡片，或输入卡片名（如「利弊分析」）\n- 也可以直接把问题抛过来。"));sc("qaMsg");return;}
-  qaLast={mode:mode,topic:topic};
-  if(aiOn()){aiRespond("qa","qaMsg",qaSys(mode),text,topic);}
-  else{appendAnswer("qaMsg",mdToHtml(genQA(mode,topic,"normal")),"qa");sc("qaMsg");}
-}
-function qaTransform(v){transformGen(v,"qa",genQA,qaLast);}
-
-/* ====== 共用：卡片匹配 / 渲染 / 转换 ====== */
-function matchCard(text,cards){for(const c of cards){if(text.includes(c.k))return c;for(const kw of c.kw){if(kw&&text.includes(kw))return c;}}return null;}
-function stripCard(text,card){let s=text.replace(card.k,"");card.kw.forEach(kw=>{if(kw)s=s.replace(kw,"");});s=s.replace(/^(我要|我想|请|帮我|帮忙|来一个|做一个|搞个|整一个|关于|说说|讲讲|给个|求|如何|怎么)/,"");return s.replace(/[：:，,。.、]/g," ").replace(/\s+/g," ").trim();}
-function esc(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
-function mdToHtml(src){const lines=src.split("\n");let html="",listOpen=false,para=[];const closeList=()=>{if(listOpen){html+="</ul>";listOpen=false;}};const flush=()=>{if(para.length){html+="<p>"+para.join("<br>")+"</p>";para=[];}};for(let raw of lines){const line=raw.replace(/\s+$/,"");if(line===""){closeList();flush();continue;}if(line.startsWith("## ")){closeList();flush();html+="<h4>"+esc(line.slice(3))+"</h4>";}else if(line.startsWith("### ")){closeList();flush();html+="<h5>"+esc(line.slice(4))+"</h5>";}else if(line.startsWith("- ")||line.startsWith("• ")){flush();if(!listOpen){html+="<ul>";listOpen=true;}html+="<li>"+esc(line.slice(2))+"</li>";}else if(line.startsWith("> ")){closeList();flush();html+="<div class='tip'>"+esc(line.slice(2))+"</div>";}else{closeList();para.push(esc(line));}}closeList();flush();return html;}
-function appendMsg(boxId,role,html){const box=document.getElementById(boxId);const d=document.createElement("div");d.className="bub "+(role==="u"?"u":"a");d.innerHTML=html;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
-function appendAnswer(boxId,html,mod){const d=appendMsg(boxId,"a",html);const acts=document.createElement("div");acts.className="aactions";acts.innerHTML="<button class='aact' onclick='"+mod+"Transform(\"concise\")'>↙ 精简</button><button class='aact' onclick='"+mod+"Transform(\"expand\")'>✎ 扩写</button><button class='aact' onclick='"+mod+"Transform(\"adjust\")'>⇄ 调整</button>";d.appendChild(acts);}
-function sc(id){const b=document.getElementById(id);if(b)b.scrollTop=b.scrollHeight;}
-function transformGen(v,mod,gen,last){
-  if(!last){appendMsg(mod+"Msg","a",mdToHtml("### 还没有可优化的内容\n- 先发一段需求，生成结果后这里会出现「精简 / 扩写 / 调整」。"));sc(mod+"Msg");return;}
-  if(v==="adjust"){appendMsg(mod+"Msg","a",mdToHtml("### 想调整方向？\n- 直接补充要求再发一次，例如：更省钱版 / 适合带娃 / 更详细 / 3 天版\n- 或点「重置对话」换一张卡片。"));sc(mod+"Msg");return;}
-  if(aiOn()){
-    const sys=mod==="life"?lifeSys(last.mode):qaSys(last.mode);
-    const instr=v==="concise"?"请在上方案基础上，用更精简、要点化的方式重写，只保留最关键步骤与数字。":(v==="expand"?"请在上方案基础上扩写，补充更多具体细节、备选方案和注意事项。":"");
-    const user="用户之前的需求是：「"+last.topic+"」（卡片："+last.mode+"）。"+instr;
-    aiRespond(mod,mod+"Msg",sys,user,last.topic);return;
-  }
-  const out=gen(last.mode,last.topic,v);if(!out)return;
-  appendAnswer(mod+"Msg",mdToHtml(out),mod);sc(mod+"Msg");
-}
-
-/* ====== AI 智能增强桥接（填 Key 升级真实大模型） ====== */
-let WB_AI=null;
-function loadAI(){try{const s=localStorage.getItem("wb_ai_cfg");if(s){WB_AI=JSON.parse(s);}}catch(e){}updateAiBadge();}
-function aiOn(){return !!(WB_AI&&WB_AI.key);}
-function updateAiBadge(){
-  const on=aiOn();
-  ["m5Ai","m6Ai"].forEach(id=>{const a=document.getElementById(id);if(a){a.textContent=on?"AI 智能":"本地模板";a.classList.toggle("on",on);}});
-}
-function openAISettings(){
-  const c=WB_AI||{};
-  document.getElementById("aiProv").value=c.prov||"deepseek";
-  document.getElementById("aiKey").value=c.key||"";
-  document.getElementById("aiBase").value=c.base||"https://api.deepseek.com";
-  document.getElementById("aiModel").value=c.model||"deepseek-chat";
-  document.getElementById("aiNote").textContent="";
-  document.getElementById("aiModal").classList.add("show");
-}
-function closeAISettings(){document.getElementById("aiModal").classList.remove("show");}
-function aiProvChange(){
-  const p=document.getElementById("aiProv").value;
-  if(p==="deepseek"){document.getElementById("aiBase").value="https://api.deepseek.com";document.getElementById("aiModel").value="deepseek-chat";}
-  else if(p==="openai"){document.getElementById("aiBase").value="https://api.openai.com/v1";document.getElementById("aiModel").value="gpt-4o-mini";}
-  else if(p==="qwen"){document.getElementById("aiBase").value="https://dashscope.aliyuncs.com/compatible-mode/v1";document.getElementById("aiModel").value="qwen-plus";}
-  else{document.getElementById("aiBase").value="";document.getElementById("aiModel").value="";}
-}
-function saveAISettings(){
-  const key=document.getElementById("aiKey").value.trim();
-  const base=document.getElementById("aiBase").value.trim();
-  const model=document.getElementById("aiModel").value.trim();
-  const prov=document.getElementById("aiProv").value;
-  if(!key){document.getElementById("aiNote").textContent="请先填写 API Key。";return;}
-  if(!base||!model){document.getElementById("aiNote").textContent="接口地址和模型名不能为空。";return;}
-  WB_AI={prov:prov,key:key,base:base,model:model};
-  try{localStorage.setItem("wb_ai_cfg",JSON.stringify(WB_AI));}catch(e){}
-  updateAiBadge();closeAISettings();toast("AI 已启用 ✅ 现在用真实大模型回答");
-}
-function clearAISettings(){WB_AI=null;try{localStorage.removeItem("wb_ai_cfg");}catch(e){}updateAiBadge();closeAISettings();toast("已切回本地模板");}
-function lifeSys(mode){return "你是「生活规划」助手的真实大脑。用户正在使用卡片【"+mode+"】（取值：出行方案/清单规划/购物参考/时间安排/美食影视/省钱思路）。\n规则：\n1. 每一轮优先给出可执行的具体方案，不要只讲原则。\n2. 用户提到具体城市/物品/场景时，给出真实、具体的建议，含可落地步骤、参考数字、平台/品牌/地名示例。\n3. 需求模糊时，先给通用版，再提示补充关键信息（城市、天数、预算、人数等）。\n4. 清单/计划类用分层列表，复杂内容用条目排版。\n5. 客观作答，不编造不存在的数据；不确定用「约/参考」标注。\n6. 用户不满意时主动提供精简/扩写/调整三种方向。\n用简体中文、markdown 排版。";}
-function qaSys(mode){return "你是「全能问答」助手的真实大脑。用户正在使用卡片【"+mode+"】（取值：知识科普/问题拆解/利弊分析/疑问解答/思路梳理）。\n规则：\n1. 优先直接作答，给具体、可验证内容。\n2. 知识科普：人话+生活例子讲清，必要时给参考数字。\n3. 问题拆解/思路梳理：给可操作步骤与示例。\n4. 利弊分析：列具体利弊并给决策建议；不确定先示范格式。\n5. 客观不编造；健康/法律/投资等专业问题提醒以官方为准。\n6. 用户不满意时主动提供精简/扩写/调整。\n用简体中文、markdown 排版。";}
-async function callLLM(system,user){
-  if(!WB_AI||!WB_AI.key)throw new Error("未配置 AI");
-  const url=(WB_AI.base||"https://api.deepseek.com").replace(/\/+$/,"")+"/chat/completions";
-  const body={model:WB_AI.model||"deepseek-chat",messages:[{role:"system",content:system},{role:"user",content:user}],temperature:0.7,stream:false};
-  const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),25000);
-  let res;
-  try{res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+WB_AI.key},body:JSON.stringify(body),signal:ctrl.signal});}
-  catch(e){clearTimeout(to);throw new Error("网络/跨域(CORS)错误："+(e&&e.message?e.message:e)+"。该厂商可能不支持浏览器直连，可换 DeepSeek 或改用代理。");}
-  clearTimeout(to);
-  if(!res.ok){let msg="HTTP "+res.status;try{const j=await res.json();if(j&&j.error&&j.error.message)msg+=" "+j.error.message;}catch(_){}if(res.status===401)msg="API Key 无效或无权访问（401），请检查 Key。";throw new Error(msg);}
-  const data=await res.json();
-  const c=data&&data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content;
-  if(!c)throw new Error("返回为空");
-  return c.trim();
-}
-async function aiRespond(mod,boxId,system,userRaw,topic){
-  const typing=appendMsg(boxId,"a",'<span class="typing">思考中…</span>');
-  try{
-    const ans=await callLLM(system,userRaw);
-    typing.innerHTML=mdToHtml(ans);
-    const acts=document.createElement("div");acts.className="aactions";
-    acts.innerHTML="<button class='aact' onclick='"+mod+"Transform(\"concise\")'>↙ 精简</button><button class='aact' onclick='"+mod+"Transform(\"expand\")'>✎ 扩写</button><button class='aact' onclick='"+mod+"Transform(\"adjust\")'>⇄ 调整</button>";
-    typing.appendChild(acts);
-  }catch(e){
-    typing.innerHTML=mdToHtml("> ⚠️ AI 调用失败："+(e&&e.message?e.message:e)+"\n已回退本地方案：");
-    const out=mod==="life"?genLife((lifeLast&&lifeLast.mode)||"出行方案",(lifeLast&&lifeLast.topic)||topic||"", "normal"):genQA((qaLast&&qaLast.mode)||"疑问解答",(qaLast&&qaLast.topic)||topic||"", "normal");
-    appendAnswer(boxId,mdToHtml(out),mod);
-  }
-  sc(boxId);
-}
-
-/* ====== 生活规划生成器 ====== */
-/* 城市数据库（出行方案用，含真实景点/美食/预算/交通） */
-const CITY_DB={
- "北京":{spot:["故宫+景山（一早进场，提前7天官网预约）","长城·慕田峪（早8点前出发避人潮）","颐和园+圆明园（同一天顺路）","南锣鼓巷/什刹海胡同夜游"],food:["烤鸭：四季民福/大董（人均150–250）","铜锅涮肉：聚宝源（人均120）","炸酱面/卤煮老店"],daily:"中档约 600–900 元/人/天（住宿350–550+门票150+餐饮150）",trans:"高铁/飞机全国可达；市内地铁最方便，用「北京一卡通」或支付宝出行码"},
- "上海":{spot:["外滩+南京路夜景","迪士尼（周中去排队少）","豫园+城隍庙","武康路+安福路Citywalk"],food:["生煎：小杨生煎","本帮菜：老正兴","葱油拌面/蟹粉小笼"],daily:"中档约 700–1000 元/人/天（住宿450–650+餐饮200）",trans:"虹桥站高铁直达长三角；市内地铁+打车，用「Metro大都会」"},
- "成都":{spot:["大熊猫基地（早7:30开门看幼崽）","宽窄巷子+锦里","都江堰（高铁半小时）","春熙路+太古里"],food:["火锅：小龙坎/蜀大侠（人均100–150）","串串香","担担面/钟水饺"],daily:"中档约 400–650 元/人/天（住宿200–350+餐饮120）",trans:"双流/天府机场；市内地铁+共享单车，景点多免费"},
- "杭州":{spot:["西湖（断桥-苏堤骑行）","灵隐寺","西溪湿地","宋城（看《宋城千古情》）"],food:["西湖醋鱼/龙井虾仁","楼外楼","知味观小笼"],daily:"中档约 500–800 元/人/天（住宿300–500+餐饮150）",trans:"杭州东站高铁枢纽；地铁+公交，西湖边建议骑行"},
- "西安":{spot:["兵马俑（早去避开团）","城墙骑行（永宁门上）","大雁塔+大唐不夜城","回民街+洒金桥"],food:["肉夹馍+凉皮+冰峰","泡馍（老米家）","Biangbiang面"],daily:"中档约 400–650 元/人/天（住宿200–350+餐饮100）",trans:"北客站高铁；地铁覆盖主要景点，回民街步行"},
- "重庆":{spot:["洪崖洞夜景","李子坝轻轨穿楼","磁器口古镇","长江索道"],food:["重庆火锅（人均100）","小面","酸辣粉"],daily:"中档约 400–650 元/人/天（住宿200–350+餐饮120）",trans:"江北机场；轻轨+打车，地形复杂多用地图"},
- "广州":{spot:["广州塔+珠江夜游","沙面+上下九","陈家祠","长隆（动物/水上乐园）"],food:["早茶：点都德/陶陶居","烧腊","肠粉"],daily:"中档约 500–800 元/人/天（住宿300–500+餐饮180）",trans:"广州南站高铁；地铁发达，早茶错峰免排队"},
- "厦门":{spot:["鼓浪屿（提前买船票）","环岛路骑行","曾厝垵","南普陀+厦大"],food:["沙茶面","海蛎煎","姜母鸭"],daily:"中档约 450–700 元/人/天（住宿250–400+餐饮150）",trans:"高崎机场/厦门站；岛外地铁+公交，鼓浪屿需轮渡"},
- "丽江":{spot:["古城+四方街","玉龙雪山（带氧气）","泸沽湖（2天）","束河古镇"],food:["腊排骨火锅","纳西烤鱼","鸡豆凉粉"],daily:"中档约 400–700 元/人/天（住宿200–400+餐饮120）",trans:"三义机场；高原注意反应，雪山需保暖衣物"},
- "三亚":{spot:["亚龙湾/海棠湾","蜈支洲岛","南山文化苑","第一市场吃海鲜"],food:["清补凉","海南鸡饭","和乐蟹"],daily:"中档约 700–1200 元/人/天（住宿500–900+餐饮200）",trans:"凤凰机场；旺季贵建议提前1月订，租车自驾方便"},
- "长沙":{spot:["橘子洲头","岳麓山+岳麓书院","超级文和友","湖南省博（马王堆）"],food:["臭豆腐（黑色经典）","茶颜悦色","剁椒鱼头"],daily:"中档约 400–650 元/人/天（住宿200–350+餐饮120）",trans:"长沙南站高铁；地铁+步行，网红店排队久"},
- "南京":{spot:["中山陵+音乐台","夫子庙秦淮风光","总统府","牛首山"],food:["盐水鸭","汤包","皮肚面"],daily:"中档约 450–700 元/人/天（住宿250–400+餐饮140）",trans:"南京南站高铁；地铁覆盖，钟山风景区较大建议骑车"},
- "武汉":{spot:["黄鹤楼","东湖绿道骑行","户部巷","湖北省博（编钟）"],food:["热干面","小龙虾（靓靓蒸虾）","豆皮"],daily:"中档约 400–650 元/人/天（住宿200–350+餐饮120）",trans:"武汉站/汉口站；地铁过江，东湖很大建议骑行"},
- "青岛":{spot:["栈桥+小青岛","八大关","崂山","啤酒博物馆"],food:["海鲜大排档","鲅鱼水饺","原浆啤酒"],daily:"中档约 450–700 元/人/天（住宿250–400+餐饮150）",trans:"青岛站/北站；滨海公交+地铁，啤酒节在8月"}
-};
-function detectCity(t){for(const c in CITY_DB){if(t.includes(c))return c;}return null;}
-function buildItinerary(city,days){
- const d=CITY_DB[city];const spots=d.spot;const foods=d.food;
- let r=["### 📅 "+days+" 天参考行程（告诉我偏好/同行人可再调）"];
- for(let i=1;i<=days;i++){
-   const s=spots[(i-1)%spots.length];const s2=spots[i%spots.length]||"补漏/二刷喜欢的点";const f=foods[(i-1)%foods.length];
-   if(i===1)r.push("- Day"+i+"：上午 抵达+寄存 → 下午 "+s+" → 晚上 "+f+"（早点休息）");
-   else if(i===days)r.push("- Day"+i+"：上午 "+s+" → 下午 "+s2+"+买手信 → 提前3小时赴车站/机场");
-   else r.push("- Day"+i+"：上午 "+s+" → 中午歇脚 → 下午 "+s2+" → 晚上 "+f);
- }
- return r.join("\n");
-}
-function genLife(mode,topic,variant){
-  const t=(topic&&topic.trim())?topic.trim():"（没收到具体内容，先给通用模板；补一句目的地/场景我能更准）";
-  const concise=variant==="concise", expand=variant==="expand";
-  if(mode==="出行方案"){
-    const city=detectCity(t);
-    const m=t.match(/(\d+)\s*(天|日|晚)/);let days=m?parseInt(m[1]):0;
-    if(!city){
-      let r=["## 🧳 "+t+" · 出行方案（通用模板）","没识别到具体城市，先用通用版；告诉我城市名我给专属景点/美食/预算。",
-      "### 一、行前 4 件套（出发前 1 周做完）","- 证件：身份证/护照，拍照+云备份","- 大交通：比价 12306/携程/飞猪，看退改签","- 住宿：选地铁 1km 内，看清差评再订","- 天气+离线地图：查近 7 天，下离线包",
-      "### 二、行程配比","- 每天只排 2–3 个必去点，留 1/3 机动","- Day1 抵达休整，末日 提前3h 到车站",
-      "### 三、预算（按人/天）","- 交通30% 住宿30% 餐饮20% 门票其他20%，再留 10–15% 机动",
-      "### 四、避坑","- 景点官方票 > 第三方；警惕「低价一日游」","- 随身药包（肠胃/感冒/创可贴）"];
-      if(days)r.push("> 你提到 "+days+" 天，告诉我城市我直接排每日行程。");
-      if(expand)r.push("> 进阶：美食先收藏 3 家，到了不纠结；用「两步路」找小众路线。");
-      if(concise)r.push("> 精简：证件+票+住宿+天气 四件套先做；每天2–3点；预算 30/30/20/20。");
-      return r.join("\n");
-    }
-    const d=CITY_DB[city];
-    let r=["## 🧳 "+city+" · 出行方案"];
-    r.push("### ✅ 必去（挑 3–4 个，别贪多）");
-    r=r.concat(d.spot.map(s=>"- "+s));
-    r.push("### 🍜 必吃（人均参考）");
-    r=r.concat(d.food.map(f=>"- "+f));
-    r.push((days>0&&days<=7)?buildItinerary(city,days):buildItinerary(city,3));
-    r.push("### 💰 预算（中档/人/天）","- "+d.daily);
-    r.push("### 🚇 交通","- "+d.trans);
-    r.push("### ⚠️ 避坑","- 官方公众号/官网买票最稳，拒绝街头「带路」","- 高反/海边注意身体，备药包");
-    if(expand)r.push("> 进阶：景点用地图「收藏+分组」，每天按区域顺路走，省一半路费时间。");
-    if(concise)r.push("> 精简："+city+" 必去 "+d.spot[0]+"+"+d.spot[1]+"；必吃 "+d.food[0]+"；预算 "+d.daily.split("（")[0]+"。");
-    return r.join("\n");
-  }
-  if(mode==="清单规划"){
-    let items=[];
-    if(/搬家|退房|入住/.test(t))items=["提前 2 周：找房/定搬家公司，比 2–3 家报价","水电燃气/宽带：结清+过户，拍照表底","地址变更：银行卡/快递/会员地址改新址","打包：按房间分箱，易碎品气泡膜+「易碎」标记","贵重/证件随身，不进搬家车","入住当天：先查水电、通网、换锁芯","物业/邻居报到，问清垃圾点/停车"];
-    else if(/考研|考试|公考|考公|学习/.test(t))items=["资料：教材+近 5 年真题+错题本","计划：按月→周→日拆解，留 2 周冲刺","模考：每 2 周一套，卡时间","作息：考前 1 月调成考试时段作息","报名/准考证：设日历提醒，证件提前备","身体：规律睡，备咖啡/红牛应急"];
-    else if(/出差|出行|旅行/.test(t))items=["证件/票务/住宿：截图存云+纸质备份","电子设备：充电器/充电宝/转接头/耳机","衣物：看天气 3 套，鞋一双够走","药包：肠胃/感冒/创可贴/个人药","工作交接：列清单给同事+紧急联系人","回程：提前值机/抢票，留缓冲"];
-    else if(/婚礼|结婚/.test(t))items=["预算表：婚宴/摄影/婚庆/首饰分项封顶","档期：酒店+婚庆+摄影三方对齐日子","宾客：名单+座位图+桌签","合同：所有服务写清档期/退款/加项费","当天：流程表+总控人（别是新郎新娘）","备婚纱/西装：改尺寸+熨烫"];
-    else if(/装修|装潢/.test(t))items=["预算：硬装/软装/家电 比例先定，留 15% 增项","设计：水电点位图确认（插座宁多勿少）","主材：瓷砖/地板/卫浴 提前订，看环保等级","监工：防水/闭水试验/验收 到场","合同：工期+增项上限+延期赔付写清","入住前：通风 1–3 月+甲醛检测"];
-    else if(/求职|面试|找工作|简历/.test(t))items=["简历：按岗位改，量化成果（如「提效30%」）","渠道：Boss/猎聘/内推 三管齐下","准备：高频面试题+作品集+反问清单","形象：正装/淡妆，提前踩点路线","背调/薪资：查行业薪资（OfferShow/脉脉）","跟进：面试后 24h 发感谢信"];
-    else if(/体检|就医|看病/.test(t))items=["预约：公众号/APP 约号，带身份证医保卡","空腹项目：抽血/B超 早上做，带零食事后吃","病史：过往报告/用药清单带上","衣着：宽松方便检查","报告：当场问清异常项，约复查","医保：异地备案提前办"];
-    else if(/宠物|猫|狗|养宠/.test(t))items=["用品：粮/猫砂/牵引/窝 先备齐","医疗：找附近 24h 宠物医院+疫苗本","封窗/防咬：家中隐患先排查","喂养：定时定量，换粮 7 天过渡","出行：航空箱+宠物医保考虑","绝育/驱虫：按计划排"];
-    else items=["目标：用一句话写清，加截止日","拆解：按「准备/执行/收尾」三段","资源：钱/人/物/信息 先盘一遍","风险：最坏情况预案写下来","检查点：每周打勾复盘","今日最小一步：现在就能做的 1 件"];
-    let r=["## 📝 "+t+" · 清单规划","### 准备阶段",items[0],items[1],items[2],"### 执行阶段",items[3],items[4],items[5],"### 收尾阶段",items[6]||"- 对照目标逐条核对，写一句复盘"];
-    if(expand)r.push("> 小技巧：用「重要×紧急」四象限排序；单条要可行动（「订酒店」而非「安排住宿」）。");
-    if(concise)r.push("> 精简：准备3条→执行3条→收尾1条，每条一句话能直接做。");
-    return r.join("\n");
-  }
-  if(mode==="购物参考"){
-    let r=["## 🛒 "+t+" · 选购要点"];const cat=c=>t.includes(c);
-    if(cat("手机")||cat("电话")){
-      r.push("### 看这 5 项","- 预算档：1000–2000 红米/真我；2000–3500 一加/荣耀；3500+ 苹果/华为旗舰","- 处理器：骁龙8系/天玑9系优先，决定流畅度","- 屏幕：OLED+高刷(120Hz)护眼，看亮度(nit)","- 影像：看主摄传感器(IMX/光影)而非像素数","- 电池：5000mAh+67W 快充够用","### 渠道与时机","- 官方/京东自营 保真；618/双11 或新款发后老款降价","- 看「慢慢买」比价，防先涨后降");
-    }else if(cat("电脑")||cat("笔记本")||cat("本子")){
-      r.push("### 看这 6 项","- 用途定档：办公轻薄(4000–6000)/游戏独显(7000+)/创作屏色准","- CPU：Intel Ultra / AMD 8845 系；内存 16G 起步，创作 32G","- 硬盘：512G 起步，优先可扩展","- 屏幕：2.5K+100%sRGB，创作要高色域","- 续航：看 Wh 数，轻薄本 60Wh+","- 接口：双C+HDMI 更省转接","### 渠道","- 京东自营/品牌官网；教育优惠(苹果/联想)省 5–10%");
-    }else if(cat("相机")||cat("微单")||cat("单反")){
-      r.push("### 看这 4 项","- 定位：入门套机(4000–6000)/进阶(8000–15000)/全画幅旗舰","- 镜头：套头练手，定焦(35/50mm)出片；先机身後镜","- 传感器：APS-C 够用，全画幅虚化好但贵","- 防抖/连拍/视频规格看需求","### 省钱","- 闲鱼 95 新省 30%，验机看快门数/CMOS 坏点");
-    }else if(cat("家电")||cat("冰箱")||cat("洗衣机")||cat("空调")||cat("电视")){
-      r.push("### 通用要点","- 看能效(一级最省电)、容量(按人口)、噪音(dB)","- 冰箱：风冷无霜+变频；洗衣机：滚筒省水+10kg","- 空调：匹数按面积(1匹≈10–15㎡)；电视看尺寸与色域","### 渠道","- 京东/苏宁 大促；以旧换新+国补(部分品类)再省 10–15%","- 安装费问清，防「高空作业费」");
-    }else if(cat("护肤")||cat("化妆品")||cat("面霜")||cat("精华")){
-      r.push("### 看这 3 项","- 先定肤质(油/干/敏)和诉求(保湿/美白/抗老)","- 成分：烟酰胺(亮)、维C(抗氧)、A醇(抗老，需建立耐受)","- 别盲目堆猛药，敏感肌先局部试","### 渠道","- 官方旗舰/天猫国际；大促囤正装，小样试敏","- 看「美丽修行」查成分和致敏");
-    }else{
-      r.push("### 选购前 3 问","- 真实用途 vs 想要？先防冲动","- 预算上限 + 是否接受二手？","- 要不要用很久（决定买好点还是够用）","### 怎么挑","- 看核心参数/口碑，不看出价营销词","- 横比 2–3 渠道（官方/大促/线下）","- 差评比好评更准","### 时机","- 大件等 618/双11+价保；日用品囤刚需","- 保留凭证，确认退换");
-    }
-    if(expand)r.push("> 进阶：买前写一句「我为什么需要它」，答不上来先别买；大件优先选保修省心的。");
-    if(concise)r.push("> 精简：定预算→看核心参数→比3渠道→看差评→确认退换。");
-    return r.join("\n");
-  }
-  if(mode==="时间安排"){
-    let r=["## ⏰ "+t+" · 时间安排","### 🕐 普通工作日时间表（可直接照搬）",
-    "- 7:00 起+喝水+拉伸","- 7:30 早餐（别边刷手机）","- 8:00–10:00 专注块：做当天最难/最重要 1 件","- 10:00–10:15 休息","- 10:15–12:00 继续深度或协作","- 12:00–13:00 午餐+散步","- 13:00–14:00 午休 20–30 分","- 14:00–16:30 杂事/会议/沟通块","- 16:30–17:30 收尾+列明日 3 件事","- 19:30–20:30 运动/学习 1 小时","- 22:30 手机离床，23:00 睡",
-    "### 🗓️ 周视角","- 给每类事固定「收纳盒」时间（如周一复盘/周五规划）","- 周末留半天空白缓冲，别排满",
-    "### ⚡ 提效 3 招","- 两分钟法则：能 2 分钟做完立刻做，不进清单","- 吃青蛙：最难的事放精力最好的上午","- 番茄钟 25+5，杂事批处理"];
-    if(expand)r.push("> 进阶：每周留半天「什么都不排」处理积压+回血；用时间记录 App（如 24PI）找时间黑洞。");
-    if(concise)r.push("> 精简：上午专注做大事，下午处理杂事，晚上复盘；两分钟事立刻做。");
-    return r.join("\n");
-  }
-  if(mode==="美食影视"){
-    let r=["## 🍜 "+t+" · 休闲推荐（具体版）","### 🍽️ 按场景吃","- 解压熬夜：火锅/麻辣烫/烧烤 + 冰可乐","- 想健康：轻食沙拉/蒸菜/家常小炒/杂粮粥","- 想尝鲜：本地小馆/夜市/时令（夏天小龙虾、冬天羊蝎子）","- 一个人奖励：挑一家没去过的店当仪式感",
-    "### 🎬 按心情看","- 累了一天：轻松综艺《你好生活》《种地吧》/ 治愈纪录片《人生一串》《舌尖上的中国》","- 想动脑：悬疑《漫长的季节》《隐秘的角落》/ 烧脑《开端》","- 想充电：传记《史蒂夫·乔布斯》/ 知识《宇宙》《但是还有书籍》","- 下饭神剧：《武林外传》《炊事班的故事》百看不厌",
-    "### 💡 小建议","- 看片别配外卖到太晚，第二天会谢你","- 把「吃饭+看片」当 weekly reset，比刷短视频回血快"];
-    if(expand)r.push("> 进阶：美食先收藏 3 家附近的，到了不纠结；剧集用「追剧日历」防烂尾。");
-    if(concise)r.push("> 精简：解压吃热乎的，动脑看悬疑，充电看传记；别熬太晚。");
-    return r.join("\n");
-  }
-  if(mode==="省钱思路"){
-    let r=["## 💡 "+t+" · 省钱的 15 个具体办法","1. 记账 30 天：用「钱迹/随手记」，找出每月隐形漏点（奶茶/打车）","2. 退订闲置会员：视频/音乐/云盘只留真用的，年省 200–600","3. 外卖用「美团圈圈/饿了么红包」+ 自取省配送费","4. 日用品囤「京东PLUS/天猫超市」大促，只囤刚需","5. 大件等 618/双11 并开「价保」，30 天内降价退差","6. 二手淘「闲鱼/转转」95 新，手机/相机省 30–50%","7. 电影用「淘票票/猫眼」特惠场，或信用卡积分换","8. 信用卡积分抵现/换会员，优先免年费卡","9. 出行「12306 候补」+ 高铁比飞机稳；市内公交地铁","10. 基金定投「沪深300/中证500」指数，月投 500 起长期摊平","11. 应急金存「余额宝/货币基金」T+0，留 3–6 月开支","12. 话费改互联网卡（19–29 元百 G），年省几百","13. 书/课用「微信读书/图书馆」+ 二手教材","14. 健身用「Keep 免费课/公园跑」替代年卡","15. 买菜日用走「拼多多/社区团购」省 20–30%",
-    "### 心态","- 省钱不是不花，是把钱挪到更值的地方；自动转账攒钱比靠自律靠谱"];
-    if(expand)r.push("> 进阶：用「想要/需要」二问法，结账前默念；设「消费冷静 24h」防冲动大件。");
-    if(concise)r.push("> 精简：记账找漏点→退闲置会员→大件等促+价保→闲鱼淘二手→先攒应急金。");
-    return r.join("\n");
-  }
-  return "## "+t+"\n- 请选择上方具体卡片，或描述更明确的需求（如「成都3日游」「搬家清单」）。";
-}
-
-/* ====== 全能问答生成器 ====== */
-const KB={
- "复利":"复利指利息计入本金后继续生息，即「利滚利」。例：每月定投 1000 元、年化 8%，20 年后约 59 万，其中本金才 24 万——多出的 35 万就是时间给的。越早开始差距越大，但要先有本金和耐心。",
- "通货膨胀":"整体物价持续上涨、货币购买力下降。名义工资涨但东西也贵了，实际购买力未必增。例：年通胀 3%，现在的 100 元 10 年后只值约 74 元。应对：让资产收益跑赢通胀，现金长期闲置会被悄悄稀释。",
- "GDP":"国内生产总值，一国/地区一段时间内新创造的最终商品与服务总价值，衡量经济冷热。但它不等于「百姓幸福感」——例：某地 GDP 高但收入低、污染重，百姓未必满意。看时要结合收入、就业。",
- "公积金":"单位和个人按月缴存的长期住房储金，买房/租房/装修可提取或低息贷款。例：双边各 12%、月薪 1 万则每月进账 2400，利率通常低于商贷，是刚需购房省钱工具。",
- "个税起征点":"综合所得基本减除费用 5000 元/月，低于此不缴税，超出部分超额累进（3%–45%），还有子女教育/房贷/赡养老人等专项附加扣除可再减。",
- "光合作用":"绿色植物用叶绿素吸光，把 CO₂ 和水转化成养分并放氧。几乎一切食物链的能量起点。记：光+CO₂+水 → 养分+氧气。例：一棵大树一天约释放足够一人呼吸的氧气。",
- "机会成本":"选 A 而放弃的「次优 B 的价值」。例：用 2 小时刷手机，机会成本可能是读完半本书或赚 50 元兼职。提醒：免费的东西也可能很贵，因为占了你的时间。",
- "沉没成本":"已发生、收不回的投入。例：花 80 元看烂片，继续看完的代价是再搭 1 小时——理性做法是止损离场。『已经花了』不是继续的理由。",
- "边际效用":"每多消费一单位带来的额外满足，通常递减：第一杯水解渴，第十杯想吐。它解释了为什么稀缺更值钱，也提醒『多了反而腻』。",
- "信用评分":"机构按还款、负债、时长给的「靠谱度」分。分高→贷款易、利率低。养好核心：按时还、别频繁申卡、负债别太高。例：常用一张卡并全额还款，半年可明显上升。",
- "资产配置":"把资金按风险分散到股票/债券/现金/黄金，核心「不把鸡蛋放一篮」。普通人可用「指数基金+货基+保险」三角，比例随年龄调（如「100-年龄」% 配权益）。",
- "流动性":"资产多快变现金且不亏本。房子流动性差，急用钱难出手；货基/存款流动性好。配比时要留够随时能取的「活钱」应对失业等突发。",
- "通缩":"物价持续下跌、钱更值钱但经济冷、工资难涨。和通胀相反，此时现金为王，少借债、保住工作比激进投资更稳。",
- "恩格尔系数":"食品支出占总消费比重，越低越富：>59% 贫困，30–39% 小康，<30% 富裕。自测：你每月外卖+买菜占比高吗？",
- "锚定效应":"人易被第一个数字「锚」住。例：原价 1999 划掉写 999，你会觉得便宜——买前先想「我本来愿付多少」而非「省了多少」。",
- "幸存者偏差":"只看到成功者、忽略沉默的失败者，于是高估成功率。例：『辍学也能当首富』——你没看到几百万辍学普通人的样本。决策要看全样本。",
- "马太效应":"「凡有的还要加给他」。财富/名气/资源自我强化，强者愈强。对个人：早期积累复���（技能/人脉/本金）很重要。",
- "二八定律":"20% 的事决定 80% 结果。抓关键少数：20% 客户贡献 80% 利润，20% 习惯影响 80% 健康。把精力压在要害上。",
- "破窗效应":"环境小破窗不修会诱使更大破坏。类比：一个小拖延不制止会蔓延成一堆烂尾。及时「修窗」——当天事当天收。",
- "墨菲定律":"「会出错的终会出错」。重要事做预案+冗余：备份、提前量、Plan B。不是悲观，是提前兜底。"
-};
-function genQA(mode,topic,variant){
-  const t=(topic&&topic.trim())?topic.trim():"（没收到具体问题，先给通用框架；补一句我能更准）";
-  const concise=variant==="concise", expand=variant==="expand";
-  if(mode==="知识科普"){
-    const key=Object.keys(KB).find(k=>t.includes(k));
-    if(key){let r=["## 📚 知识科普："+key,KB[key],"> 想更系统？查权威来源（教材/官方百科/行业报告），并把概念放到自己例子里记更牢。"];return r.join("\n");}
-    let r=["## 📚 关于「"+t+"」的科普方法（通用）","没在知识库里直接命中，用这套「3 步搞懂」自己也能厘清：",
-    "### 1. 一句人话定义","- 先答：它到底是干什么的 / 解决什么问题？用自己的话写一句",
-    "### 2. 找一个生活例子","- 类比熟悉场景：如讲「区块链」类比「全班公开记账本，谁都改不了」","- 例子越具体，理解越快",
-    "### 3. 教给别人","- 费曼技巧：假装讲给外行听，卡住处就是没懂处",
-    "> 说明：以上为通用方法。涉及具体数据/定义请以权威来源为准，避免以讹传讹。把你想懂的词发我（如「什么是机会成本」），我直接给解释+例子。"];
-    if(expand)r.push("### 怎么学更快\n- 建「概念卡片」：一词+一句话定义+一个例子，积少成多。");
-    return r.join("\n");
-  }
-  if(mode==="问题拆解"){
-    let r=["## 🔍 问题拆解："+t,"以「一年内存够 3 万应急金」为例演示：",
-    "### 1. 明确目标","- 结果可量化：3 万 / 12 个月 = 每月 2500 元",
-    "### 2. 拆成要素","- 钱：月入多少？能挤出的固定储蓄多少？","- 时间：发薪日自动转，不等「月底剩多少」","- 信息：有没有更高收益又安全的存放（货基）？",
-    "### 3. 找最大不确定性","- 收入不稳 → 先保底 1000/月，余下靠副业补",
-    "### 4. 最小可行第一步","- 今天：开个独立账户，转 500 元进去（先启动）",
-    "### 5. 检查点","- 每月底看余额，差了下月补，不破罐破摔"];
-    if(expand)r.push("> 进阶：复杂问题画「目标→障碍→资源」三栏，一眼看清缺哪块；障碍排序先打掉最致命的。");
-    if(concise)r.push("> 精简：定量化目标→拆钱/时/信→验最大不确定→做最小第一步→月复盘。");
-    return r.join("\n");
-  }
-  if(mode==="利弊分析"){
-    const m=t.match(/(.+?)\s*(vs|还是|和|与|跟|比|对比|选)\s*(.+)/);
-    if(m){
-      const a=m[1].trim(),b=m[3].trim();
-      let r=["## ⚖️ 利弊分析："+a+" vs "+b,"### ✅ "+a+" 的利","- 收益 / 省时 / 省钱 / 风险低 / 更贴合你当前目标","### ⚠️ "+a+" 的弊","- 成本 / 时间 / 不确定 / 机会成本，最坏情况能否扛","### ✅ "+b+" 的利","- 对应上面那点的优势","### ⚠️ "+b+" 的弊","- 它的代价与风险","### 💡 决策建议","- 按你优先级打分（1–5），谁总分高选谁","- 拿不准先小成本试，再决定全押"];
-      if(expand)r.push("> 进阶：常非二选一——能否「先 A 后 B」「各取一部分」？折中常是最优解。");
-      return r.join("\n");
-    }
-    let r=["## ⚖️ 利弊分析（示例：租房 vs 买房）","你没给两个对比项，先用常见例子演示格式：",
-    "### ✅ 租房的利","- 灵活、低门槛、不背贷、可随时换城市","### ⚠️ 租房的弊","- 钱花完没资产、房租会涨、无稳定感",
-    "### ✅ 买房的利","- 资产增值预期、稳定、可自住可租","### ⚠️ 买房的弊","- 首付压力大、流动性差、维护成本、赌房价跌","### 💡 决策建议","- 5 年内不定居 → 租；长期稳定+有首付+月供<收入40% → 买","- 把你的两个选项发来（如「A还是B」），我按上面格式填。"];
-    if(expand)r.push("> 进阶：给每个选项按「钱/时/险/心」四项各打 1–5 分，总分高者优先。");
-    return r.join("\n");
-  }
-  if(mode==="疑问解答"){
-    let r=["## ❓ 关于「"+t+"」","先判断你问的是哪类，再下手：",
-    "### 若是「怎么做」（方法类）","- 拆成 3 步可行动的小动作，每步有明确产出","- 例：「怎么开始存钱」→ 开独立账户→设发薪日自动转→记一笔账",
-    "### 若是「为什么」（原理类）","- 找因果链：A 导致 B 因为…；用例子验证",
-    "### 若是「能不能/该不该」（判断类）","- 列决策清单：目标是什么？最坏结果？能否承受？有无 Plan B？","- 例：「该不该辞职」→ 存款够活几个月？下家有着落吗？身体健康撑得住吗？",
-    "> 涉及健康/法律/投资等专业问题，请以专业人士/官方为准。把你的背景+目标+限制补一句，我答更准。"];
-    if(expand)r.push("### 怎么自己找答案\n- 搜「关键词 + 权威来源」，看 2–3 个独立信源是否一致，比看一个高赞更靠谱。");
-    return r.join("\n");
-  }
-  if(mode==="思路梳理"){
-    let r=["## 🧠 思路梳理："+t,"以「想跳槽又怕风险」为例演示结构：",
-    "### 核心目标","- 一句话：在「收入提升」和「稳妥」间找平衡",
-    "### 关键要素（去重归类）","- 现状：薪资低但稳定、通勤短","- 机会：外部 offer +30% 但试用期风险","- 顾虑：房贷、空窗期","- 资源：6 个月应急金、可投简历的技能",
-    "### 关系与优先级","- 先保「不断供」底线，再追「收入」；应急金够 → 风险可控",
-    "### 下一步动作（明天就能做）","1. 更新简历并发 3 个岗位试水温","2. 算清「最低可接受薪资+最高可扛空窗」","3. 和家人过一遍底线数字",
-    "> 感觉还是乱？把想到的全倒出来也行，我帮你归类。"];
-    if(expand)r.push("### 进阶\n- 用「问题树」：一个大问题往下分三层，到能直接行动为止。");
-    return r.join("\n");
-  }
-  return "## "+t+"\n- 请选择上方具体卡片，或把问题说更具体些（如「什么是机会成本」「租房还是买房」）。";
-}
-
 /* ====== 初始化 ====== */
-renderLifeCards();renderQaCards();
-loadAI();
 fillCitySel("m2citySel","m2");
 fillCitySel("m4citySel","m4");
 renderDramas("全部");
@@ -1982,31 +1535,6 @@ function liveRefresh(){
 setInterval(liveRefresh,15000);
 setInterval(updateTime,1000);
 </script>
-<div id="aiModal" class="modal" onclick="if(event.target===this)closeAISettings()">
-  <div class="modal-card" style="max-width:520px">
-    <button class="modal-x" onclick="closeAISettings()" aria-label="关闭">×</button>
-    <h2>🤖 AI 智能增强</h2>
-    <div class="modal-body">
-      <p class="dm-lead">默认用内置「超具体本地模板」（离线、无需 Key）。填好下面三项并保存，模块即升级为<b>真实大模型</b>，能按你的具体情况生成方案。</p>
-      <div class="ai-field"><label>服务商</label>
-        <select id="aiProv" onchange="aiProvChange()">
-          <option value="deepseek">DeepSeek（推荐，浏览器直连通常可用）</option>
-          <option value="openai">OpenAI</option>
-          <option value="qwen">通义千问 DashScope</option>
-          <option value="custom">自定义 OpenAI 兼容接口</option>
-        </select>
-      </div>
-      <div class="ai-field"><label>API Key</label><input id="aiKey" type="password" placeholder="sk-..." autocomplete="off"></div>
-      <div class="ai-field"><label>接口地址 Base URL</label><input id="aiBase" placeholder="https://api.deepseek.com"></div>
-      <div class="ai-field"><label>模型名</label><input id="aiModel" placeholder="deepseek-chat"></div>
-      <div class="ai-note" id="aiNote"></div>
-    </div>
-    <div class="modal-foot">
-      <button class="send" onclick="saveAISettings()">保存并启用</button>
-      <button class="refresh" onclick="clearAISettings()" style="margin-left:8px">清空（用回本地）</button>
-    </div>
-  </div>
-</div>
 <div id="detailModal" class="modal" onclick="if(event.target===this)closeDetail()">
   <div class="modal-card">
     <button class="modal-x" onclick="closeDetail()" aria-label="关闭">×</button>
@@ -2037,19 +1565,6 @@ setInterval(updateTime,1000);
 .item{cursor:pointer}
 .row{cursor:pointer}
 .palette{cursor:pointer}
-/* AI 设置 / 模式标识 */
-.gear{margin-left:8px;border:none;background:#FBEFF4;color:#b07d92;width:34px;height:34px;border-radius:50%;font-size:17px;cursor:pointer;line-height:1;transition:.15s}
-.gear:hover{background:#F4D9E4;transform:rotate(35deg)}
-.aimode{font-size:11px;color:#9a8a92;background:#F4ECF0;border:1px solid #EAD7DF;border-radius:999px;padding:2px 9px;white-space:nowrap}
-.aimode.on{color:#fff;background:linear-gradient(135deg,#b07d92,#d98aa6);border-color:transparent}
-.ai-field{margin:12px 0;display:flex;flex-direction:column;gap:5px}
-.ai-field label{font-size:13px;color:#9a8a92}
-.ai-field select,.ai-field input{font-size:14px;padding:9px 11px;border:1.5px solid #EAD7DF;border-radius:12px;background:#fff;color:#574B53;outline:none}
-.ai-field select:focus,.ai-field input:focus{border-color:#d98aa6}
-.ai-note{font-size:12.5px;color:#c98aa0;min-height:16px;margin-top:4px}
-.typing{opacity:.7}
-.typing:after{content:"▋";animation:blink 1s steps(2) infinite}
-@keyframes blink{50%{opacity:0}}
 </style>
 </body>
 </html>
