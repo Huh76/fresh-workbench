@@ -463,6 +463,23 @@
     .main{padding:12px 10px 60px}
   }
 
+  /* Module 1 多平台直达聚合 */
+  .m1-bar{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 2px}
+  .m1-search{display:flex;gap:8px;margin:12px 0 4px}
+  .m1-search input{flex:1;min-width:0;padding:10px 14px;border:2px solid #F0D3E0;border-radius:14px;background:#fff;font-size:14px;color:#5a3a48;outline:none;font-family:inherit}
+  .m1-search input:focus{border-color:#E98AB5}
+  .m1-shuffle{padding:0 16px;border:none;border-radius:14px;background:#FFD9EC;color:#7a2f4d;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;transition:.18s}
+  .m1-shuffle:active{transform:scale(.95)}
+  .mtag{display:inline-block;font-size:11px;padding:3px 9px;border-radius:10px;font-weight:700;margin:0 5px 7px 0;color:#fff}
+  .mtag.seri{background:#E98AB5}.mtag.free{background:#5BB98C}.mtag.pay{background:#C98AD4}.mtag.done{background:#7FB2E9}
+  .plats{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+  .plat{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:11px;font-size:12px;font-weight:700;text-decoration:none;color:#fff;transition:.18s}
+  .plat:hover{filter:brightness(1.07);transform:translateY(-1px)}
+  .plat svg{width:11px;height:11px;fill:#fff;opacity:.9}
+  .p-bili{background:#00AEEC}.p-dy{background:#FE2C55}.p-ks{background:#FF4906}.p-iqy{background:#00BE06}.p-qq{background:#FF7F00}.p-yk{background:#1FB6FF}.p-mgtv{background:#FF458E}
+  .empty{padding:30px;text-align:center;color:#a88696;font-size:13px;opacity:.8}
+  #m1grid .item h3{padding-right:0}
+
 </style>
 <link rel=manifest href=manifest.json>
 <meta name=theme-color content=#ffd9ec>
@@ -554,30 +571,36 @@
       </svg>
     </div>
 
-    <!-- ===== Module 1: 追剧 ===== -->
+    <!-- ===== Module 1: 追剧（多平台直达聚合） ===== -->
     <section class="module show" id="m1">
       <div class="card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">🍿</span>休闲追剧 · 全网热播轻量化聚合</div>
-          <button class="refresh" onclick="refreshMod('m1')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新片单</button>
+          <div class="ttl"><span class="emo">🍿</span>休闲追剧 · 全网多平台直达</div>
+          <button class="refresh" onclick="m1Refresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg><span id="m1upd">刷新</span></button>
         </div>
-        <div class="sub">整合主流平台热播剧、小众短剧、高分电影榜单，区分付费 / 免费，按心情挑片更轻松。</div>
-        <div class="links">
-          <a class="link" href="https://www.iqiyi.com" target="_blank">爱奇艺</a>
-          <a class="link" href="https://v.qq.com" target="_blank">腾讯视频</a>
-          <a class="link" href="https://www.youku.com" target="_blank">优酷</a>
-          <a class="link" href="https://www.mgtv.com" target="_blank">芒果TV</a>
-          <a class="link" href="https://www.bilibili.com" target="_blank">哔哩哔哩</a>
+        <div class="sub">聚合剧集 / 综艺 / 电影 / 动漫 / 短剧 / 解说，每条内容一键直达 B站 · 抖音 · 快手 · 爱奇艺 · 腾讯 · 优酷 · 芒果，视频优先、图文也可。</div>
+        <div class="m1-bar">
+          <a class="link" href="https://search.bilibili.com" target="_blank" rel="noopener">B站</a>
+          <a class="link" href="https://www.douyin.com" target="_blank" rel="noopener">抖音</a>
+          <a class="link" href="https://www.kuaishou.com" target="_blank" rel="noopener">快手</a>
+          <a class="link" href="https://www.iqiyi.com" target="_blank" rel="noopener">爱奇艺</a>
+          <a class="link" href="https://v.qq.com" target="_blank" rel="noopener">腾讯视频</a>
+          <a class="link" href="https://www.youku.com" target="_blank" rel="noopener">优酷</a>
+          <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
-      </div>
-      <div class="chips" id="m1chips">
-        <span class="chip on" data-f="全部">全部</span>
-        <span class="chip" data-f="完结">完结专区</span>
-        <span class="chip" data-f="连载">连载追更</span>
-        <span class="chip" data-f="免费">免费专区</span>
-        <span class="chip" data-f="治愈">治愈向</span>
-        <span class="chip" data-f="悬疑">悬疑向</span>
-        <span class="chip" data-f="解压">解压向</span>
+        <div class="m1-search">
+          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…" oninput="m1Render()">
+          <button class="m1-shuffle" onclick="m1Shuffle()">🎲 换一批</button>
+        </div>
+        <div class="chips" id="m1cat">
+          <span class="chip on" data-cat="全部">全部</span>
+          <span class="chip" data-cat="剧集">剧集</span>
+          <span class="chip" data-cat="综艺">综艺</span>
+          <span class="chip" data-cat="电影">电影</span>
+          <span class="chip" data-cat="动漫">动漫</span>
+          <span class="chip" data-cat="短剧">短剧</span>
+          <span class="chip" data-cat="解说">解说</span>
+        </div>
       </div>
       <div class="grid" id="m1grid"></div>
     </section>
@@ -828,7 +851,7 @@ function toast(msg){
 function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
-  if(m==="m1")renderDramas(curFilter.m1);
+  if(m==="m1")m1Render();
   if(m==="m2")renderHouses(curFilter.m2);
   if(m==="m4")renderJobs(curFilter.m4);
 }
@@ -845,20 +868,49 @@ function openDetail(key){
 function closeDetail(){document.getElementById("detailModal").classList.remove("show");}
 document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDetail();});
 
-/* ====== Module 1: 追剧 ====== */
-const dramas=[
-  {t:"《人间烟火》",p:"腾讯视频",s:"连载",g:"治愈",pay:true,link:"https://v.qq.com/x/search/?q=%E4%BA%BA%E9%97%B4%E7%83%9F%E7%81%AB",d:"小城早餐铺的温情群像，慢节奏治愈系，适合睡前放松。"},
-  {t:"《迷雾追凶》",p:"爱奇艺",s:"连载",g:"悬疑",pay:true,link:"https://so.iqiyi.com/so/q_%E8%BF%B7%E9%9B%BE%E8%BF%BD%E5%87%B6",d:"密闭海岛连环命案，反转密集，烧脑向推荐。"},
-  {t:"《萌宠日记》合集",p:"芒果TV",s:"完结",g:"解压",pay:false,link:"https://so.mgtv.com/so?k=%E8%90%8C%E5%AE%A0%E6%97%A5%E8%AE%B0%E5%90%88%E9%9B%86",d:"免费短综，猫狗日常合集，三分钟快速回血。"},
-  {t:"《山野食堂》",p:"优酷",s:"完结",g:"治愈",pay:false,link:"https://so.youku.com/search_video/q_%E5%B1%B1%E9%87%8E%E9%A3%9F%E5%A0%82",d:"田园美食纪录片，画面干净，解压兼治愈。"},
-  {t:"《错位时空》",p:"爱奇艺",s:"完结",g:"悬疑",pay:true,link:"https://so.iqiyi.com/so/q_%E9%94%99%E4%BD%8D%E6%97%B6%E7%A9%BA",d:"12集精品短剧，时空交错设定，口碑高分完结。"},
-  {t:"《甜系恋人》",p:"抖音短剧",s:"连载",g:"解压",pay:false,link:"https://www.douyin.com/search/%E7%94%9C%E7%B3%BB%E6%81%8B%E4%BA%BA",d:"免费竖屏短剧，糖分超标，通勤解闷神器。"},
-  {t:"《深海谣》",p:"腾讯视频",s:"连载",g:"悬疑",pay:true,link:"https://v.qq.com/x/search/?q=%E6%B7%B1%E6%B5%B7%E8%B0%A3",d:"海洋悬疑剧，画面质感高级，剧情层层递进。"},
-  {t:"《慢生活》",p:"芒果TV",s:"完结",g:"治愈",pay:false,link:"https://so.mgtv.com/so?k=%E6%85%A2%E7%94%9F%E6%B4%BB",d:"慢综艺合集，远离内卷，治愈焦虑。"},
-  {t:"《X档案·都市》",p:"优酷",s:"免费",g:"悬疑",pay:false,link:"https://so.youku.com/search_video/q_X%E6%A1%A3%E6%A1%88%C2%B7%E9%83%BD%E5%B8%82",d:"免费悬疑单元剧，每集一个都市怪谈。"},
-  {t:"《一日店长》",p:"抖音短剧",s:"完结",g:"解压",pay:false,link:"https://www.douyin.com/search/%E4%B8%80%E6%97%A5%E5%BA%97%E9%95%BF",d:"免费轻喜剧短剧，搞笑解压向。"},
-  {t:"《雪国列车》",p:"爱奇艺",s:"连载",g:"悬疑",pay:true,link:"https://so.iqiyi.com/so/q_%E9%9B%AA%E5%9B%BD%E5%88%97%E8%BD%A6",d:"末世悬疑大作，制作精良，追更热门。"},
-  {t:"《花间集》",p:"腾讯视频",s:"完结",g:"治愈",pay:false,link:"https://v.qq.com/x/search/?q=%E8%8A%B1%E9%97%B4%E9%9B%86",d:"古风治愈剧，服化道精美，免费收看。"},
+/* ====== Module 1: 追剧（多平台直达聚合） ====== */
+const enc=encodeURIComponent;
+const PLATFORMS=[
+ {id:"bilibili",name:"B站",cls:"p-bili",url:k=>"https://search.bilibili.com/all?keyword="+enc(k)},
+ {id:"douyin",name:"抖音",cls:"p-dy",url:k=>"https://www.douyin.com/search/"+enc(k)},
+ {id:"kuaishou",name:"快手",cls:"p-ks",url:k=>"https://www.kuaishou.com/search/video?searchQuery="+enc(k)},
+ {id:"iqiyi",name:"爱奇艺",cls:"p-iqy",url:k=>"https://so.iqiyi.com/so/q_"+enc(k)},
+ {id:"qq",name:"腾讯视频",cls:"p-qq",url:k=>"https://v.qq.com/x/search/?q="+enc(k)},
+ {id:"youku",name:"优酷",cls:"p-yk",url:k=>"https://so.youku.com/search_video/q_"+enc(k)},
+ {id:"mgtv",name:"芒果TV",cls:"p-mgtv",url:k=>"https://so.mgtv.com/so?k="+enc(k)}
+];
+const M1=[
+ {t:"庆余年第二季",cat:"剧集",free:false,done:false,k:"庆余年第二季",d:"权谋古装续作，剧情紧凑口碑高，追更热门。"},
+ {t:"繁花",cat:"剧集",free:false,done:true,k:"繁花 王家卫",d:"沪上霓虹年代群像，电影级质感与美学。"},
+ {t:"与凤行",cat:"剧集",free:false,done:true,k:"与凤行",d:"仙侠轻喜剧，甜宠向，服化道精美。"},
+ {t:"玫瑰的故事",cat:"剧集",free:false,done:true,k:"玫瑰的故事",d:"都市女性成长剧，演技派阵容。"},
+ {t:"我的阿勒泰",cat:"剧集",free:false,done:true,k:"我的阿勒泰",d:"治愈系边疆生活，慢节奏松弛感。"},
+ {t:"三体",cat:"剧集",free:false,done:true,k:"三体 电视剧",d:"科幻巨制，还原度高，制作精良。"},
+ {t:"漫长的季节",cat:"剧集",free:false,done:true,k:"漫长的季节",d:"悬疑精品，封神口碑，演技在线。"},
+ {t:"去有风的地方",cat:"剧集",free:false,done:true,k:"去有风的地方",d:"田园治愈，松弛感拉满的慢生活。"},
+ {t:"乘风2024",cat:"综艺",free:false,done:false,k:"乘风2024",d:"女性舞台竞演，热度持续走高。"},
+ {t:"歌手2024",cat:"综艺",free:false,done:false,k:"歌手2024",d:"直播真唱音综，话题度拉满。"},
+ {t:"种地吧",cat:"综艺",free:false,done:true,k:"种地吧",d:"劳作纪实综艺，真诚治愈向。"},
+ {t:"你好星期六",cat:"综艺",free:true,done:false,k:"你好星期六",d:"轻松合家欢，免费观看。"},
+ {t:"五十公里桃花坞",cat:"综艺",free:false,done:true,k:"五十公里桃花坞",d:"群居社交观察，名场面频出。"},
+ {t:"王牌对王牌",cat:"综艺",free:false,done:true,k:"王牌对王牌",d:"经典游戏喜剧综艺，合家欢。"},
+ {t:"孤注一掷",cat:"电影",free:false,done:true,k:"孤注一掷",d:"反诈题材，票房黑马，警示性强。"},
+ {t:"长安三万里",cat:"电影",free:false,done:true,k:"长安三万里",d:"唐诗动画史诗，国风美学巅峰。"},
+ {t:"消失的她",cat:"电影",free:false,done:true,k:"消失的她",d:"悬疑反转，话题引爆的院线爆款。"},
+ {t:"年会不能停",cat:"电影",free:false,done:true,k:"年会不能停",d:"职场喜剧，打工人口碑之作。"},
+ {t:"封神第一部",cat:"电影",free:false,done:true,k:"封神第一部",d:"神话史诗，视效震撼的国产大片。"},
+ {t:"时光代理人",cat:"动漫",free:false,done:true,k:"时光代理人",d:"国产悬疑动画，催泪神作。"},
+ {t:"刺客伍六七",cat:"动漫",free:true,done:true,k:"刺客伍六七",d:"国漫搞笑热血，免费好评。"},
+ {t:"灵笼",cat:"动漫",free:false,done:true,k:"灵笼",d:"末日科幻动画，制作精良。"},
+ {t:"中国奇谭",cat:"动漫",free:true,done:true,k:"中国奇谭",d:"短片集国风动画，免费高分。"},
+ {t:"凡人修仙传",cat:"动漫",free:false,done:false,k:"凡人修仙传",d:"修仙长篇动画，持续更新中。"},
+ {t:"逃出大英博物馆",cat:"短剧",free:true,done:true,k:"逃出大英博物馆",d:"文物拟人微短剧，免费出圈。"},
+ {t:"我在八零年代当后妈",cat:"短剧",free:true,done:false,k:"我在八零年代当后妈",d:"竖屏甜爽短剧，免费观看。"},
+ {t:"完蛋！我被美女包围了",cat:"短剧",free:false,done:true,k:"完蛋我被美女包围了",d:"互动影视短剧，破圈爆款。"},
+ {t:"反诈题材短剧",cat:"短剧",free:true,done:false,k:"反诈题材短剧",d:"竖屏反诈科普，免费实用。"},
+ {t:"电影解说合集",cat:"解说",free:true,done:false,k:"电影解说 高清",d:"UP主影视解说，免费涨知识。"},
+ {t:"高分纪录片推荐",cat:"解说",free:true,done:false,k:"纪录片 高分 推荐",d:"高分纪录片盘点，免费可看。"},
+ {t:"动漫神作盘点",cat:"解说",free:true,done:false,k:"动漫推荐 神作",d:"动漫神作盘点，免费种草。"}
 ];
 const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",gal:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
 /* 城市 → 区域（全面） */
@@ -891,31 +943,34 @@ const cityAreas={
   "佛山":["禅城区","南海区","顺德区","三水区","高明区","高明"],
   "沈阳":["和平区","沈河区","大东区","皇姑区","铁西区","浑南区","于洪区"]
 };
-function renderDramas(f,hi){
-  const g=document.getElementById("m1grid");
-  const list=dramas.filter(x=>f==="全部"||x.s===f||x.g===f);
-  const fi=hi==null?-1:hi%list.length;
-  g.innerHTML=list.map((x,i)=>{
-    const tag=x.pay?'<span class="tag pay">付费</span>':'<span class="tag free">免费</span>';
-    const fresh=i===fi?'<div class="fresh">🔥 刚刚热播</div>':'';
-    const key="m1_"+i;
-    DETAILS[key]={title:x.t, html:`<p class="dm-lead">${x.d}</p>
-      <div class="dm-grid">
-        <div><span>剧名</span><b>${x.t}</b></div>
-        <div><span>播放平台</span><b>${x.p}</b></div>
-        <div><span>状态</span><b>${x.s}</b></div>
-        <div><span>类型</span><b>${x.g}向</b></div>
-        <div><span>观看方式</span><b>${x.pay?'付费会员':'免费'}</b></div>
-      </div>
-      <p class="dm-note">本页为站内预览，内容可直接在本系统阅读；点击「来源 ↗」可前往原始站点查看。</p>`, src:x.link, srcName:x.p};
-    return `<div class="item" onclick="openDetail('${key}')"><span class="tag ${x.s==='完结'?'done':(x.s==='免费'?'free':'seri')}">${x.s}</span>${tag}${fresh}
-      <h3>${x.t}</h3>
-      <div class="meta">平台：<b>${x.p}</b> · 类型：<b>${x.g}向</b></div>
-      <div class="desc">${x.d}</div>
-      <a class="go src-link" href="${x.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">观看来源 ↗</a></div>`;
-  }).join("");
+let m1Cat="全部",m1Q="",m1Seed=0;
+function m1List(){
+  let arr=M1.slice();
+  if(m1Cat!=="全部")arr=arr.filter(x=>x.cat===m1Cat);
+  if(m1Q){const q=m1Q.toLowerCase();arr=arr.filter(x=>(x.t+x.d+x.cat+x.k).toLowerCase().indexOf(q)>-1);}
+  if(m1Seed){for(let i=arr.length-1;i>0;i--){const r=Math.floor((i+1)*frac(m1Seed*(i+3)));const t=arr[i];arr[i]=arr[r];arr[r]=t;}}
+  return arr;
 }
-
+function frac(n){const s=Math.sin(n)*43758.5453;return s-Math.floor(s);}
+function m1Render(hi){
+  const g=document.getElementById("m1grid");
+  if(!g)return;
+  const list=m1List();
+  const n=Math.max(list.length,1);
+  const fi=hi==null?-1:(((hi%n)+n)%n);
+  if(!list.length){g.innerHTML='<div class="empty">没有匹配的内容，换个关键词或分类试试～</div>';return;}
+  g.innerHTML=list.map((x,i)=>{
+    const mtag='<span class="mtag '+(x.cat==="短剧"?"seri":(x.cat==="电影"?"done":"seri"))+'">'+x.cat+'</span>'+
+      (x.free?'<span class="mtag free">免费</span>':'<span class="mtag pay">付费</span>')+
+      (x.done?'<span class="mtag done">完结</span>':'');
+    const hot=i===fi?'<div class="fresh">🔥 正在热播</div>':'';
+    const plats=PLATFORMS.map(p=>'<a class="plat '+p.cls+'" href="'+p.url(x.k)+'" target="_blank" rel="noopener" title="在'+p.name+'看"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>').join('');
+    return '<div class="item">'+mtag+hot+'<h3>'+x.t+'</h3><div class="desc">'+x.d+'</div><div class="plats">'+plats+'</div></div>';
+  }).join('');
+}
+function m1Shuffle(){m1Seed=(m1Seed||0)+1;m1Render();}
+function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;m1Render(Math.floor(Math.random()*999));}
+function m1Bind(){document.querySelectorAll('#m1cat .chip').forEach(c=>{c.onclick=()=>{document.querySelectorAll('#m1cat .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');m1Cat=c.dataset.cat;m1Render();};});}
 /* ====== Module 2: 房源 ====== */
 const houses=[
   {t:"中骏·云景台",src:"58同城",city:"晋江",dist:"梅岭街道",cat:"租房",rooms:"一室",sqm:48,year:2019,gas:true,price:1450,fac:"电梯/近地铁/精装",pros:["近地铁口通勤便利","精装拎包入住","小区绿化好"],cons:["楼龄偏老","车位紧张"],link:"https://www.58.com"},
@@ -1123,7 +1178,7 @@ function bindChips(id,cb,key){
     };
   });
 }
-bindChips("m1chips",renderDramas,"m1");
+m1Bind();
 bindChips("m2cat",renderHouses,"m2");
 bindChips("m4chips",renderJobs,"m4");
 bindChips("m7chips",renderPalettes,"m7");
@@ -1513,7 +1568,7 @@ function copyColor(c){
 /* ====== 初始化 ====== */
 fillCitySel("m2citySel","m2");
 fillCitySel("m4citySel","m4");
-renderDramas("全部");
+m1Render();
 renderHouses();
 renderJobs();
 renderPalettes("全部");
@@ -1531,7 +1586,7 @@ document.querySelectorAll('.card-head').forEach(h=>{
 function liveRefresh(){
   updateTime();
   const r=arr=>Math.floor(Math.random()*arr.length);
-  renderDramas(curFilter.m1,r(dramas));
+  m1Render(r(M1));
   renderHouses(null,r(houses));
   renderJobs(null,r(jobs));
   renderGallery();
