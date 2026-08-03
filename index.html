@@ -473,12 +473,26 @@
   .mtag{display:inline-block;font-size:11px;padding:3px 9px;border-radius:10px;font-weight:700;margin:0 5px 7px 0;color:#fff}
   .mtag.seri{background:#E98AB5}.mtag.free{background:#5BB98C}.mtag.pay{background:#C98AD4}.mtag.done{background:#7FB2E9}
   .plats{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-  .plat{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:11px;font-size:12px;font-weight:700;text-decoration:none;color:#fff;transition:.18s}
+  .plat{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:11px;font-size:12px;font-weight:700;text-decoration:none;color:#fff;background:#E98AB5;transition:.18s}
   .plat:hover{filter:brightness(1.07);transform:translateY(-1px)}
   .plat svg{width:11px;height:11px;fill:#fff;opacity:.9}
   .p-bili{background:#00AEEC}.p-dy{background:#FE2C55}.p-ks{background:#FF4906}.p-iqy{background:#00BE06}.p-qq{background:#FF7F00}.p-yk{background:#1FB6FF}.p-mgtv{background:#FF458E}
   .empty{padding:30px;text-align:center;color:#a88696;font-size:13px;opacity:.8}
   #m1grid .item h3{padding-right:0}
+  /* 实时热榜 */
+  .hot-card{margin-top:16px}
+  .hot-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px}
+  .hot-tabs .chip{cursor:pointer;border:none;background:#FBE6F0;color:#8a4d68}
+  .hot-tabs .chip.on{background:#FFD9EC;color:#7a2f4d;box-shadow:0 2px 8px rgba(233,138,181,.3)}
+  .hot-items{display:flex;flex-direction:column;gap:2px}
+  .hot-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;text-decoration:none;color:#5a3a48;background:#fff;font-size:14px;transition:.15s}
+  .hot-item:hover{background:#FFF1F7;transform:translateX(2px)}
+  .hot-item .rank{flex:none;width:22px;height:22px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;background:#FFD9EC;color:#a23a63}
+  .hot-item:nth-child(1) .rank,.hot-item:nth-child(2) .rank,.hot-item:nth-child(3) .rank{background:#E98AB5;color:#fff}
+  .hot-item .ht{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hot-foot{margin-top:10px;font-size:11px;color:#b89aaa;text-align:right}
+  .plat-bar{margin:12px 0 2px}
+  .empty.small{padding:14px;font-size:12px}
 
 </style>
 <link rel=manifest href=manifest.json>
@@ -602,6 +616,13 @@
           <span class="chip" data-cat="解说">解说</span>
         </div>
       </div>
+      <div class="card hot-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🔥</span>实时热榜 · 全网热搜一键直达</div>
+        </div>
+        <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，点条目直达原平台看视频或图文。</div>
+        <div id="hotlist" class="hotlist"><div class="empty">实时热榜加载中…</div></div>
+      </div>
       <div class="grid" id="m1grid"></div>
     </section>
 
@@ -617,6 +638,11 @@
           <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
+        <div class="m1-search plat-bar">
+          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房" oninput="m2PlatRender()">
+          <button class="m1-shuffle" onclick="m2PlatRand()">🎲 随机词</button>
+        </div>
+        <div class="plats" id="m2plats"></div>
       </div>
       <div class="filterbar">
         <div class="fb-row">
@@ -688,6 +714,11 @@
           <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
+        <div class="m1-search plat-bar">
+          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR" oninput="m4PlatRender()">
+          <button class="m1-shuffle" onclick="m4PlatRand()">🎲 随机词</button>
+        </div>
+        <div class="plats" id="m4plats"></div>
       </div>
       <div class="chips" id="m4chips">
         <span class="chip on" data-f="全部">全部</span>
@@ -727,6 +758,15 @@
         <div class="links">
           <a class="link" href="https://www.pantone.com.cn" target="_blank">潘通中国官网</a>
           <a class="link" href="https://www.pantone.com/color-finder" target="_blank">Color Finder</a>
+        </div>
+        <div class="links">
+          <span class="link-sep">配色 / 设计平台 · 可直达</span>
+          <a class="link" href="https://www.zcool.com.cn" target="_blank">站酷</a>
+          <a class="link" href="https://www.qiantu.com" target="_blank">千图网</a>
+          <a class="link" href="https://color.adobe.com" target="_blank">Adobe Color</a>
+          <a class="link" href="https://coolors.co" target="_blank">Coolors</a>
+          <a class="link" href="https://www.peise.net" target="_blank">配色网</a>
+          <a class="link" href="https://huaban.com" target="_blank">花瓣网</a>
         </div>
       </div>
 
@@ -877,8 +917,31 @@ const PLATFORMS=[
  {id:"iqiyi",name:"爱奇艺",cls:"p-iqy",url:k=>"https://so.iqiyi.com/so/q_"+enc(k)},
  {id:"qq",name:"腾讯视频",cls:"p-qq",url:k=>"https://v.qq.com/x/search/?q="+enc(k)},
  {id:"youku",name:"优酷",cls:"p-yk",url:k=>"https://so.youku.com/search_video/q_"+enc(k)},
- {id:"mgtv",name:"芒果TV",cls:"p-mgtv",url:k=>"https://so.mgtv.com/so?k="+enc(k)}
+  {id:"mgtv",name:"芒果TV",cls:"p-mgtv",url:k=>"https://so.mgtv.com/so?k="+enc(k)}
 ];
+const PLAT_SEARCH={
+  job:[
+    {n:"猪八戒",u:k=>"https://www.zbj.com/search?key="+enc(k)},
+    {n:"一品威客",u:k=>"https://www.epwk.com/search?q="+enc(k)},
+    {n:"时间财富",u:k=>"https://www.680.com/search?q="+enc(k)},
+    {n:"58同城",u:k=>"https://www.58.com/search/?key="+enc(k)},
+    {n:"站酷",u:k=>"https://www.zcool.com.cn/search/?word="+enc(k)},
+    {n:"BOSS直聘",u:k=>"https://www.zhipin.com/web/geek/search?query="+enc(k)},
+    {n:"兼职猫",u:k=>"https://www.jianzhimao.com/search?q="+enc(k)},
+    {n:"Freelancer",u:k=>"https://www.freelancer.com/search/projects/?keyword="+enc(k)}
+  ],
+  house:[
+    {n:"58同城",u:k=>"https://www.58.com/search/?key="+enc(k)},
+    {n:"安居客",u:k=>"https://www.anjuke.com/search?q="+enc(k)},
+    {n:"赶集网",u:k=>"https://www.ganji.com/search?q="+enc(k)},
+    {n:"房天下",u:k=>"https://www.fang.com/search?q="+enc(k)},
+    {n:"搜房",u:k=>"https://www.soufun.com/search?q="+enc(k)}
+  ]
+};
+function renderPlatLinks(kw,plats){
+  if(!kw)return '<div class="empty small">输入关键词，一键去各平台搜结果</div>';
+  return plats.map(p=>'<a class="plat" href="'+p.u(kw)+'" target="_blank" rel="noopener" title="在'+p.n+'搜索"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.n+'</a>').join('');
+}
 const M1=[
  {t:"庆余年第二季",cat:"剧集",free:false,done:false,k:"庆余年第二季",d:"权谋古装续作，剧情紧凑口碑高，追更热门。"},
  {t:"繁花",cat:"剧集",free:false,done:true,k:"繁花 王家卫",d:"沪上霓虹年代群像，电影级质感与美学。"},
@@ -910,7 +973,29 @@ const M1=[
  {t:"反诈题材短剧",cat:"短剧",free:true,done:false,k:"反诈题材短剧",d:"竖屏反诈科普，免费实用。"},
  {t:"电影解说合集",cat:"解说",free:true,done:false,k:"电影解说 高清",d:"UP主影视解说，免费涨知识。"},
  {t:"高分纪录片推荐",cat:"解说",free:true,done:false,k:"纪录片 高分 推荐",d:"高分纪录片盘点，免费可看。"},
- {t:"动漫神作盘点",cat:"解说",free:true,done:false,k:"动漫推荐 神作",d:"动漫神作盘点，免费种草。"}
+  {t:"动漫神作盘点",cat:"解说",free:true,done:false,k:"动漫推荐 神作",d:"动漫神作盘点，免费种草。"},
+  {t:"庆余年 第一季",cat:"剧集",free:false,done:true,k:"庆余年",d:"权谋古装封神前作，铺垫续作。"},
+  {t:"甄嬛传",cat:"剧集",free:true,done:true,k:"甄嬛传",d:"宫斗经典，百看不厌。"},
+  {t:"知否知否应是绿肥红瘦",cat:"剧集",free:true,done:true,k:"知否知否应是绿肥红瘦",d:"北宋宅斗生活气，细腻耐看。"},
+  {t:"狂飙",cat:"剧集",free:false,done:true,k:"狂飙",d:"扫黑除恶爆款，演技炸裂。"},
+  {t:"山海情",cat:"剧集",free:true,done:true,k:"山海情",d:"扶贫写实，真诚动人。"},
+  {t:"县委大院",cat:"剧集",free:false,done:true,k:"县委大院",d:"基层群像，现实题材。"},
+  {t:"声生不息",cat:"综艺",free:false,done:true,k:"声生不息",d:"港乐金曲竞唱，怀旧向。"},
+  {t:"一年一度喜剧大赛",cat:"综艺",free:true,done:true,k:"一年一度喜剧大赛",d:"新生喜剧竞演，脑洞大开。"},
+  {t:"向往的生活",cat:"综艺",free:true,done:true,k:"向往的生活",d:"慢综艺治愈，田园日常。"},
+  {t:"密室大逃脱",cat:"综艺",free:false,done:false,k:"密室大逃脱",d:"悬疑解谜真人秀。"},
+  {t:"流浪地球2",cat:"电影",free:false,done:true,k:"流浪地球2",d:"国产科幻巅峰，视效宏大。"},
+  {t:"满江红",cat:"电影",free:false,done:true,k:"满江红",d:"悬疑喜剧，张艺谋贺岁。"},
+  {t:"八角笼中",cat:"电影",free:false,done:true,k:"八角笼中",d:"励志现实题材。"},
+  {t:"热辣滚烫",cat:"电影",free:false,done:true,k:"热辣滚烫",d:"女性成长励志。"},
+  {t:"吞噬星空",cat:"动漫",free:false,done:false,k:"吞噬星空",d:"热血科幻国漫。"},
+  {t:"斗破苍穹",cat:"动漫",free:false,done:false,k:"斗破苍穹",d:"玄幻长篇，持续更新。"},
+  {t:"雾山五行",cat:"动漫",free:true,done:true,k:"雾山五行",d:"国画风动作神作。"},
+  {t:"闪婚后傅先生马甲藏不住了",cat:"短剧",free:true,done:false,k:"闪婚后傅先生马甲藏不住了",d:"甜宠竖屏短剧。"},
+  {t:"总裁的隐藏身份",cat:"短剧",free:true,done:false,k:"总裁的隐藏身份 短剧",d:"霸总爽剧。"},
+  {t:"悬疑电影解说",cat:"解说",free:true,done:false,k:"悬疑电影解说 推荐",d:"烧脑悬疑盘点。"},
+  {t:"经典老片重温",cat:"解说",free:true,done:false,k:"经典老电影 推荐",d:"怀旧佳片合集。"},
+  {t:"新番动漫资讯",cat:"解说",free:true,done:false,k:"新番 动漫资讯",d:"新番速递。"}
 ];
 const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",gal:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
 /* 城市 → 区域（全面） */
@@ -971,6 +1056,27 @@ function m1Render(hi){
 function m1Shuffle(){m1Seed=(m1Seed||0)+1;m1Render();}
 function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;m1Render(Math.floor(Math.random()*999));}
 function m1Bind(){document.querySelectorAll('#m1cat .chip').forEach(c=>{c.onclick=()=>{document.querySelectorAll('#m1cat .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');m1Cat=c.dataset.cat;m1Render();};});}
+function hotEsc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+let hotData=null;
+async function loadHot(){
+  const el=document.getElementById("hotlist");if(!el)return;
+  try{
+    const r=await fetch("hotlist.json",{cache:"no-store"});
+    if(!r.ok)throw new Error("HTTP");
+    hotData=await r.json();
+  }catch(e){el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';return;}
+  renderHotTabs();
+}
+function renderHotTabs(tab){
+  const el=document.getElementById("hotlist");if(!el||!hotData)return;
+  const ps=(hotData.platforms||[]).filter(p=>p.items&&p.items.length);
+  if(!ps.length){el.innerHTML='<div class="empty">实时热榜暂无数据，稍后自动更新 👇</div>';return;}
+  const cur=tab||ps[0].id;
+  const tabs=ps.map(p=>'<button class="chip '+(p.id===cur?"on":"")+'" onclick="renderHotTabs(\''+p.id+'\')">'+p.name+'</button>').join("");
+  const blk=ps.find(p=>p.id===cur)||ps[0];
+  const items=blk.items.slice(0,12).map((it,i)=>'<a class="hot-item" href="'+it.url+'" target="_blank" rel="noopener"><span class="rank">'+(i+1)+'</span><span class="ht">'+hotEsc(it.t)+'</span></a>').join("");
+  el.innerHTML='<div class="hot-tabs">'+tabs+'</div><div class="hot-items">'+items+'</div><div class="hot-foot">更新于 '+(hotData.updated||"").replace("T"," ").slice(0,16)+' · 每30分钟自动刷新</div>';
+}
 /* ====== Module 2: 房源 ====== */
 const houses=[
   {t:"中骏·云景台",src:"58同城",city:"晋江",dist:"梅岭街道",cat:"租房",rooms:"一室",sqm:48,year:2019,gas:true,price:1450,fac:"电梯/近地铁/精装",pros:["近地铁口通勤便利","精装拎包入住","小区绿化好"],cons:["楼龄偏老","车位紧张"],link:"https://www.58.com"},
@@ -1166,6 +1272,10 @@ function jobPayMatch(n,sel){
   if(sel==="6000+")return n>6000;
   return true;
 }
+function m4PlatRender(){const kw=document.getElementById("m4search").value.trim();const w=document.getElementById("m4plats");if(w)w.innerHTML=renderPlatLinks(kw,PLAT_SEARCH.job);}
+function m4PlatRand(){const ws=["排版 CDR","包装设计 AI","电商详情页 PS","吊牌排版","海报主视觉","LOGO 延展","不干胶标签","画册排版","短视频封面"];const w=ws[Math.floor(Math.random()*ws.length)];const i=document.getElementById("m4search");if(i)i.value=w;m4PlatRender();}
+function m2PlatRender(){const kw=document.getElementById("m2search").value.trim();const w=document.getElementById("m2plats");if(w)w.innerHTML=renderPlatLinks(kw,PLAT_SEARCH.house);}
+function m2PlatRand(){const ws=["晋江 二手房","厦门 租房","福州 公寓","广州 学区房","杭州 地铁房","成都 新房","上海 精装","深圳 Loft"];const w=ws[Math.floor(Math.random()*ws.length)];const i=document.getElementById("m2search");if(i)i.value=w;m2PlatRender();}
 
 /* ====== 筛选 chips 绑定 ====== */
 function bindChips(id,cb,key){
@@ -1576,6 +1686,9 @@ renderGallery();
 updateTime();
 // 默认色值互算填入一个示例
 (function(){document.getElementById("cC").value=0;document.getElementById("cM").value=100;document.getElementById("cY").value=85;document.getElementById("cK").value=0;fromCMYK();})();
+loadHot();
+m4PlatRender();
+m2PlatRender();
 
 /* 实时更新：每模块卡片头加「实时」指示；每秒刷新时钟，每15秒自动刷新内容 */
 document.querySelectorAll('.card-head').forEach(h=>{
