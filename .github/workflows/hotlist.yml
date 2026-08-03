@@ -1,0 +1,23 @@
+name: 实时热榜更新
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: 生成实时热榜
+        run: node hotlist_gen.js
+      - name: 提交更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add hotlist.json
+          if git diff --cached --quiet; then echo "无变化，跳过"; else git commit -m "chore: 自动更新实时热榜"; git push; fi
