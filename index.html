@@ -769,6 +769,10 @@
     #m7 .news-list.brief .ni-title{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
     #m7 .ni-meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;padding-top:7px;border-top:1px dashed #eef3f0;font-size:11.5px;color:#8aa89a}
     #m7 .ni-src a{color:#2a7a57;text-decoration:none}
+    #m7 .ni-plats{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+    #m7 .ni-plats-label{font-size:11px;color:#7a9a8c;white-space:nowrap}
+    #m7 .ni-plat{font-size:11.5px;color:#2a7a57;background:#EAFBF2;border:1px solid #cdeede;border-radius:10px;padding:3px 9px;text-decoration:none;transition:.15s}
+    #m7 .ni-plat:active{background:#dff3e9;transform:scale(.97)}
     #m7 .news-empty{color:#8aa89a;font-size:13px;text-align:center;padding:24px 10px;line-height:1.7}
     #m7 .news-foot{margin-top:12px;font-size:12px;color:#7a9a8c;text-align:center;min-height:18px}
   </style>
@@ -777,7 +781,7 @@
         <div class="ttl"><span class="emo">🟩</span>每日热点</div>
         <button class="refresh" onclick="newsRefresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新热点</button>
       </div>
-      <div class="sub">实时联网检索当日新鲜热点，区分民生 / 财经 / 科技 / 社会 / 互联网；每条均附来源直达，拒绝编撰旧闻。</div>
+      <div class="sub">实时联网检索当日新鲜热点，区分民生 / 财经 / 科技 / 社会 / 互联网；每条均附来源直达 + 全网平台（微博 / 抖音 / 快手 / B站 / 知乎 / 百度 / 头条）一键检索，拒绝编撰旧闻。</div>
     </div>
 
   <div class="news-toolbar">
@@ -1283,6 +1287,16 @@ function newsClassify(t){
 function newsSrcUrl(it){ return it.url ? it.url : 'https://www.baidu.com/s?wd='+encodeURIComponent(it.t); }
 function newsSrcLabel(it){ return it.url ? ('来源：'+it.src) : '检索：百度'; }
 function newsNow(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); return (d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
+const NEWS_PLATS=[
+  {n:'微博', u:k=>`https://s.weibo.com/weibo?q=${k}`},
+  {n:'抖音', u:k=>`https://www.douyin.com/search/${k}`},
+  {n:'快手', u:k=>`https://www.kuaishou.com/search/video?searchKey=${k}`},
+  {n:'B站', u:k=>`https://search.bilibili.com/all?keyword=${k}`},
+  {n:'知乎', u:k=>`https://www.zhihu.com/search?type=content&q=${k}`},
+  {n:'百度', u:k=>`https://www.baidu.com/s?wd=${k}`},
+  {n:'头条', u:k=>`https://so.toutiao.com/search?keyword=${k}`}
+];
+function newsPlatCaps(t){ const k=encodeURIComponent(t); return NEWS_PLATS.map(p=>`<a class="ni-plat" href="${p.u(k)}" target="_blank" rel="noopener">${p.n}</a>`).join(''); }
 
 async function newsFetchLive(){
   const out=[];
@@ -1328,7 +1342,8 @@ function newsRender(){
     const url=newsSrcUrl(it);
     const row='<div class="ni-row"><span class="ni-idx">'+(i+1)+'</span><a class="ni-title" href="'+url+'" target="_blank" rel="noopener">'+it.t+'</a><span class="ni-cat">'+it.cat+'</span></div>';
     const meta='<div class="ni-meta"><span class="ni-src">🔗 <a href="'+url+'" target="_blank" rel="noopener">'+newsSrcLabel(it)+' ↗</a></span><span>'+newsFetchedAt+'</span></div>';
-    return '<div class="news-item">'+row+(newsMode==='detail'?meta:'')+'</div>';
+    const plats='<div class="ni-plats"><span class="ni-plats-label">全网检索：</span>'+newsPlatCaps(it.t)+'</div>';
+    return '<div class="news-item">'+row+plats+(newsMode==='detail'?meta:'')+'</div>';
   }).join('');
 }
 
