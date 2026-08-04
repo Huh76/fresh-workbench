@@ -648,9 +648,8 @@
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
         <div class="m1-search">
-          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（回车或点检索联网搜；输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m1Render()" onkeydown="if(event.key==='Enter')modWeb('m1',this.value)">
+          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m1Render()">
           <button class="m1-shuffle" onclick="m1Shuffle()">🎲 换一批</button>
-          <button class="m1-shuffle" onclick="modWeb('m1')">🌐 检索</button>
         </div>
         <div class="chips" id="m1cat">
           <span class="chip on" data-cat="全部">全部</span>
@@ -670,7 +669,6 @@
         <div id="hotlist" class="hotlist"><div class="empty">实时热榜加载中…</div></div>
       </div>
       <div class="grid" id="m1grid"></div>
-      <div class="webbox" id="m1web"></div>
     </section>
 
     <!-- ===== Module 2: 房源 ===== -->
@@ -686,9 +684,8 @@
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（回车或点检索联网搜；输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m2PlatRender()" onkeydown="if(event.key==='Enter')modWeb('m2',this.value)">
+          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m2PlatRender()">
           <button class="m1-shuffle" onclick="m2PlatRand()">🎲 随机词</button>
-          <button class="m1-shuffle" onclick="modWeb('m2')">🌐 检索</button>
         </div>
         <div class="plats" id="m2plats"></div>
       </div>
@@ -733,7 +730,6 @@
         </div>
       </div>
       <div class="grid" id="m2grid"></div>
-      <div class="webbox" id="m2web"></div>
     </section>
 
 
@@ -764,9 +760,8 @@
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（回车或点检索联网搜；输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m4PlatRender()" onkeydown="if(event.key==='Enter')modWeb('m4',this.value)">
+          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m4PlatRender()">
           <button class="m1-shuffle" onclick="m4PlatRand()">🎲 随机词</button>
-          <button class="m1-shuffle" onclick="modWeb('m4')">🌐 检索</button>
         </div>
         <div class="plats" id="m4plats"></div>
       </div>
@@ -795,7 +790,6 @@
         </div>
       </div>
       <div class="grid" id="m4grid"></div>
-      <div class="webbox" id="m4web"></div>
     </section>
 
     <!-- ===== Module 7: 每日热点 ===== -->
@@ -848,13 +842,8 @@
     </div>
   </div>
 
-  <div class="m1-search" style="margin:0 0 12px">
-    <input id="m7search" type="search" placeholder="🔍 深度检索某话题，如：存款利率 / AI 新政（回车联网检索）" onkeydown="if(event.key==='Enter')modWeb('m7',this.value)">
-    <button class="m1-shuffle" onclick="modWeb('m7')">🌐 检索</button>
-  </div>
   <div class="news-list" id="newsList"></div>
   <div class="news-foot" id="newsStatus"></div>
-  <div class="webbox" id="m7web"></div>
 </section>
 
   <!-- ===== 全局搜索（内置每个模块，输入「搜索 XXX」即触发） ===== -->
@@ -1608,23 +1597,6 @@ function renderWeb(q, items, ok){
       +'</a>';
   }).join('')+'</div>';
   return h;
-}
-async function runWeb(cid, q){
-  const el=document.getElementById(cid); if(!el) return;
-  q=(q||'').trim(); if(!q){ el.innerHTML=''; return; }
-  el.innerHTML='<div class="webbox-h"><span class="tag">联网检索</span>「'+esc(q)+'」</div><div class="web-loading">⏳ 正在联网检索最新信息…</div>';
-  try{
-    const items=await webSearch(q);
-    el.innerHTML=renderWeb(q, items, true);
-  }catch(e){
-    el.innerHTML=renderWeb(q, [], false);
-  }
-}
-function modWeb(mod, val){
-  const el=document.getElementById(mod+'search');
-  const kw=(val!=null?String(val):(el?el.value:'')).trim();
-  if(!kw) return;
-  runWeb(mod+'web', kw);
 }
 async function runSearch(kw){
   kw=(kw||'').trim(); if(!kw) return;
