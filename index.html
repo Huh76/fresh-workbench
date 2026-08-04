@@ -649,7 +649,6 @@
         </div>
         <div class="m1-search">
           <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m1Render()">
-          <button class="m1-shuffle" onclick="m1Shuffle()">🎲 换一批</button>
         </div>
         <div class="chips" id="m1cat">
           <span class="chip on" data-cat="全部">全部</span>
@@ -685,7 +684,6 @@
         </div>
         <div class="m1-search plat-bar">
           <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m2PlatRender()">
-          <button class="m1-shuffle" onclick="m2PlatRand()">🎲 随机词</button>
         </div>
         <div class="plats" id="m2plats"></div>
       </div>
@@ -761,7 +759,6 @@
         </div>
         <div class="m1-search plat-bar">
           <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m4PlatRender()">
-          <button class="m1-shuffle" onclick="m4PlatRand()">🎲 随机词</button>
         </div>
         <div class="plats" id="m4plats"></div>
       </div>
@@ -1070,7 +1067,6 @@ function m1Render(hi){
     return '<div class="item">'+mtag+hot+'<h3>'+x.t+'</h3><div class="desc">'+x.d+'</div><div class="plats">'+plats+'</div></div>';
   }).join('');
 }
-function m1Shuffle(){m1Seed=(m1Seed||0)+1;m1Render();}
 function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;m1Render(Math.floor(Math.random()*999));}
 function m1Bind(){document.querySelectorAll('#m1cat .chip').forEach(c=>{c.onclick=()=>{document.querySelectorAll('#m1cat .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');m1Cat=c.dataset.cat;m1Render();};});}
 function hotEsc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
@@ -1290,9 +1286,7 @@ function jobPayMatch(n,sel){
   return true;
 }
 function m4PlatRender(){const kw=document.getElementById("m4search").value.trim();const w=document.getElementById("m4plats");if(w)w.innerHTML=renderPlatLinks(kw,PLAT_SEARCH.job);}
-function m4PlatRand(){const ws=["排版 CDR","包装设计 AI","电商详情页 PS","吊牌排版","海报主视觉","LOGO 延展","不干胶标签","画册排版","短视频封面"];const w=ws[Math.floor(Math.random()*ws.length)];const i=document.getElementById("m4search");if(i)i.value=w;m4PlatRender();}
 function m2PlatRender(){const kw=document.getElementById("m2search").value.trim();const w=document.getElementById("m2plats");if(w)w.innerHTML=renderPlatLinks(kw,PLAT_SEARCH.house);}
-function m2PlatRand(){const ws=["晋江 二手房","厦门 租房","福州 公寓","广州 学区房","杭州 地铁房","成都 新房","上海 精装","深圳 Loft"];const w=ws[Math.floor(Math.random()*ws.length)];const i=document.getElementById("m2search");if(i)i.value=w;m2PlatRender();}
 
 /* ====== 筛选 chips 绑定 ====== */
 function bindChips(id,cb,key){
