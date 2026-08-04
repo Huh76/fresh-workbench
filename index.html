@@ -648,7 +648,7 @@
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
         <div class="m1-search">
-          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m1Render()">
+          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this)){curFilter.m1q=this.value.trim();m1Render();}">
         </div>
         <div class="chips" id="m1cat">
           <span class="chip on" data-cat="全部">全部</span>
@@ -683,7 +683,7 @@
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m2PlatRender()">
+          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this)){curFilter.m2q=this.value.trim();renderHouses();m2PlatRender();}">
         </div>
         <div class="plats" id="m2plats"></div>
       </div>
@@ -758,7 +758,7 @@
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this))m4PlatRender()">
+          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this)){curFilter.m4q=this.value.trim();renderJobs();m4PlatRender();}">
         </div>
         <div class="plats" id="m4plats"></div>
       </div>
@@ -1011,7 +1011,7 @@ const M1=[
   {t:"经典老片重温",cat:"解说",free:true,done:false,k:"经典老电影 推荐",d:"怀旧佳片合集。"},
   {t:"新番动漫资讯",cat:"解说",free:true,done:false,k:"新番 动漫资讯",d:"新番速递。"}
 ];
-const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
+const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部",m1q:"",m2q:"",m4q:""};
 /* 城市 → 区域（全面） */
 const cityAreas={
   "北京":["朝阳区","海淀区","东城区","西城区","丰台区","通州区","昌平区","大兴区"],
@@ -1042,11 +1042,12 @@ const cityAreas={
   "佛山":["禅城区","南海区","顺德区","三水区","高明区","高明"],
   "沈阳":["和平区","沈河区","大东区","皇姑区","铁西区","浑南区","于洪区"]
 };
-let m1Cat="全部",m1Q="",m1Seed=0;
+let m1Cat="全部",m1Seed=0;
 function m1List(){
   let arr=M1.slice();
   if(m1Cat!=="全部")arr=arr.filter(x=>x.cat===m1Cat);
-  if(m1Q){const q=m1Q.toLowerCase();arr=arr.filter(x=>(x.t+x.d+x.cat+x.k).toLowerCase().indexOf(q)>-1);}
+  const q=curFilter.m1q.trim().toLowerCase();
+  if(q)arr=arr.filter(x=>(x.t+x.d+x.cat+x.k).toLowerCase().indexOf(q)>-1);
   if(m1Seed){for(let i=arr.length-1;i>0;i--){const r=Math.floor((i+1)*frac(m1Seed*(i+3)));const t=arr[i];arr[i]=arr[r];arr[r]=t;}}
   return arr;
 }
@@ -1132,6 +1133,8 @@ function renderHouses(_,hi){
     if(dist!=="全部"&&x.dist!==dist)return false;
     if(rooms!=="全部"&&x.rooms!==rooms)return false;
     if(price!=="全部"&&!priceMatch(x.price,x.cat==="租房"?"元":"万",price))return false;
+    const q=curFilter.m2q.trim().toLowerCase();
+    if(q){const hay=(x.t+" "+x.city+" "+x.dist+" "+x.cat+" "+x.fac+" "+x.pros.join(" ")+" "+x.cons.join(" ")).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
   const fi=hi==null?-1:hi%list.length;
@@ -1251,6 +1254,8 @@ function renderJobs(_,hi){
     }
     if(city!=="全部"&&x.city!==city)return false;
     if(pay!=="全部"&&!jobPayMatch(x.payNum,pay))return false;
+    const q=curFilter.m4q.trim().toLowerCase();
+    if(q){const hay=(x.t+" "+x.skill+" "+x.city+" "+x.req+" "+x.ch).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
   const fi=hi==null?-1:hi%list.length;
