@@ -749,16 +749,9 @@
       <div class="grid" id="m4grid"></div>
     </section>
 
-    <!-- ===== Module 7: 每日热点资讯台 ===== -->
+    <!-- ===== Module 7: 每日热点 ===== -->
 <section class="module" id="m7">
   <style>
-    #m7 .news-welcome{background:linear-gradient(135deg,#EAFBF2,#DFF6EC);border:1px solid #BFE9D4;border-radius:18px;padding:15px 15px 13px;margin-bottom:15px}
-    #m7 .nw-title{font-weight:800;color:#1f7a52;font-size:15.5px;margin-bottom:10px;letter-spacing:.5px}
-    #m7 .nw-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed #cdeede}
-    #m7 .nw-row:last-child{border-bottom:none}
-    #m7 .nw-dot{color:#2fa572;font-size:12.5px;white-space:nowrap}
-    #m7 .nw-btn{flex:1;text-align:left;border:none;background:rgba(255,255,255,.72);color:#1f7a52;font-weight:600;font-size:13.5px;padding:9px 12px;border-radius:11px;cursor:pointer;font-family:inherit;transition:.15s}
-    #m7 .nw-btn:active{transform:scale(.98);background:#fff}
     #m7 .news-toolbar{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
     #m7 .news-modes{display:flex;gap:8px}
     #m7 .nm{flex:1;border:1px solid #cdeede;background:#fff;color:#2a7a57;font-weight:700;padding:10px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13.5px}
@@ -779,23 +772,13 @@
     #m7 .news-empty{color:#8aa89a;font-size:13px;text-align:center;padding:24px 10px;line-height:1.7}
     #m7 .news-foot{margin-top:12px;font-size:12px;color:#7a9a8c;text-align:center;min-height:18px}
   </style>
-  <div class="card">
-    <div class="card-head">
-      <div class="ttl"><span class="emo">🟩</span>每日热点资讯台</div>
-      <button class="refresh" onclick="newsRefresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新热点</button>
+    <div class="card">
+      <div class="card-head">
+        <div class="ttl"><span class="emo">🟩</span>每日热点</div>
+        <button class="refresh" onclick="newsRefresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新热点</button>
+      </div>
+      <div class="sub">实时联网检索当日新鲜热点，区分民生 / 财经 / 科技 / 社会 / 互联网；每条均附来源直达，拒绝编撰旧闻。</div>
     </div>
-    <div class="sub">实时联网检索当日新鲜热点，区分民生 / 财经 / 科技 / 社会 / 互联网；每条均附来源直达，拒绝编撰旧闻。</div>
-
-    <div class="news-welcome" id="newsWelcome">
-      <div class="nw-title">🟩【每日热点资讯台】</div>
-      <div class="nw-row"><span class="nw-dot">▫️🔄</span><button class="nw-btn" onclick="newsRefresh()">刷新热点 · 获取最新实时资讯</button></div>
-      <div class="nw-row"><span class="nw-dot">▫️📰</span><button class="nw-btn" onclick="newsShow('brief')">简版热点速览</button></div>
-      <div class="nw-row"><span class="nw-dot">▫️📖</span><button class="nw-btn" onclick="newsShow('detail')">完整版热点解读</button></div>
-      <div class="nw-row"><span class="nw-dot">▫️🏠</span><button class="nw-btn" onclick="newsShow('brief','房产')">定向：房产 &amp; 装修行业资讯</button></div>
-      <div class="nw-row"><span class="nw-dot">▫️🛒</span><button class="nw-btn" onclick="newsShow('brief','电商')">定向：电商行业资讯</button></div>
-      <div class="nw-row"><span class="nw-dot">▫️📱</span><button class="nw-btn" onclick="newsShow('brief','科技')">定向：科技数码热点</button></div>
-    </div>
-  </div>
 
   <div class="news-toolbar">
     <div class="news-modes">
@@ -1264,7 +1247,7 @@ bindChips("m4chips",renderJobs,"m4");
 bindChips("m2rooms",renderHouses,"m2rooms");
 
 
-/* ====== Module 7: 每日热点资讯台 ====== */
+/* ====== Module 7: 每日热点 ====== */
 const NEWS_API='https://60s.viki.moe/v2/';
 const NEWS_FALLBACK='news.json';
 const NEWS_SRCS=[
