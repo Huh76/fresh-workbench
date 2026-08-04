@@ -647,9 +647,6 @@
           <a class="link" href="https://www.youku.com" target="_blank" rel="noopener">优酷</a>
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
-        <div class="m1-search">
-          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this)){curFilter.m1q=this.value.trim();m1Render();}">
-        </div>
         <div class="chips" id="m1cat">
           <span class="chip on" data-cat="全部">全部</span>
           <span class="chip" data-cat="剧集">剧集</span>
@@ -682,10 +679,6 @@
           <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
-        <div class="m1-search plat-bar">
-          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this)){curFilter.m2q=this.value.trim();renderHouses();m2PlatRender();}">
-        </div>
-        <div class="plats" id="m2plats"></div>
       </div>
       <div class="filterbar">
         <div class="fb-row">
@@ -757,10 +750,6 @@
           <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
-        <div class="m1-search plat-bar">
-          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可联网检索）" oninput="if(!gsFromBox(this)){curFilter.m4q=this.value.trim();renderJobs();m4PlatRender();}">
-        </div>
-        <div class="plats" id="m4plats"></div>
       </div>
       <div class="chips" id="m4chips">
         <span class="chip on" data-f="全部">全部</span>
@@ -933,29 +922,8 @@ const PLATFORMS=[
  {id:"youku",name:"优酷",cls:"p-yk",url:k=>"https://so.youku.com/search_video/q_"+enc(k)},
   {id:"mgtv",name:"芒果TV",cls:"p-mgtv",url:k=>"https://so.mgtv.com/so?k="+enc(k)}
 ];
-const PLAT_SEARCH={
-  job:[
-    {n:"猪八戒",u:k=>"https://www.zbj.com/search?key="+enc(k)},
-    {n:"一品威客",u:k=>"https://www.epwk.com/search?q="+enc(k)},
-    {n:"时间财富",u:k=>"https://www.680.com/search?q="+enc(k)},
-    {n:"58同城",u:k=>"https://www.58.com/search/?key="+enc(k)},
-    {n:"站酷",u:k=>"https://www.zcool.com.cn/search/?word="+enc(k)},
-    {n:"BOSS直聘",u:k=>"https://www.zhipin.com/web/geek/search?query="+enc(k)},
-    {n:"兼职猫",u:k=>"https://www.jianzhimao.com/search?q="+enc(k)},
-    {n:"Freelancer",u:k=>"https://www.freelancer.com/search/projects/?keyword="+enc(k)}
-  ],
-  house:[
-    {n:"58同城",u:k=>"https://www.58.com/search/?key="+enc(k)},
-    {n:"安居客",u:k=>"https://www.anjuke.com/search?q="+enc(k)},
-    {n:"赶集网",u:k=>"https://www.ganji.com/search?q="+enc(k)},
-    {n:"房天下",u:k=>"https://www.fang.com/search?q="+enc(k)},
-    {n:"搜房",u:k=>"https://www.soufun.com/search?q="+enc(k)}
-  ]
-};
-function renderPlatLinks(kw,plats){
-  if(!kw)return '<div class="empty small">输入关键词，一键去各平台搜结果</div>';
-  return plats.map(p=>'<a class="plat" href="'+p.u(kw)+'" target="_blank" rel="noopener" title="在'+p.n+'搜索"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.n+'</a>').join('');
-}
+const PLAT_SEARCH={};
+function renderPlatLinks(){return '';}
 const M1=[
  {t:"庆余年第二季",cat:"剧集",free:false,done:false,k:"庆余年第二季",d:"权谋古装续作，剧情紧凑口碑高，追更热门。"},
  {t:"繁花",cat:"剧集",free:false,done:true,k:"繁花 王家卫",d:"沪上霓虹年代群像，电影级质感与美学。"},
@@ -1011,7 +979,7 @@ const M1=[
   {t:"经典老片重温",cat:"解说",free:true,done:false,k:"经典老电影 推荐",d:"怀旧佳片合集。"},
   {t:"新番动漫资讯",cat:"解说",free:true,done:false,k:"新番 动漫资讯",d:"新番速递。"}
 ];
-const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部",m1q:"",m2q:"",m4q:""};
+const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
 /* 城市 → 区域（全面） */
 const cityAreas={
   "北京":["朝阳区","海淀区","东城区","西城区","丰台区","通州区","昌平区","大兴区"],
@@ -1046,8 +1014,6 @@ let m1Cat="全部",m1Seed=0;
 function m1List(){
   let arr=M1.slice();
   if(m1Cat!=="全部")arr=arr.filter(x=>x.cat===m1Cat);
-  const q=curFilter.m1q.trim().toLowerCase();
-  if(q)arr=arr.filter(x=>(x.t+x.d+x.cat+x.k).toLowerCase().indexOf(q)>-1);
   if(m1Seed){for(let i=arr.length-1;i>0;i--){const r=Math.floor((i+1)*frac(m1Seed*(i+3)));const t=arr[i];arr[i]=arr[r];arr[r]=t;}}
   return arr;
 }
@@ -1133,8 +1099,6 @@ function renderHouses(_,hi){
     if(dist!=="全部"&&x.dist!==dist)return false;
     if(rooms!=="全部"&&x.rooms!==rooms)return false;
     if(price!=="全部"&&!priceMatch(x.price,x.cat==="租房"?"元":"万",price))return false;
-    const q=curFilter.m2q.trim().toLowerCase();
-    if(q){const hay=(x.t+" "+x.city+" "+x.dist+" "+x.cat+" "+x.fac+" "+x.pros.join(" ")+" "+x.cons.join(" ")).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
   const fi=hi==null?-1:hi%list.length;
@@ -1254,8 +1218,6 @@ function renderJobs(_,hi){
     }
     if(city!=="全部"&&x.city!==city)return false;
     if(pay!=="全部"&&!jobPayMatch(x.payNum,pay))return false;
-    const q=curFilter.m4q.trim().toLowerCase();
-    if(q){const hay=(x.t+" "+x.skill+" "+x.city+" "+x.req+" "+x.ch).toLowerCase();if(hay.indexOf(q)<0)return false;}
     return true;
   });
   const fi=hi==null?-1:hi%list.length;
@@ -1290,8 +1252,6 @@ function jobPayMatch(n,sel){
   if(sel==="6000+")return n>6000;
   return true;
 }
-function m4PlatRender(){const kw=document.getElementById("m4search").value.trim();const w=document.getElementById("m4plats");if(w)w.innerHTML=renderPlatLinks(kw,PLAT_SEARCH.job);}
-function m2PlatRender(){const kw=document.getElementById("m2search").value.trim();const w=document.getElementById("m2plats");if(w)w.innerHTML=renderPlatLinks(kw,PLAT_SEARCH.house);}
 
 /* ====== 筛选 chips 绑定 ====== */
 function bindChips(id,cb,key){
@@ -1469,8 +1429,6 @@ renderHouses();
 renderJobs();
 updateTime();
 loadHot();
-m4PlatRender();
-m2PlatRender();
 
 /* 实时更新：每模块卡片头加「实时」指示；每秒刷新时钟，每15秒自动刷新内容 */
 document.querySelectorAll('.card-head').forEach(h=>{
