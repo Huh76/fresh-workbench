@@ -123,6 +123,19 @@
   .gs-src{font-size:12px;color:var(--mSearch);text-decoration:none;font-weight:600;word-break:break-all}
   .gs-tip{font-size:12px;color:var(--muted);line-height:1.7}
   .gs-tip b{color:#5b4a8a}
+  /* 模块内置联网检索结果 */
+  .webbox{margin:12px 0 4px}
+  .webbox-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--acc);margin:2px 2px 10px}
+  .webbox-h .tag{font-size:11px;font-weight:600;color:#fff;background:var(--acc);border-radius:10px;padding:2px 9px}
+  .web-loading,.web-note{color:var(--muted);font-size:13px;padding:14px 4px;line-height:1.7}
+  .web-note b{color:var(--acc)}
+  .web-list{display:flex;flex-direction:column;gap:9px}
+  .web-item{display:block;text-decoration:none;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;transition:.15s}
+  .web-item:hover{border-color:var(--acc);box-shadow:var(--shadow-sm)}
+  .web-item:active{transform:scale(.99)}
+  .web-t{font-size:14px;color:var(--text);font-weight:600;line-height:1.5;margin-bottom:5px}
+  .web-snip{font-size:12.5px;color:#7a6a72;line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .web-src{font-size:11.5px;color:var(--acc);font-weight:600;margin-top:7px}
   /* filter chips */
   .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
   .chip{font-size:13px;padding:7px 16px;border-radius:18px;background:#FBEFF3;color:#9a7d8a;cursor:pointer;border:1px solid transparent;transition:.2s}
@@ -635,8 +648,9 @@
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
         <div class="m1-search">
-          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m1Render()">
+          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（回车或点检索联网搜；输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m1Render()" onkeydown="if(event.key==='Enter')modWeb('m1',this.value)">
           <button class="m1-shuffle" onclick="m1Shuffle()">🎲 换一批</button>
+          <button class="m1-shuffle" onclick="modWeb('m1')">🌐 检索</button>
         </div>
         <div class="chips" id="m1cat">
           <span class="chip on" data-cat="全部">全部</span>
@@ -656,6 +670,7 @@
         <div id="hotlist" class="hotlist"><div class="empty">实时热榜加载中…</div></div>
       </div>
       <div class="grid" id="m1grid"></div>
+      <div class="webbox" id="m1web"></div>
     </section>
 
     <!-- ===== Module 2: 房源 ===== -->
@@ -671,8 +686,9 @@
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m2PlatRender()">
+          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（回车或点检索联网搜；输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m2PlatRender()" onkeydown="if(event.key==='Enter')modWeb('m2',this.value)">
           <button class="m1-shuffle" onclick="m2PlatRand()">🎲 随机词</button>
+          <button class="m1-shuffle" onclick="modWeb('m2')">🌐 检索</button>
         </div>
         <div class="plats" id="m2plats"></div>
       </div>
@@ -717,6 +733,7 @@
         </div>
       </div>
       <div class="grid" id="m2grid"></div>
+      <div class="webbox" id="m2web"></div>
     </section>
 
 
@@ -747,8 +764,9 @@
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m4PlatRender()">
+          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（回车或点检索联网搜；输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m4PlatRender()" onkeydown="if(event.key==='Enter')modWeb('m4',this.value)">
           <button class="m1-shuffle" onclick="m4PlatRand()">🎲 随机词</button>
+          <button class="m1-shuffle" onclick="modWeb('m4')">🌐 检索</button>
         </div>
         <div class="plats" id="m4plats"></div>
       </div>
@@ -777,6 +795,7 @@
         </div>
       </div>
       <div class="grid" id="m4grid"></div>
+      <div class="webbox" id="m4web"></div>
     </section>
 
     <!-- ===== Module 7: 每日热点 ===== -->
@@ -829,8 +848,13 @@
     </div>
   </div>
 
+  <div class="m1-search" style="margin:0 0 12px">
+    <input id="m7search" type="search" placeholder="🔍 深度检索某话题，如：存款利率 / AI 新政（回车联网检索）" onkeydown="if(event.key==='Enter')modWeb('m7',this.value)">
+    <button class="m1-shuffle" onclick="modWeb('m7')">🌐 检索</button>
+  </div>
   <div class="news-list" id="newsList"></div>
   <div class="news-foot" id="newsStatus"></div>
+  <div class="webbox" id="m7web"></div>
 </section>
 
   <!-- ===== 全局搜索（内置每个模块，输入「搜索 XXX」即触发） ===== -->
@@ -840,12 +864,13 @@
         <div class="ttl"><span class="emo">🔍</span>全网搜索</div>
         <button class="refresh" onclick="gsGo()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>检索</button>
       </div>
-      <div class="sub">输入<b>关键词</b>或<b>「搜索 XXX」</b>即可联网检索；各模块搜索框输入「搜索 XXX」也直达此处。结果含<b>全网检索入口</b>与<b>实时相关热点</b>，每条附直达链接，优先近期最新内容。</div>
+      <div class="sub">输入<b>关键词</b>或<b>「搜索 XXX」</b>即可联网检索；各模块搜索框输入「搜索 XXX」也直达此处。结果含<b>联网实时检索（公开源）</b>、<b>全网检索入口</b>与<b>实时相关热点</b>，每条附直达链接，优先近期最新内容。</div>
       <div class="gs-bar">
         <input id="gsInput" type="search" placeholder="如：搜索 房价走势 / 高考志愿 / 台风路径" onkeydown="if(event.key==='Enter')gsGo()" />
         <button class="gs-go" onclick="gsGo()">检索</button>
       </div>
       <div id="gsHistory" class="gs-history"></div>
+      <div id="gsWeb" class="gs-web"></div>
       <div id="gsResult" class="gs-result"></div>
     </div>
   </section>
@@ -1524,8 +1549,82 @@ function gsRender(kw, items){
     h+='<div class="gs-note">当前热门榜暂无精确匹配「'+esc(kw)+'」的词条。请点击上方<b>检索入口</b>查看全网实时结果。</div>';
   }
   h+='</div>';
-  h+='<div class="gs-block gs-tip">📌 说明：本工作台为纯前端应用，搜索以<b>各大平台直达检索入口</b>为主，并叠加<b>实时热榜</b>中匹配该词的最新话题与来源链接。所有链接均为真实可点击来源，优先展示近期内容。</div>';
+  h+='<div class="gs-block gs-tip">📌 说明：本工作台为纯前端应用，会先尝试<b>联网实时检索公开源</b>（维基百科 / Hacker News / Stack Overflow 等），对可达查询直接返回带<b>来源直达链接</b>的最新结果；同时保留<b>全网检索入口</b>（百度 / 必应 / 知乎 等国内可直连平台）与<b>实时热榜</b>匹配，确保任何关键词都能一键获取真实结果。</div>';
   return h;
+}
+async function fetchJSON(url, ms){
+  const ctrl=new AbortController();
+  const t=setTimeout(function(){ctrl.abort();}, ms||7000);
+  try{ const r=await fetch(url,{signal:ctrl.signal}); if(!r.ok) throw new Error('http'); return await r.json(); }
+  finally{ clearTimeout(t); }
+}
+function stripTags(s){
+  return String(s==null?'':s)
+    .replace(/<[^>]+>/g,' ')
+    .replace(/&quot;/g,'"').replace(/&amp;/g,'&').replace(/&#39;/g,"'")
+    .replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&nbsp;/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+async function webSearch(q){
+  const k=encodeURIComponent(q);
+  const tasks=[
+    fetchJSON('https://zh.wikipedia.org/w/api.php?action=query&list=search&srsearch='+k+'&format=json&origin=*&srlimit=5').then(function(d){
+      return (d.query&&d.query.search||[]).map(function(r){
+        return {title:r.title, snippet:stripTags(r.snippet), url:'https://zh.wikipedia.org/wiki/'+encodeURIComponent(String(r.title).replace(/ /g,'_')), source:'维基百科'};
+      });
+    }).catch(function(){return [];}),
+    fetchJSON('https://hn.algolia.com/api/v1/search?query='+k+'&tags=story&hitsPerPage=5').then(function(d){
+      return (d.hits||[]).map(function(h){
+        var u=h.url||('https://news.ycombinator.com/item?id='+h.objectID);
+        return {title:h.title||'(链接)', snippet:'', url:u, source:'Hacker News'};
+      });
+    }).catch(function(){return [];}),
+    fetchJSON('https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q='+k+'&site=stackoverflow&filter=withbody').then(function(d){
+      return (d.items||[]).slice(0,5).map(function(i){
+        return {title:i.title, snippet:stripTags(i.body||'').slice(0,160), url:i.link, source:'Stack Overflow'};
+      });
+    }).catch(function(){return [];})
+  ];
+  const res=await Promise.all(tasks);
+  let out=[];
+  res.forEach(function(a){ out=out.concat(a); });
+  return out;
+}
+function renderWeb(q, items, ok){
+  let h='<div class="webbox-h"><span class="tag">联网检索</span>「'+esc(q)+'」的最新结果</div>';
+  if(ok===false){
+    h+='<div class="web-note">⚠️ 当前网络无法直连公开检索源（部分接口在国内受限）。请点击上方<b>检索入口</b>或在模块内<b>平台链接</b>，用百度 / 必应等查看全网结果。</div>';
+    return h;
+  }
+  if(!items.length){
+    h+='<div class="web-note">未从公开检索源匹配到「'+esc(q)+'」的结果。请使用<b>检索入口</b>在百度 / 必应 / 知乎等平台查看。</div>';
+    return h;
+  }
+  h+='<div class="web-list">'+items.map(function(it){
+    return '<a class="web-item" href="'+encodeURI(it.url||'#')+'" target="_blank" rel="noopener">'
+      +'<div class="web-t">'+esc(it.title)+'</div>'
+      +(it.snippet?'<div class="web-snip">'+esc(it.snippet)+'</div>':'')
+      +'<div class="web-src">🔗 '+esc(it.source)+' ↗</div>'
+      +'</a>';
+  }).join('')+'</div>';
+  return h;
+}
+async function runWeb(cid, q){
+  const el=document.getElementById(cid); if(!el) return;
+  q=(q||'').trim(); if(!q){ el.innerHTML=''; return; }
+  el.innerHTML='<div class="webbox-h"><span class="tag">联网检索</span>「'+esc(q)+'」</div><div class="web-loading">⏳ 正在联网检索最新信息…</div>';
+  try{
+    const items=await webSearch(q);
+    el.innerHTML=renderWeb(q, items, true);
+  }catch(e){
+    el.innerHTML=renderWeb(q, [], false);
+  }
+}
+function modWeb(mod, val){
+  const el=document.getElementById(mod+'search');
+  const kw=(val!=null?String(val):(el?el.value:'')).trim();
+  if(!kw) return;
+  runWeb(mod+'web', kw);
 }
 async function runSearch(kw){
   kw=(kw||'').trim(); if(!kw) return;
@@ -1533,7 +1632,8 @@ async function runSearch(kw){
   const gsi=document.getElementById('gsInput'); if(gsi) gsi.value=kw;
   gsHistory=gsHistory.filter(function(x){return x!==kw;}); gsHistory.unshift(kw); gsHistory=gsHistory.slice(0,8);
   gsRenderHistory();
-  const R=document.getElementById('gsResult'); if(R) R.innerHTML='<div class="gs-loading">⏳ 正在联网检索「'+esc(kw)+'」最新信息…</div>';
+  const R=document.getElementById('gsResult'); if(R) R.innerHTML='<div class="gs-loading">⏳ 正在准备检索入口…</div>';
+  const W=document.getElementById('gsWeb'); if(W) W.innerHTML='<div class="web-loading">⏳ 正在联网检索「'+esc(kw)+'」最新信息…</div>';
   let items=[];
   try{
     const all=await newsFetchLive();
@@ -1541,6 +1641,7 @@ async function runSearch(kw){
     items=(all||[]).filter(function(x){ return (x.t||'').toLowerCase().indexOf(low)>=0; }).slice(0,12);
   }catch(e){}
   if(R) R.innerHTML=gsRender(kw, items);
+  if(W){ try{ const witems=await webSearch(kw); W.innerHTML=renderWeb(kw, witems, true); }catch(e2){ W.innerHTML=renderWeb(kw, [], false); } }
 }
 
 setInterval(updateTime,1000);
