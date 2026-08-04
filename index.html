@@ -21,6 +21,7 @@
     --m5:#B9A6D9; /* AI 薰衣草 */
     --m6:#E9A99B; /* 羊毛 珊瑚粉 */
     --m7:#2FA572; /* 资讯 清新绿 */
+    --mSearch:#7C6BD6; /* 搜索 知性紫 */
     --acc:var(--m1); /* 全局默认强调色（切换模块时由 JS 覆盖） */
     --radius:24px;
   }
@@ -97,6 +98,31 @@
   .refresh:hover{background:var(--acc);color:#fff}
   .refresh svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
 
+  /* 全局搜索 */
+  .gs-bar{display:flex;gap:10px;margin-bottom:14px}
+  .gs-bar input{flex:1;font-family:inherit;font-size:14px;color:var(--text);background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:13px 16px;outline:none;transition:.2s}
+  .gs-bar input:focus{border-color:var(--mSearch)}
+  .gs-go{border:none;background:var(--mSearch);color:#fff;font-family:inherit;font-size:14px;font-weight:600;padding:0 22px;border-radius:16px;cursor:pointer;transition:.2s}
+  .gs-go:active{transform:scale(.97)}
+  .gs-history{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+  .gs-hist-label{font-size:12px;color:var(--muted)}
+  .gs-hist{font-family:inherit;font-size:12.5px;color:#6a4f5c;background:#fff;border:1px solid var(--line);border-radius:14px;padding:6px 13px;cursor:pointer;transition:.2s}
+  .gs-hist:hover{border-color:var(--mSearch);color:var(--mSearch)}
+  .gs-result{display:flex;flex-direction:column;gap:16px}
+  .gs-loading{color:var(--muted);font-size:13.5px;padding:18px 0;text-align:center}
+  .gs-block{background:#FAF6FB;border:1px solid #ECE3F2;border-radius:16px;padding:15px 16px}
+  .gs-h{font-size:13.5px;font-weight:700;color:#5b4a8a;margin-bottom:11px}
+  .gs-plats{display:flex;flex-wrap:wrap;gap:9px}
+  .gs-plat{font-size:13px;color:#5b4a8a;text-decoration:none;background:#fff;border:1px solid #E2D6EE;border-radius:13px;padding:8px 14px;transition:.15s}
+  .gs-plat:hover{background:var(--mSearch);color:#fff;border-color:var(--mSearch)}
+  .gs-note{font-size:12.5px;color:var(--muted);line-height:1.7;margin-top:11px}
+  .gs-note b{color:#5b4a8a}
+  .gs-news{display:flex;flex-direction:column;gap:10px}
+  .gs-item{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 14px;display:flex;flex-direction:column;gap:7px}
+  .gs-t{font-size:13.5px;color:var(--text);line-height:1.55}
+  .gs-src{font-size:12px;color:var(--mSearch);text-decoration:none;font-weight:600;word-break:break-all}
+  .gs-tip{font-size:12px;color:var(--muted);line-height:1.7}
+  .gs-tip b{color:#5b4a8a}
   /* filter chips */
   .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
   .chip{font-size:13px;padding:7px 16px;border-radius:18px;background:#FBEFF3;color:#9a7d8a;cursor:pointer;border:1px solid transparent;transition:.2s}
@@ -559,6 +585,10 @@
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-1-2-3-4-4-1.5-1-2-4-5-5z"/><circle cx="8.5" cy="11.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
       <span>每日热点</span>
     </button>
+    <button class="nav-btn" data-mod="mSearch" style="--acc:var(--mSearch)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+      <span>搜索</span>
+    </button>
   </aside>
 
   <!-- ============ MAIN ============ -->
@@ -605,7 +635,7 @@
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
         <div class="m1-search">
-          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…" oninput="m1Render()">
+          <input id="m1search" type="search" placeholder="🔍 搜剧集 / 综艺 / 关键词…（输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m1Render()">
           <button class="m1-shuffle" onclick="m1Shuffle()">🎲 换一批</button>
         </div>
         <div class="chips" id="m1cat">
@@ -641,7 +671,7 @@
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房" oninput="m2PlatRender()">
+          <input id="m2search" type="search" placeholder="🔍 搜房源关键词，如：晋江 二手房（输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m2PlatRender()">
           <button class="m1-shuffle" onclick="m2PlatRand()">🎲 随机词</button>
         </div>
         <div class="plats" id="m2plats"></div>
@@ -717,7 +747,7 @@
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
         <div class="m1-search plat-bar">
-          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR" oninput="m4PlatRender()">
+          <input id="m4search" type="search" placeholder="🔍 搜兼职 / 技能，如：排版 CDR（输入「搜索 XXX」可全网检索）" oninput="if(!gsFromBox(this))m4PlatRender()">
           <button class="m1-shuffle" onclick="m4PlatRand()">🎲 随机词</button>
         </div>
         <div class="plats" id="m4plats"></div>
@@ -803,6 +833,23 @@
   <div class="news-foot" id="newsStatus"></div>
 </section>
 
+  <!-- ===== 全局搜索（内置每个模块，输入「搜索 XXX」即触发） ===== -->
+  <section class="module" id="mSearch">
+    <div class="card">
+      <div class="card-head">
+        <div class="ttl"><span class="emo">🔍</span>全网搜索</div>
+        <button class="refresh" onclick="gsGo()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>检索</button>
+      </div>
+      <div class="sub">输入<b>关键词</b>或<b>「搜索 XXX」</b>即可联网检索；各模块搜索框输入「搜索 XXX」也直达此处。结果含<b>全网检索入口</b>与<b>实时相关热点</b>，每条附直达链接，优先近期最新内容。</div>
+      <div class="gs-bar">
+        <input id="gsInput" type="search" placeholder="如：搜索 房价走势 / 高考志愿 / 台风路径" onkeydown="if(event.key==='Enter')gsGo()" />
+        <button class="gs-go" onclick="gsGo()">检索</button>
+      </div>
+      <div id="gsHistory" class="gs-history"></div>
+      <div id="gsResult" class="gs-result"></div>
+    </div>
+  </section>
+
 
 
     <div class="foot">清新风一体化多功能工作台 · 4 大模块相互独立隔离 · 内容仅供示例展示，链接均指向官方平台</div>
@@ -814,8 +861,8 @@
 
 <script>
 /* ====== 全局 ====== */
-const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m7:"🟩 每日热点资讯"};
-const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m7:"#2FA572"};
+const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m7:"🟩 每日热点资讯",mSearch:"🔍 全网搜索"};
+const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m7:"#2FA572",mSearch:"#7C6BD6"};
 
 document.querySelectorAll(".nav-btn").forEach(b=>{
   b.onclick=()=>{
@@ -1428,6 +1475,74 @@ function liveRefresh(){
   if(shown("m4")) renderJobs(null,r(jobs));
 }
 setInterval(liveRefresh,15000);
+/* ====== 全局搜索模块 ====== */
+const GS_PLATS=[
+  {n:'百度',  u:function(k){return 'https://www.baidu.com/s?wd='+k;}},
+  {n:'必应',  u:function(k){return 'https://www.bing.com/search?q='+k;}},
+  {n:'谷歌',  u:function(k){return 'https://www.google.com/search?q='+k;}},
+  {n:'360',   u:function(k){return 'https://www.so.com/s?q='+k;}},
+  {n:'搜狗',  u:function(k){return 'https://www.sogou.com/web?query='+k;}},
+  {n:'知乎',  u:function(k){return 'https://www.zhihu.com/search?type=content&q='+k;}},
+  {n:'B站',   u:function(k){return 'https://search.bilibili.com/all?keyword='+k;}},
+  {n:'抖音',  u:function(k){return 'https://www.douyin.com/search/'+k;}},
+  {n:'微博',  u:function(k){return 'https://s.weibo.com/weibo?q=%23'+k;}},
+  {n:'头条',  u:function(k){return 'https://so.toutiao.com/search?keyword='+k;}},
+  {n:'小红书',u:function(k){return 'https://www.xiaohongshu.com/search_result?keyword='+k;}}
+];
+let gsHistory=[];
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
+function gsFromBox(el){
+  const v=(el.value||'').trim();
+  if(v.indexOf('搜索 ')===0){ const kw=v.slice(3).trim(); el.value=''; if(kw) runSearch(kw); return true; }
+  return false;
+}
+function gsGo(){
+  const el=document.getElementById('gsInput'); if(!el) return;
+  let v=el.value.trim();
+  if(v.indexOf('搜索 ')===0) v=v.slice(3).trim();
+  if(v) runSearch(v);
+}
+function gsRenderHistory(){
+  const H=document.getElementById('gsHistory'); if(!H) return;
+  if(!gsHistory.length){ H.innerHTML=''; return; }
+  H.innerHTML='<span class="gs-hist-label">最近搜索：</span>'+gsHistory.map(function(k,i){ return '<button class="gs-hist" onclick="runSearch(gsHistory['+i+'])">'+esc(k)+'</button>'; }).join('');
+}
+function gsRender(kw, items){
+  const k=encodeURIComponent(kw);
+  let h='';
+  h+='<div class="gs-block"><div class="gs-h">🔗 检索入口 · 全网一键直达</div><div class="gs-plats">';
+  h+=GS_PLATS.map(function(p){ return '<a class="gs-plat" href="'+p.u(k)+'" target="_blank" rel="noopener">'+p.n+' ↗</a>'; }).join('');
+  h+='</div><div class="gs-note">以上为各平台对「'+esc(kw)+'」的搜索结果页，<b>点击直达查看全网最新内容</b>。</div></div>';
+  h+='<div class="gs-block"><div class="gs-h">⚡ 实时相关热点（优先近期最新内容）</div>';
+  if(items&&items.length){
+    h+='<div class="gs-news">'+items.map(function(it){
+      const url=it.url||'';
+      const srcLink = url ? ('<a class="gs-src" href="'+url+'" target="_blank" rel="noopener">🔗 '+(it.src||'来源')+' ↗</a>') : ('<span class="gs-src">🔗 '+(it.src||'热榜')+'</span>');
+      return '<div class="gs-item"><div class="gs-t">'+esc(it.t)+'</div>'+srcLink+'</div>';
+    }).join('')+'</div>';
+  }else{
+    h+='<div class="gs-note">当前热门榜暂无精确匹配「'+esc(kw)+'」的词条。请点击上方<b>检索入口</b>查看全网实时结果。</div>';
+  }
+  h+='</div>';
+  h+='<div class="gs-block gs-tip">📌 说明：本工作台为纯前端应用，搜索以<b>各大平台直达检索入口</b>为主，并叠加<b>实时热榜</b>中匹配该词的最新话题与来源链接。所有链接均为真实可点击来源，优先展示近期内容。</div>';
+  return h;
+}
+async function runSearch(kw){
+  kw=(kw||'').trim(); if(!kw) return;
+  const nb=document.querySelector('.nav-btn[data-mod="mSearch"]'); if(nb) nb.click();
+  const gsi=document.getElementById('gsInput'); if(gsi) gsi.value=kw;
+  gsHistory=gsHistory.filter(function(x){return x!==kw;}); gsHistory.unshift(kw); gsHistory=gsHistory.slice(0,8);
+  gsRenderHistory();
+  const R=document.getElementById('gsResult'); if(R) R.innerHTML='<div class="gs-loading">⏳ 正在联网检索「'+esc(kw)+'」最新信息…</div>';
+  let items=[];
+  try{
+    const all=await newsFetchLive();
+    const low=kw.toLowerCase();
+    items=(all||[]).filter(function(x){ return (x.t||'').toLowerCase().indexOf(low)>=0; }).slice(0,12);
+  }catch(e){}
+  if(R) R.innerHTML=gsRender(kw, items);
+}
+
 setInterval(updateTime,1000);
 </script>
 <div id="detailModal" class="modal" onclick="if(event.target===this)closeDetail()">
