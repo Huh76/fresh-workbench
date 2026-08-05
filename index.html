@@ -512,7 +512,8 @@
   .m1-shuffle{padding:0 16px;border:none;border-radius:14px;background:#FFD9EC;color:#7a2f4d;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;transition:.18s}
   .m1-shuffle:active{transform:scale(.95)}
   .mtag{display:inline-block;font-size:11px;padding:3px 9px;border-radius:10px;font-weight:700;margin:0 5px 7px 0;color:#fff}
-  .mtag.seri{background:#E98AB5}.mtag.free{background:#5BB98C}.mtag.pay{background:#C98AD4}.mtag.done{background:#7FB2E9}
+  .mtag.seri{background:#E98AB5}.mtag.free{background:#5BB98C}.mtag.pay{background:#C98AD4}.mtag.done{background:#7FB2E9}.mtag.live{background:#2FA572}
+  .live-upd{font-size:11.5px;color:var(--muted);font-weight:600;white-space:nowrap}
   .plats{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
   .plat{display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:11px;font-size:12px;font-weight:700;text-decoration:none;color:#fff;background:#E98AB5;transition:.18s}
   .plat:hover{filter:brightness(1.07);transform:translateY(-1px)}
@@ -664,7 +665,21 @@
         <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，点条目直达原平台看视频或图文。</div>
         <div id="hotlist" class="hotlist"><div class="empty">实时热榜加载中…</div></div>
       </div>
-      <div class="grid" id="m1grid"></div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🎬</span>实时热播 · 剧集 / 综艺 / 电影</div>
+          <span class="live-upd" id="m1liveUpd">更新中…</span>
+        </div>
+        <div class="sub">从全网实时热榜中筛出正在热议的剧集 / 综艺 / 电影，每条一键直达 B站 · 抖音 · 快手 · 爱奇艺 · 腾讯 · 优酷 · 芒果 看正片或花絮；每 30 分钟自动更新。</div>
+        <div id="m1live" class="grid"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">📚</span>剧集片库 · 精选合集</div>
+        </div>
+        <div class="sub">按分类浏览的常驻片库（含经典与热门）；想看当下最新动态，请看上方「实时热播」。</div>
+        <div class="grid" id="m1grid"></div>
+      </div>
     </section>
 
     <!-- ===== Module 2: 房源 ===== -->
@@ -1034,7 +1049,7 @@ function m1Render(hi){
     return '<div class="item">'+mtag+hot+'<h3>'+x.t+'</h3><div class="desc">'+x.d+'</div><div class="plats">'+plats+'</div></div>';
   }).join('');
 }
-function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;m1Render(Math.floor(Math.random()*999));}
+function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;m1Render(Math.floor(Math.random()*999));loadHot();}
 function m1Bind(){document.querySelectorAll('#m1cat .chip').forEach(c=>{c.onclick=()=>{document.querySelectorAll('#m1cat .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');m1Cat=c.dataset.cat;m1Render();};});}
 function hotEsc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 let hotData=null;
@@ -1046,6 +1061,7 @@ async function loadHot(){
     hotData=await r.json();
   }catch(e){el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';return;}
   renderHotTabs();
+  renderM1Live();
 }
 function renderHotTabs(tab){
   const el=document.getElementById("hotlist");if(!el||!hotData)return;
@@ -1056,6 +1072,22 @@ function renderHotTabs(tab){
   const blk=ps.find(p=>p.id===cur)||ps[0];
   const items=blk.items.slice(0,12).map((it,i)=>'<a class="hot-item" href="'+it.url+'" target="_blank" rel="noopener"><span class="rank">'+(i+1)+'</span><span class="ht">'+hotEsc(it.t)+'</span></a>').join("");
   el.innerHTML='<div class="hot-tabs">'+tabs+'</div><div class="hot-items">'+items+'</div><div class="hot-foot">更新于 '+(hotData.updated||"").replace("T"," ").slice(0,16)+' · 每30分钟自动刷新</div>';
+}
+const DRAMA_KW=["电视剧","网剧","综艺","电影","番剧","动漫","动画","短剧","热播","开播","定档","首播","收官","收视","票房","热映","院线","追剧","爱奇艺","腾讯视频","优酷","芒果TV","Netflix","影视","主演","导演","官宣","杀青","续集","口碑剧","贺岁","国漫","漫改","新剧","热剧","好剧","独播","预告","片单","明星","演员","剧组","开拍","颁奖","金鹰","白玉兰","配音","剧"];
+function isDrama(t){t=t||"";return DRAMA_KW.some(function(k){return t.indexOf(k)>=0;});}
+function renderM1Live(){
+  const el=document.getElementById("m1live");if(!el)return;
+  if(!hotData||!hotData.platforms){el.innerHTML='<div class="empty">实时热播加载中…</div>';return;}
+  let items=[];
+  (hotData.platforms||[]).forEach(function(p){(p.items||[]).forEach(function(it){if(isDrama(it.t))items.push({t:it.t,url:it.url||"",src:p.name||""});});});
+  const seen={};items=items.filter(function(x){const k=x.t;if(seen[k])return false;seen[k]=1;return true;});
+  const u=document.getElementById("m1liveUpd");if(u)u.textContent="更新 "+(hotData.updated||"").replace("T"," ").slice(0,16);
+  if(!items.length){el.innerHTML='<div class="empty">当前实时热榜暂未出现明显剧集热点，稍后自动刷新 👇（下方片库照样能搜）</div>';return;}
+  el.innerHTML=items.slice(0,18).map(function(x){
+    const k=x.t;
+    const plats=PLATFORMS.map(function(p){return '<a class="plat '+p.cls+'" href="'+p.url(k)+'" target="_blank" rel="noopener" title="在'+p.name+'看"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>';}).join('');
+    return '<div class="item"><span class="mtag live">实时</span><h3>'+hotEsc(x.t)+'</h3><div class="plats">'+plats+'</div>'+(x.url?'<a class="go src-link" href="'+x.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+hotEsc(x.src)+' 来源 ↗</a>':'')+'</div>';
+  }).join('');
 }
 /* ====== Module 2: 房源 ====== */
 const houses=[
@@ -1429,6 +1461,7 @@ renderHouses();
 renderJobs();
 updateTime();
 loadHot();
+setInterval(loadHot,5*60*1000);
 
 /* 实时更新：每模块卡片头加「实时」指示；每秒刷新时钟，每15秒自动刷新内容 */
 document.querySelectorAll('.card-head').forEach(h=>{
