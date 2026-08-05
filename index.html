@@ -692,22 +692,6 @@
       </div>
       <div class="filterbar">
         <div class="fb-row">
-          <span class="fb-label">交易：</span>
-          <div class="chips" id="m2cat">
-            <span class="chip on" data-f="全部">全部</span>
-            <span class="chip" data-f="新房">🆕 新房</span>
-            <span class="chip" data-f="二手房">🏠 二手房</span>
-            <span class="chip" data-f="租房">🔑 租房</span>
-            <span class="chip" data-f="天然气">🔥 带天然气</span>
-          </div>
-        </div>
-        <div class="fb-row">
-          <span class="fb-label">城市：</span>
-          <select id="m2citySel" class="fb-select" onchange="onCityChange('m2')"></select>
-          <span class="fb-label">区域：</span>
-          <select id="m2areaSel" class="fb-select" onchange="curFilter.m2area=this.value;renderHouses()">
-            <option value="全部">全部区域</option>
-          </select>
           <span class="fb-label">房型：</span>
           <div class="chips" id="m2rooms">
             <span class="chip on" data-f="全部">全部</span>
@@ -716,18 +700,6 @@
             <span class="chip" data-f="三室">三室</span>
             <span class="chip" data-f="公寓">公寓/Loft</span>
           </div>
-          <span class="fb-label">价格：</span>
-          <select id="m2priceSel" class="fb-select" onchange="curFilter.m2price=this.value;renderHouses()">
-            <option value="全部">全部价格</option>
-            <option value="<50">50万以下</option>
-            <option value="50-100">50-100万</option>
-            <option value="100-200">100-200万</option>
-            <option value="200-300">200-300万</option>
-            <option value="300+">300万以上</option>
-            <option value="r<1500">1500元/月以下</option>
-            <option value="r1500-2500">1500-2500元/月</option>
-            <option value="r2500+">2500元/月以上</option>
-          </select>
         </div>
       </div>
       <div class="lib-label">📚 精选房源合集<span class="tag">常驻参考 · 非实时</span></div>
@@ -777,22 +749,6 @@
         <span class="chip" data-f="CDR">CDR</span>
         <span class="chip" data-f="AI">AI</span>
         <span class="chip" data-f="PS">PS</span>
-      </div>
-      <div class="filterbar">
-        <div class="fb-row">
-          <span class="fb-label">城市：</span>
-          <select id="m4citySel" class="fb-select" onchange="onCityChange('m4')">
-            <option value="全部">全部城市</option>
-          </select>
-          <span class="fb-label">薪资：</span>
-          <select id="m4paySel" class="fb-select" onchange="curFilter.m4pay=this.value;renderJobs()">
-            <option value="全部">不限</option>
-            <option value="0-500">500元以下/单</option>
-            <option value="500-2000">500-2000元</option>
-            <option value="2000-6000">2000-6000元</option>
-            <option value="6000+">6000元以上/月</option>
-          </select>
-        </div>
       </div>
       <div class="lib-label">📚 精选接单合集<span class="tag">常驻参考 · 非实时</span></div>
       <div class="grid" id="m4grid"></div>
@@ -914,7 +870,7 @@ function toast(msg){
 function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
-  if(m==="m2"){renderHouses(curFilter.m2);renderM2Live();}
+  if(m==="m2"){renderHouses();renderM2Live();}
   if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
 }
 
@@ -1096,17 +1052,10 @@ const houses=[
   {t:"中骏·云景台",src:"58同城",city:"泉州",dist:"丰泽区",cat:"租房",rooms:"一室",sqm:46,year:2020,gas:true,price:1300,fac:"天然气/地铁口/精装",pros:["带天然气","近地铁","精装"],cons:["面积小","楼层一般"],link:"https://www.58.com"},
 ];
 function renderHouses(_,hi){
-  const cat=curFilter.m2, city=curFilter.m2city, dist=curFilter.m2area, rooms=curFilter.m2rooms, price=curFilter.m2price;
+  const rooms=curFilter.m2rooms;
   const g=document.getElementById("m2grid");
   const list=houses.filter(x=>{
-    if(cat!=="全部"){
-      if(cat==="天然气"){ if(!x.gas)return false; }
-      else if(x.cat!==cat)return false;
-    }
-    if(city!=="全部"&&x.city!==city)return false;
-    if(dist!=="全部"&&x.dist!==dist)return false;
     if(rooms!=="全部"&&x.rooms!==rooms)return false;
-    if(price!=="全部"&&!priceMatch(x.price,x.cat==="租房"?"元":"万",price))return false;
     return true;
   });
   const fi=hi==null?-1:hi%list.length;
@@ -1216,7 +1165,7 @@ const jobs=[
   {t:"互联网UI 实习岗",skill:"PS",type:"散单",pay:"150-300元/天",payNum:150,city:"杭州",req:"拉勾投递设计实习，每周到岗3天+",ch:"拉勾招聘",link:"https://www.lagou.com/wn/jobs?kd=%E4%BA%92%E8%81%94%E7%BD%91UI%20%E5%AE%9E%E4%B9%A0%E5%B2%97"},
 ];
 function renderJobs(_,hi){
-  const f=curFilter.m4, city=curFilter.m4city, pay=curFilter.m4pay;
+  const f=curFilter.m4;
   const g=document.getElementById("m4grid");
   const list=jobs.filter(x=>{
     if(f!=="全部"){
@@ -1224,12 +1173,10 @@ function renderJobs(_,hi){
       if(f==="长期"&&x.type!=="长期")return false;
       if(f!=="散单"&&f!=="长期"&&x.skill!==f)return false;
     }
-    if(city!=="全部"&&x.city!==city)return false;
-    if(pay!=="全部"&&!jobPayMatch(x.payNum,pay))return false;
     return true;
   });
   const fi=hi==null?-1:hi%list.length;
-  if(!list.length){g.innerHTML='<div style="color:#9a7d8a;padding:24px;text-align:center">暂无符合该城市的接单需求，试试其他城市 🌿</div>';return;}
+  if(!list.length){g.innerHTML='<div style="color:#9a7d8a;padding:24px;text-align:center">暂无符合条件的接单需求 🌿</div>';return;}
   g.innerHTML=list.map((x,i)=>{
     const tag=x.type==="散单"?'<span class="tag seri">短期散单</span>':'<span class="tag free">长期稳定</span>';
     const fresh=i===fi?'<div class="fresh">🔥 刚刚发布</div>':'';
@@ -1272,7 +1219,6 @@ function bindChips(id,cb,key){
     };
   });
 }
-bindChips("m2cat",renderHouses,"m2");
 bindChips("m4chips",renderJobs,"m4");
 
 bindChips("m2rooms",renderHouses,"m2rooms");
@@ -1429,8 +1375,6 @@ function newsInit(){
 }
 
 /* ====== 初始化 ====== */
-fillCitySel("m2citySel","m2");
-fillCitySel("m4citySel","m4");
 renderHouses();
 renderJobs();
 updateTime();
