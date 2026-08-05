@@ -694,6 +694,14 @@
           </div>
         </div>
       </div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🔥</span>实时楼市热搜 · 房源 / 政策 / 行情</div>
+          <span class="live-upd" id="m2liveUpd">更新中…</span>
+        </div>
+        <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的楼市、房源、政策话题；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
+        <div id="m2live" class="grid"></div>
+      </div>
       <div class="lib-label">📚 精选房源合集<span class="tag">常驻参考 · 非实时</span></div>
       <div class="grid" id="m2grid"></div>
     </section>
@@ -733,6 +741,14 @@
         <span class="chip" data-f="CDR">CDR</span>
         <span class="chip" data-f="AI">AI</span>
         <span class="chip" data-f="PS">PS</span>
+      </div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🔥</span>实时兼职热搜 · 招聘 / 副业 / 接单</div>
+          <span class="live-upd" id="m4liveUpd">更新中…</span>
+        </div>
+        <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的招聘、副业、接单机会；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
+        <div id="m4live" class="grid"></div>
       </div>
       <div class="lib-label">📚 精选接单合集<span class="tag">常驻参考 · 非实时</span></div>
       <div class="grid" id="m4grid"></div>
@@ -790,23 +806,6 @@
 
   <div class="news-list" id="newsList"></div>
   <div class="news-foot" id="newsStatus"></div>
-
-  <div class="card live-card">
-    <div class="card-head">
-      <div class="ttl"><span class="emo">🔥</span>关联热搜 · 楼市 / 房源 / 政策</div>
-      <span class="live-upd" id="m7houseUpd">更新中…</span>
-    </div>
-    <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的楼市、房源、政策话题；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
-    <div id="m7house" class="grid"></div>
-  </div>
-  <div class="card live-card">
-    <div class="card-head">
-      <div class="ttl"><span class="emo">🔥</span>关联热搜 · 招聘 / 副业 / 接单</div>
-      <span class="live-upd" id="m7jobUpd">更新中…</span>
-    </div>
-    <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的招聘、副业、接单机会；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
-    <div id="m7job" class="grid"></div>
-  </div>
 </section>
 
   <!-- ===== 全局搜索（内置每个模块，输入「搜索 XXX」即触发） ===== -->
@@ -851,7 +850,9 @@ document.querySelectorAll(".nav-btn").forEach(b=>{
     document.getElementById("modTitle").textContent=modTitles[m];
     document.documentElement.style.setProperty("--acc",modAcc[m]);
     updateTime();
-    if(m==="m7"){newsInit();renderM2Live();renderM4Live();}
+    if(m==="m2"){renderHouses();renderM2Live();}
+    if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
+    if(m==="m7"){newsInit();}
     if(m==="m5")lifeReset();
     if(m==="m6")qaReset();
   };
@@ -871,8 +872,8 @@ function toast(msg){
 function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
-  if(m==="m2"){renderHouses();}
-  if(m==="m4"){renderJobs(curFilter.m4);}
+  if(m==="m2"){renderHouses();renderM2Live();}
+  if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
 }
 
 /* ====== 详情弹窗数据 & 控制器（站内预览，禁止自动跳转） ====== */
@@ -914,7 +915,7 @@ async function loadHot(){
       hotData=await r.json();
     }catch(e2){
       el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';
-      ["m1live","m7house","m7job"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
+      ["m1live","m2live","m4live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
       return;
     }
   }
@@ -1013,14 +1014,14 @@ function renderM2Live(){
   (hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(isHouse(it.t)&&!seen[it.t]){seen[it.t]=1;items.push({t:it.t,url:it.url||"",src:p.name||""});}}));
   let extra=[];
   if(items.length<4){(hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(!seen[it.t]){seen[it.t]=1;extra.push({t:it.t,url:it.url||"",src:p.name||""});}}));}
-  renderLiveEl("m7house","m7houseUpd",items,HOUSE_PLATS,"当前实时热榜暂未出现明显楼市热点，稍后自动刷新 👇",extra);
+  renderLiveEl("m2live","m2liveUpd",items,HOUSE_PLATS,"当前实时热榜暂未出现明显楼市热点，稍后自动刷新 👇（下方精选房源库可继续浏览）",extra);
 }
 function renderM4Live(){
   let items=[],seen={};
   (hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(isJob(it.t)&&!seen[it.t]){seen[it.t]=1;items.push({t:it.t,url:it.url||"",src:p.name||""});}}));
   let extra=[];
   if(items.length<4){(hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(!seen[it.t]){seen[it.t]=1;extra.push({t:it.t,url:it.url||"",src:p.name||""});}}));}
-  renderLiveEl("m7job","m7jobUpd",items,JOB_PLATS,"当前实时热榜暂未出现明显兼职 / 招聘热点，稍后自动刷新 👇",extra);
+  renderLiveEl("m4live","m4liveUpd",items,JOB_PLATS,"当前实时热榜暂未出现明显兼职 / 招聘热点，稍后自动刷新 👇（下方精选接单库可继续浏览）",extra);
 }
 /* ====== Module 2: 房源 ====== */
 const houses=[
