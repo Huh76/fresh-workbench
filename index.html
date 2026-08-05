@@ -519,6 +519,10 @@
   .plat:hover{filter:brightness(1.07);transform:translateY(-1px)}
   .plat svg{width:11px;height:11px;fill:#fff;opacity:.9}
   .p-bili{background:#00AEEC}.p-dy{background:#FE2C55}.p-ks{background:#FF4906}.p-iqy{background:#00BE06}.p-qq{background:#FF7F00}.p-yk{background:#1FB6FF}.p-mgtv{background:#FF458E}
+  .p-ajk{background:#FF7700}.p-58{background:#FF9A00}.p-gj{background:#FF6A00}.p-ftx{background:#E0322F}.p-sf{background:#1E90C9}
+  .p-zbj{background:#FF6A00}.p-zp{background:#00BEAC}.p-zl{background:#FF5A36}.p-51{background:#1D62B4}.p-lp{background:#00A39B}
+  .lib-label{font-size:13px;font-weight:800;color:#6b5b7a;margin:18px 2px 8px;display:flex;align-items:center;gap:6px}
+  .lib-label .tag{font-size:11px;font-weight:700;color:#fff;background:#b9a7c9;border-radius:9px;padding:2px 8px}
   .empty{padding:30px;text-align:center;color:#a88696;font-size:13px;opacity:.8}
   #m1grid .item h3{padding-right:0}
   /* 实时热榜 */
@@ -689,11 +693,19 @@
           <div class="ttl"><span class="emo">🏡</span>房源查询 · 次新小户型一键整合</div>
           <button class="refresh" onclick="refreshMod('m2')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新房源</button>
         </div>
-        <div class="sub">聚合主流平台新房 / 二手房 / 租房房源，支持按城市、区域、房型、价格精准筛选，每张房源均标注优缺点，数据定时更新。</div>
+        <div class="sub">聚合主流平台房源（下方为常驻精选库）；上方「实时楼市热搜」自动抓取全网最新楼市、政策、行情话题，每 30 分钟更新。</div>
         <div class="links">
           <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
+      </div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🔥</span>实时楼市热搜 · 房源 / 政策 / 行情</div>
+          <span class="live-upd" id="m2liveUpd">更新中…</span>
+        </div>
+        <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的楼市、房源、政策话题；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
+        <div id="m2live" class="grid"></div>
       </div>
       <div class="filterbar">
         <div class="fb-row">
@@ -735,6 +747,7 @@
           </select>
         </div>
       </div>
+      <div class="lib-label">📚 精选房源合集<span class="tag">常驻参考 · 非实时</span></div>
       <div class="grid" id="m2grid"></div>
     </section>
 
@@ -746,7 +759,7 @@
           <div class="ttl"><span class="emo">🎨</span>排版兼职 · 副业接单汇总</div>
           <button class="refresh" onclick="refreshMod('m4')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新订单</button>
         </div>
-        <div class="sub">收录主流平台 CDR / AI / PS 排版、吊牌包装设计、图文制版兼职，标注酬劳、城市与对接渠道，覆盖全国主要城市。</div>
+        <div class="sub">收录主流平台排版 / 设计兼职（下方为常驻精选接单库）；上方「实时兼职热搜」自动抓取全网最新招聘、副业、接单机会，每 30 分钟更新。</div>
         <div class="links">
           <span class="link-sep">兼职接单</span>
           <a class="link" href="https://www.zbj.com" target="_blank">猪八戒</a>
@@ -765,6 +778,14 @@
           <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
+      </div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🔥</span>实时兼职热搜 · 招聘 / 副业 / 接单</div>
+          <span class="live-upd" id="m4liveUpd">更新中…</span>
+        </div>
+        <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的招聘、副业、接单机会；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
+        <div id="m4live" class="grid"></div>
       </div>
       <div class="chips" id="m4chips">
         <span class="chip on" data-f="全部">全部</span>
@@ -790,6 +811,7 @@
           </select>
         </div>
       </div>
+      <div class="lib-label">📚 精选接单合集<span class="tag">常驻参考 · 非实时</span></div>
       <div class="grid" id="m4grid"></div>
     </section>
 
@@ -910,8 +932,8 @@ function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
   if(m==="m1")m1Render();
-  if(m==="m2")renderHouses(curFilter.m2);
-  if(m==="m4")renderJobs(curFilter.m4);
+  if(m==="m2"){renderHouses(curFilter.m2);renderM2Live();}
+  if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
 }
 
 /* ====== 详情弹窗数据 & 控制器（站内预览，禁止自动跳转） ====== */
@@ -1056,12 +1078,45 @@ let hotData=null;
 async function loadHot(){
   const el=document.getElementById("hotlist");if(!el)return;
   try{
-    const r=await fetch("hotlist.json",{cache:"no-store"});
-    if(!r.ok)throw new Error("HTTP");
-    hotData=await r.json();
-  }catch(e){el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';return;}
+    hotData=await fetchHotLive();
+  }catch(e){
+    try{
+      const r=await fetch("hotlist.json",{cache:"no-store"});
+      if(!r.ok)throw new Error("HTTP");
+      hotData=await r.json();
+    }catch(e2){
+      el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';
+      ["m1live","m2live","m4live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
+      return;
+    }
+  }
   renderHotTabs();
   renderM1Live();
+  renderM2Live();
+  renderM4Live();
+}
+/* 实时热榜：优先直连 60s.viki.moe（CORS=*，国内/境外均可直连，真正的实时），失败回退 hotlist.json 静态快照 */
+async function fetchHotLive(){
+  const SRC=[["douyin","抖音"],["kuaishou","快手"],["bilibili","B站"],["weibo","微博"],["zhihu","知乎"],["baidu","百度"],["toutiao","头条"]];
+  const ctrl=new AbortController();
+  const to=setTimeout(function(){ctrl.abort();},9000);
+  const tasks=SRC.map(function(p){
+    return fetch("https://60s.viki.moe/v2/"+p[0],{cache:"no-store",signal:ctrl.signal})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(d){
+        if(!d||!d.data)return null;
+        const arr=Array.isArray(d.data)?d.data:Object.values(d.data);
+        return {id:p[0],name:p[1],items:arr.map(function(it){return {t:String(it.title||it.word||"").trim(),url:it.link||it.url||""};}).filter(function(x){return x.t;})};
+      })
+      .catch(function(){return null;});
+  });
+  clearTimeout(to);
+  const res=await Promise.all(tasks);
+  const platforms=res.filter(Boolean).map(function(p){return {id:p.id,name:p.name,items:p.items.slice(0,15)};});
+  if(!platforms.length)throw new Error("viki empty");
+  const d=new Date();
+  const updated=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2);
+  return {updated:updated,platforms:platforms};
 }
 function renderHotTabs(tab){
   const el=document.getElementById("hotlist");if(!el||!hotData)return;
@@ -1088,6 +1143,56 @@ function renderM1Live(){
     const plats=PLATFORMS.map(function(p){return '<a class="plat '+p.cls+'" href="'+p.url(k)+'" target="_blank" rel="noopener" title="在'+p.name+'看"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>';}).join('');
     return '<div class="item"><span class="mtag live">实时</span><h3>'+hotEsc(x.t)+'</h3><div class="plats">'+plats+'</div>'+(x.url?'<a class="go src-link" href="'+x.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+hotEsc(x.src)+' 来源 ↗</a>':'')+'</div>';
   }).join('');
+}
+/* ====== 实时板块：房源 / 兼职（复用全网热榜 hotlist.json） ====== */
+const HOUSE_KW=["房价","楼市","房地产","二手房","新房","租房","学区房","房贷","公积金","契税","限购","限售","落户","保障房","廉租房","公租房","房贷利率","首套房","二套房","公积金贷款","楼盘","土拍","买房","卖房","房源","棚改","旧改","共有产权","商住","法拍房","老破小","改善型","刚需","限价房","摇号买房","物业费的","租房市场"];
+function isHouse(t){t=t||"";return HOUSE_KW.some(k=>t.indexOf(k)>=0);}
+const JOB_KW=["兼职","副业","招聘","求职","日结","小时工","灵活就业","找工作","岗位","offer","裁员","降薪","外包","接单","freelancer","零工","劳务派遣","社招","校招","实习","远程办公","在家办公","带货","主播","网约车","外卖","快递","闪送","代驾","保姆","月嫂","家政","保安","导购","客服","文员","普工","技工","排版","美工","运营","自媒体","小红书","短视频","剪辑","配音","写手","翻译","找工作"];
+function isJob(t){t=t||"";return JOB_KW.some(k=>t.indexOf(k)>=0);}
+const HOUSE_PLATS=[
+  {name:"安居客",cls:"p-ajk",url:k=>"https://www.anjuke.com/search?q="+enc(k)},
+  {name:"58同城",cls:"p-58",url:k=>"https://www.58.com/search/?key="+enc(k)},
+  {name:"赶集",cls:"p-gj",url:k=>"https://www.ganji.com/search?q="+enc(k)},
+  {name:"房天下",cls:"p-ftx",url:k=>"https://www.fang.com/search?q="+enc(k)},
+  {name:"搜房",cls:"p-sf",url:k=>"https://www.soufun.com/search?q="+enc(k)}
+];
+const JOB_PLATS=[
+  {name:"猪八戒",cls:"p-zbj",url:k=>"https://www.zbj.com/search?key="+enc(k)},
+  {name:"BOSS直聘",cls:"p-zp",url:k=>"https://www.zhipin.com/web/geek/search?query="+enc(k)},
+  {name:"58同城",cls:"p-58",url:k=>"https://www.58.com/search/?key="+enc(k)},
+  {name:"智联招聘",cls:"p-zl",url:k=>"https://www.zhaopin.com/sou?query="+enc(k)},
+  {name:"前程无忧",cls:"p-51",url:k=>"https://search.51job.com/list/000000,000000,0000,00,9,99,"+enc(k)+",2,1.html"},
+  {name:"猎聘",cls:"p-lp",url:k=>"https://www.liepin.com/zhaopin/?key="+enc(k)}
+];
+function platCaps(kw,list){return (list||[]).map(p=>'<a class="plat '+p.cls+'" href="'+p.url(kw)+'" target="_blank" rel="noopener" title="在'+p.name+'搜索"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>').join('');}
+function liveItemHTML(x,plats){
+  const k=x.t;
+  return '<div class="item"><span class="mtag live">实时</span><h3>'+hotEsc(x.t)+'</h3>'+(plats?'<div class="plats">'+platCaps(k,plats)+'</div>':'')+(x.url?'<a class="go src-link" href="'+x.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+hotEsc(x.src)+' 来源 ↗</a>':'')+'</div>';
+}
+function renderLiveEl(elId,updId,items,plats,emptyMsg,extra){
+  const el=document.getElementById(elId);if(!el)return;
+  if(!hotData||!hotData.platforms){el.innerHTML='<div class="empty">实时热搜加载中…</div>';return;}
+  const u=document.getElementById(updId);if(u)u.textContent="更新 "+(hotData.updated||"").replace("T"," ").slice(0,16);
+  if(!items.length){el.innerHTML='<div class="empty">'+emptyMsg+'</div>';return;}
+  let html=items.slice(0,18).map(x=>liveItemHTML(x,plats)).join('');
+  if(extra&&extra.length){
+    html+='<div class="lib-label" style="margin-top:14px">🔥 关联热搜<span class="tag">全网最新</span></div>'+extra.slice(0,6).map(x=>liveItemHTML(x,null)).join('');
+  }
+  el.innerHTML=html;
+}
+function renderM2Live(){
+  let items=[],seen={};
+  (hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(isHouse(it.t)&&!seen[it.t]){seen[it.t]=1;items.push({t:it.t,url:it.url||"",src:p.name||""});}}));
+  let extra=[];
+  if(items.length<4){(hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(!seen[it.t]){seen[it.t]=1;extra.push({t:it.t,url:it.url||"",src:p.name||""});}}));}
+  renderLiveEl("m2live","m2liveUpd",items,HOUSE_PLATS,"当前实时热榜暂未出现明显楼市热点，稍后自动刷新 👇（下方精选房源库可继续浏览）",extra);
+}
+function renderM4Live(){
+  let items=[],seen={};
+  (hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(isJob(it.t)&&!seen[it.t]){seen[it.t]=1;items.push({t:it.t,url:it.url||"",src:p.name||""});}}));
+  let extra=[];
+  if(items.length<4){(hotData.platforms||[]).forEach(p=>(p.items||[]).forEach(it=>{if(!seen[it.t]){seen[it.t]=1;extra.push({t:it.t,url:it.url||"",src:p.name||""});}}));}
+  renderLiveEl("m4live","m4liveUpd",items,JOB_PLATS,"当前实时热榜暂未出现明显兼职 / 招聘热点，稍后自动刷新 👇（下方精选接单库可继续浏览）",extra);
 }
 /* ====== Module 2: 房源 ====== */
 const houses=[
