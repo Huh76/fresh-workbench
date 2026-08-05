@@ -524,7 +524,6 @@
   .lib-label{font-size:13px;font-weight:800;color:#6b5b7a;margin:18px 2px 8px;display:flex;align-items:center;gap:6px}
   .lib-label .tag{font-size:11px;font-weight:700;color:#fff;background:#b9a7c9;border-radius:9px;padding:2px 8px}
   .empty{padding:30px;text-align:center;color:#a88696;font-size:13px;opacity:.8}
-  #m1grid .item h3{padding-right:0}
   /* 实时热榜 */
   .hot-card{margin-top:16px}
   .hot-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 12px}
@@ -652,15 +651,6 @@
           <a class="link" href="https://www.youku.com" target="_blank" rel="noopener">优酷</a>
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
-        <div class="chips" id="m1cat">
-          <span class="chip on" data-cat="全部">全部</span>
-          <span class="chip" data-cat="剧集">剧集</span>
-          <span class="chip" data-cat="综艺">综艺</span>
-          <span class="chip" data-cat="电影">电影</span>
-          <span class="chip" data-cat="动漫">动漫</span>
-          <span class="chip" data-cat="短剧">短剧</span>
-          <span class="chip" data-cat="解说">解说</span>
-        </div>
       </div>
       <div class="card hot-card">
         <div class="card-head">
@@ -676,13 +666,6 @@
         </div>
         <div class="sub">从全网实时热榜中筛出正在热议的剧集 / 综艺 / 电影，每条一键直达 B站 · 抖音 · 快手 · 爱奇艺 · 腾讯 · 优酷 · 芒果 看正片或花絮；每 30 分钟自动更新。</div>
         <div id="m1live" class="grid"></div>
-      </div>
-      <div class="card">
-        <div class="card-head">
-          <div class="ttl"><span class="emo">📚</span>剧集片库 · 精选合集</div>
-        </div>
-        <div class="sub">按分类浏览的常驻片库（含经典与热门）；想看当下最新动态，请看上方「实时热播」。</div>
-        <div class="grid" id="m1grid"></div>
       </div>
     </section>
 
@@ -931,7 +914,6 @@ function toast(msg){
 function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
-  if(m==="m1")m1Render();
   if(m==="m2"){renderHouses(curFilter.m2);renderM2Live();}
   if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
 }
@@ -961,118 +943,7 @@ const PLATFORMS=[
 ];
 const PLAT_SEARCH={};
 function renderPlatLinks(){return '';}
-const M1=[
- {t:"庆余年第二季",cat:"剧集",free:false,done:false,k:"庆余年第二季",d:"权谋古装续作，剧情紧凑口碑高，追更热门。"},
- {t:"繁花",cat:"剧集",free:false,done:true,k:"繁花 王家卫",d:"沪上霓虹年代群像，电影级质感与美学。"},
- {t:"与凤行",cat:"剧集",free:false,done:true,k:"与凤行",d:"仙侠轻喜剧，甜宠向，服化道精美。"},
- {t:"玫瑰的故事",cat:"剧集",free:false,done:true,k:"玫瑰的故事",d:"都市女性成长剧，演技派阵容。"},
- {t:"我的阿勒泰",cat:"剧集",free:false,done:true,k:"我的阿勒泰",d:"治愈系边疆生活，慢节奏松弛感。"},
- {t:"三体",cat:"剧集",free:false,done:true,k:"三体 电视剧",d:"科幻巨制，还原度高，制作精良。"},
- {t:"漫长的季节",cat:"剧集",free:false,done:true,k:"漫长的季节",d:"悬疑精品，封神口碑，演技在线。"},
- {t:"去有风的地方",cat:"剧集",free:false,done:true,k:"去有风的地方",d:"田园治愈，松弛感拉满的慢生活。"},
- {t:"乘风2024",cat:"综艺",free:false,done:false,k:"乘风2024",d:"女性舞台竞演，热度持续走高。"},
- {t:"歌手2024",cat:"综艺",free:false,done:false,k:"歌手2024",d:"直播真唱音综，话题度拉满。"},
- {t:"种地吧",cat:"综艺",free:false,done:true,k:"种地吧",d:"劳作纪实综艺，真诚治愈向。"},
- {t:"你好星期六",cat:"综艺",free:true,done:false,k:"你好星期六",d:"轻松合家欢，免费观看。"},
- {t:"五十公里桃花坞",cat:"综艺",free:false,done:true,k:"五十公里桃花坞",d:"群居社交观察，名场面频出。"},
- {t:"王牌对王牌",cat:"综艺",free:false,done:true,k:"王牌对王牌",d:"经典游戏喜剧综艺，合家欢。"},
- {t:"孤注一掷",cat:"电影",free:false,done:true,k:"孤注一掷",d:"反诈题材，票房黑马，警示性强。"},
- {t:"长安三万里",cat:"电影",free:false,done:true,k:"长安三万里",d:"唐诗动画史诗，国风美学巅峰。"},
- {t:"消失的她",cat:"电影",free:false,done:true,k:"消失的她",d:"悬疑反转，话题引爆的院线爆款。"},
- {t:"年会不能停",cat:"电影",free:false,done:true,k:"年会不能停",d:"职场喜剧，打工人口碑之作。"},
- {t:"封神第一部",cat:"电影",free:false,done:true,k:"封神第一部",d:"神话史诗，视效震撼的国产大片。"},
- {t:"时光代理人",cat:"动漫",free:false,done:true,k:"时光代理人",d:"国产悬疑动画，催泪神作。"},
- {t:"刺客伍六七",cat:"动漫",free:true,done:true,k:"刺客伍六七",d:"国漫搞笑热血，免费好评。"},
- {t:"灵笼",cat:"动漫",free:false,done:true,k:"灵笼",d:"末日科幻动画，制作精良。"},
- {t:"中国奇谭",cat:"动漫",free:true,done:true,k:"中国奇谭",d:"短片集国风动画，免费高分。"},
- {t:"凡人修仙传",cat:"动漫",free:false,done:false,k:"凡人修仙传",d:"修仙长篇动画，持续更新中。"},
- {t:"逃出大英博物馆",cat:"短剧",free:true,done:true,k:"逃出大英博物馆",d:"文物拟人微短剧，免费出圈。"},
- {t:"我在八零年代当后妈",cat:"短剧",free:true,done:false,k:"我在八零年代当后妈",d:"竖屏甜爽短剧，免费观看。"},
- {t:"完蛋！我被美女包围了",cat:"短剧",free:false,done:true,k:"完蛋我被美女包围了",d:"互动影视短剧，破圈爆款。"},
- {t:"反诈题材短剧",cat:"短剧",free:true,done:false,k:"反诈题材短剧",d:"竖屏反诈科普，免费实用。"},
- {t:"电影解说合集",cat:"解说",free:true,done:false,k:"电影解说 高清",d:"UP主影视解说，免费涨知识。"},
- {t:"高分纪录片推荐",cat:"解说",free:true,done:false,k:"纪录片 高分 推荐",d:"高分纪录片盘点，免费可看。"},
-  {t:"动漫神作盘点",cat:"解说",free:true,done:false,k:"动漫推荐 神作",d:"动漫神作盘点，免费种草。"},
-  {t:"庆余年 第一季",cat:"剧集",free:false,done:true,k:"庆余年",d:"权谋古装封神前作，铺垫续作。"},
-  {t:"甄嬛传",cat:"剧集",free:true,done:true,k:"甄嬛传",d:"宫斗经典，百看不厌。"},
-  {t:"知否知否应是绿肥红瘦",cat:"剧集",free:true,done:true,k:"知否知否应是绿肥红瘦",d:"北宋宅斗生活气，细腻耐看。"},
-  {t:"狂飙",cat:"剧集",free:false,done:true,k:"狂飙",d:"扫黑除恶爆款，演技炸裂。"},
-  {t:"山海情",cat:"剧集",free:true,done:true,k:"山海情",d:"扶贫写实，真诚动人。"},
-  {t:"县委大院",cat:"剧集",free:false,done:true,k:"县委大院",d:"基层群像，现实题材。"},
-  {t:"声生不息",cat:"综艺",free:false,done:true,k:"声生不息",d:"港乐金曲竞唱，怀旧向。"},
-  {t:"一年一度喜剧大赛",cat:"综艺",free:true,done:true,k:"一年一度喜剧大赛",d:"新生喜剧竞演，脑洞大开。"},
-  {t:"向往的生活",cat:"综艺",free:true,done:true,k:"向往的生活",d:"慢综艺治愈，田园日常。"},
-  {t:"密室大逃脱",cat:"综艺",free:false,done:false,k:"密室大逃脱",d:"悬疑解谜真人秀。"},
-  {t:"流浪地球2",cat:"电影",free:false,done:true,k:"流浪地球2",d:"国产科幻巅峰，视效宏大。"},
-  {t:"满江红",cat:"电影",free:false,done:true,k:"满江红",d:"悬疑喜剧，张艺谋贺岁。"},
-  {t:"八角笼中",cat:"电影",free:false,done:true,k:"八角笼中",d:"励志现实题材。"},
-  {t:"热辣滚烫",cat:"电影",free:false,done:true,k:"热辣滚烫",d:"女性成长励志。"},
-  {t:"吞噬星空",cat:"动漫",free:false,done:false,k:"吞噬星空",d:"热血科幻国漫。"},
-  {t:"斗破苍穹",cat:"动漫",free:false,done:false,k:"斗破苍穹",d:"玄幻长篇，持续更新。"},
-  {t:"雾山五行",cat:"动漫",free:true,done:true,k:"雾山五行",d:"国画风动作神作。"},
-  {t:"闪婚后傅先生马甲藏不住了",cat:"短剧",free:true,done:false,k:"闪婚后傅先生马甲藏不住了",d:"甜宠竖屏短剧。"},
-  {t:"总裁的隐藏身份",cat:"短剧",free:true,done:false,k:"总裁的隐藏身份 短剧",d:"霸总爽剧。"},
-  {t:"悬疑电影解说",cat:"解说",free:true,done:false,k:"悬疑电影解说 推荐",d:"烧脑悬疑盘点。"},
-  {t:"经典老片重温",cat:"解说",free:true,done:false,k:"经典老电影 推荐",d:"怀旧佳片合集。"},
-  {t:"新番动漫资讯",cat:"解说",free:true,done:false,k:"新番 动漫资讯",d:"新番速递。"}
-];
-const curFilter={m1:"全部",m2:"全部",m4:"全部",m7:"全部",m2city:"全部",m4city:"全部",m2area:"全部",m2rooms:"全部",m2price:"全部",m4pay:"全部"};
-/* 城市 → 区域（全面） */
-const cityAreas={
-  "北京":["朝阳区","海淀区","东城区","西城区","丰台区","通州区","昌平区","大兴区"],
-  "上海":["浦东新区","徐汇区","静安区","黄浦区","长宁区","杨浦区","闵行区","宝山区"],
-  "广州":["天河区","越秀区","海珠区","番禺区","白云区","黄埔区","荔湾区","花都区"],
-  "深圳":["南山区","福田区","罗湖区","宝安区","龙岗区","龙华区","盐田区","光明区"],
-  "杭州":["西湖区","上城区","拱墅区","滨江区","余杭区","萧山区","钱塘区","临平区"],
-  "成都":["锦江区","武侯区","青羊区","成华区","金牛区","高新区","天府新区","龙泉驿区"],
-  "南京":["玄武区","秦淮区","鼓楼区","建邺区","江宁区","雨花台区","栖霞区","浦口区"],
-  "武汉":["武昌区","江汉区","江岸区","洪山区","汉阳区","青山区","东西湖区","光谷"],
-  "西安":["雁塔区","碑林区","莲湖区","未央区","新城区","灞桥区","高新区","曲江新区"],
-  "苏州":["姑苏区","工业园区","吴中区","相城区","虎丘区","吴江区","昆山","常熟"],
-  "天津":["和平区","河西区","南开区","河东区","河北区","红桥区","滨海新区","西青区"],
-  "重庆":["渝中区","江北区","南岸区","九龙坡区","沙坪坝区","渝北区","巴南区","北碚区"],
-  "长沙":["岳麓区","芙蓉区","天心区","开福区","雨花区","望城区","星沙","梅溪湖"],
-  "厦门":["思明区","湖里区","集美区","海沧区","同安区","翔安区"],
-  "福州":["鼓楼区","台江区","仓山区","晋安区","马尾区","长乐区"],
-  "泉州":["丰泽区","鲤城区","洛江区","泉港区","晋江市","石狮市","南安市"],
-  "晋江":["梅岭街道","青阳街道","陈埭镇","池店镇","安海镇","磁灶镇","内坑镇","西园街道"],
-  "宁波":["海曙区","江北区","鄞州区","镇海区","北仑区","奉化区","余姚市","慈溪市"],
-  "无锡":["梁溪区","滨湖区","新吴区","锡山区","惠山区","江阴市","宜兴市"],
-  "合肥":["蜀山区","包河区","庐阳区","瑶海区","高新区","经开区","政务区","滨湖新区"],
-  "青岛":["市南区","市北区","李沧区","崂山区","城阳区","黄岛区","即墨区","胶州市"],
-  "郑州":["金水区","中原区","二七区","管城回族区","惠济区","郑东新区","高新区","经开区"],
-  "昆明":["五华区","盘龙区","西山区","官渡区","呈贡区","晋宁区","安宁"],
-  "济南":["历下区","市中区","槐荫区","天桥区","历城区","高新区","章丘区"],
-  "东莞":["莞城街道","南城街道","东城街道","万江街道","松山湖","长安镇","虎门镇"],
-  "佛山":["禅城区","南海区","顺德区","三水区","高明区","高明"],
-  "沈阳":["和平区","沈河区","大东区","皇姑区","铁西区","浑南区","于洪区"]
-};
-let m1Cat="全部",m1Seed=0;
-function m1List(){
-  let arr=M1.slice();
-  if(m1Cat!=="全部")arr=arr.filter(x=>x.cat===m1Cat);
-  if(m1Seed){for(let i=arr.length-1;i>0;i--){const r=Math.floor((i+1)*frac(m1Seed*(i+3)));const t=arr[i];arr[i]=arr[r];arr[r]=t;}}
-  return arr;
-}
-function frac(n){const s=Math.sin(n)*43758.5453;return s-Math.floor(s);}
-function m1Render(hi){
-  const g=document.getElementById("m1grid");
-  if(!g)return;
-  const list=m1List();
-  const n=Math.max(list.length,1);
-  const fi=hi==null?-1:(((hi%n)+n)%n);
-  if(!list.length){g.innerHTML='<div class="empty">没有匹配的内容，换个关键词或分类试试～</div>';return;}
-  g.innerHTML=list.map((x,i)=>{
-    const mtag='<span class="mtag '+(x.cat==="短剧"?"seri":(x.cat==="电影"?"done":"seri"))+'">'+x.cat+'</span>'+
-      (x.free?'<span class="mtag free">免费</span>':'<span class="mtag pay">付费</span>')+
-      (x.done?'<span class="mtag done">完结</span>':'');
-    const hot=i===fi?'<div class="fresh">🔥 正在热播</div>':'';
-    const plats=PLATFORMS.map(p=>'<a class="plat '+p.cls+'" href="'+p.url(x.k)+'" target="_blank" rel="noopener" title="在'+p.name+'看"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>').join('');
-    return '<div class="item">'+mtag+hot+'<h3>'+x.t+'</h3><div class="desc">'+x.d+'</div><div class="plats">'+plats+'</div></div>';
-  }).join('');
-}
-function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;m1Render(Math.floor(Math.random()*999));loadHot();}
-function m1Bind(){document.querySelectorAll('#m1cat .chip').forEach(c=>{c.onclick=()=>{document.querySelectorAll('#m1cat .chip').forEach(x=>x.classList.remove('on'));c.classList.add('on');m1Cat=c.dataset.cat;m1Render();};});}
+function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;loadHot();}
 function hotEsc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 let hotData=null;
 async function loadHot(){
@@ -1401,7 +1272,6 @@ function bindChips(id,cb,key){
     };
   });
 }
-m1Bind();
 bindChips("m2cat",renderHouses,"m2");
 bindChips("m4chips",renderJobs,"m4");
 
@@ -1561,7 +1431,6 @@ function newsInit(){
 /* ====== 初始化 ====== */
 fillCitySel("m2citySel","m2");
 fillCitySel("m4citySel","m4");
-m1Render();
 renderHouses();
 renderJobs();
 updateTime();
@@ -1579,7 +1448,6 @@ function liveRefresh(){
   const r=arr=>Math.floor(Math.random()*arr.length);
   const shown=id=>document.getElementById(id).classList.contains("show");
   // 仅对当前可见模块做轻量刷新；资讯模块(m7)为实时联网抓取，不随定时刷新重建
-  if(shown("m1")) m1Render(r(M1));
   if(shown("m2")) renderHouses(null,r(houses));
   if(shown("m4")) renderJobs(null,r(jobs));
 }
