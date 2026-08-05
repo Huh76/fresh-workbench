@@ -676,22 +676,10 @@
           <div class="ttl"><span class="emo">🏡</span>房源查询 · 次新小户型一键整合</div>
           <button class="refresh" onclick="refreshMod('m2')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新房源</button>
         </div>
-        <div class="sub">聚合主流平台房源（下方为常驻精选库）；上方「实时楼市热搜」自动抓取全网最新楼市、政策、行情话题，每 30 分钟更新。</div>
+        <div class="sub">聚合主流平台房源；上方「实时楼市热搜」自动抓取全网最新楼市、政策、行情话题，每 30 分钟更新。</div>
         <div class="links">
           <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
-        </div>
-      </div>
-      <div class="filterbar">
-        <div class="fb-row">
-          <span class="fb-label">房型：</span>
-          <div class="chips" id="m2rooms">
-            <span class="chip on" data-f="全部">全部</span>
-            <span class="chip" data-f="一室">一室</span>
-            <span class="chip" data-f="二室">二室</span>
-            <span class="chip" data-f="三室">三室</span>
-            <span class="chip" data-f="公寓">公寓/Loft</span>
-          </div>
         </div>
       </div>
       <div class="card live-card">
@@ -702,8 +690,6 @@
         <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的楼市、房源、政策话题；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
         <div id="m2live" class="grid"></div>
       </div>
-      <div class="lib-label">📚 精选房源合集<span class="tag">常驻参考 · 非实时</span></div>
-      <div class="grid" id="m2grid"></div>
     </section>
 
 
@@ -714,7 +700,7 @@
           <div class="ttl"><span class="emo">🎨</span>排版兼职 · 副业接单汇总</div>
           <button class="refresh" onclick="refreshMod('m4')"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新订单</button>
         </div>
-        <div class="sub">收录主流平台排版 / 设计兼职（下方为常驻精选接单库）；上方「实时兼职热搜」自动抓取全网最新招聘、副业、接单机会，每 30 分钟更新。</div>
+        <div class="sub">收录主流平台排版 / 设计兼职；上方「实时兼职热搜」自动抓取全网最新招聘、副业、接单机会，每 30 分钟更新。</div>
         <div class="links">
           <span class="link-sep">兼职接单</span>
           <a class="link" href="https://www.zbj.com" target="_blank">猪八戒</a>
@@ -734,14 +720,6 @@
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
       </div>
-      <div class="chips" id="m4chips">
-        <span class="chip on" data-f="全部">全部</span>
-        <span class="chip" data-f="散单">短期散单</span>
-        <span class="chip" data-f="长期">长期稳定</span>
-        <span class="chip" data-f="CDR">CDR</span>
-        <span class="chip" data-f="AI">AI</span>
-        <span class="chip" data-f="PS">PS</span>
-      </div>
       <div class="card live-card">
         <div class="card-head">
           <div class="ttl"><span class="emo">🔥</span>实时兼职热搜 · 招聘 / 副业 / 接单</div>
@@ -750,8 +728,6 @@
         <div class="sub">自动抓取 抖音 / 快手 / B站 / 微博 / 知乎 / 百度 实时热搜，筛出当下热议的招聘、副业、接单机会；点条目直达原平台看最新动态，每 30 分钟自动更新。</div>
         <div id="m4live" class="grid"></div>
       </div>
-      <div class="lib-label">📚 精选接单合集<span class="tag">常驻参考 · 非实时</span></div>
-      <div class="grid" id="m4grid"></div>
     </section>
 
     <!-- ===== Module 7: 每日热点 ===== -->
@@ -850,8 +826,8 @@ document.querySelectorAll(".nav-btn").forEach(b=>{
     document.getElementById("modTitle").textContent=modTitles[m];
     document.documentElement.style.setProperty("--acc",modAcc[m]);
     updateTime();
-    if(m==="m2"){renderHouses();renderM2Live();}
-    if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
+    if(m==="m2"){renderM2Live();}
+    if(m==="m4"){renderM4Live();}
     if(m==="m7"){newsInit();}
     if(m==="m5")lifeReset();
     if(m==="m6")qaReset();
@@ -872,8 +848,8 @@ function toast(msg){
 function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
-  if(m==="m2"){renderHouses();renderM2Live();}
-  if(m==="m4"){renderJobs(curFilter.m4);renderM4Live();}
+  if(m==="m2"){renderM2Live();}
+  if(m==="m4"){renderM4Live();}
 }
 
 /* ====== 详情弹窗数据 & 控制器（站内预览，禁止自动跳转） ====== */
@@ -1056,6 +1032,7 @@ const houses=[
 function renderHouses(_,hi){
   const rooms=curFilter.m2rooms;
   const g=document.getElementById("m2grid");
+  if(!g)return;
   const list=houses.filter(x=>{
     if(rooms!=="全部"&&x.rooms!==rooms)return false;
     return true;
@@ -1169,6 +1146,7 @@ const jobs=[
 function renderJobs(_,hi){
   const f=curFilter.m4;
   const g=document.getElementById("m4grid");
+  if(!g)return;
   const list=jobs.filter(x=>{
     if(f!=="全部"){
       if(f==="散单"&&x.type!=="散单")return false;
@@ -1221,10 +1199,6 @@ function bindChips(id,cb,key){
     };
   });
 }
-bindChips("m4chips",renderJobs,"m4");
-
-bindChips("m2rooms",renderHouses,"m2rooms");
-
 
 /* ====== Module 7: 每日热点 ====== */
 const NEWS_API='https://60s.viki.moe/v2/';
@@ -1377,8 +1351,6 @@ function newsInit(){
 }
 
 /* ====== 初始化 ====== */
-renderHouses();
-renderJobs();
 updateTime();
 loadHot();
 setInterval(loadHot,5*60*1000);
@@ -1394,8 +1366,6 @@ function liveRefresh(){
   const r=arr=>Math.floor(Math.random()*arr.length);
   const shown=id=>document.getElementById(id).classList.contains("show");
   // 仅对当前可见模块做轻量刷新；资讯模块(m7)为实时联网抓取，不随定时刷新重建
-  if(shown("m2")) renderHouses(null,r(houses));
-  if(shown("m4")) renderJobs(null,r(jobs));
 }
 setInterval(liveRefresh,15000);
 /* ====== 全局搜索模块 ====== */
