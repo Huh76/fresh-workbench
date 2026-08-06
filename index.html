@@ -539,6 +539,50 @@
   .plat-bar{margin:12px 0 2px}
   .empty.small{padding:14px;font-size:12px}
 
+  /* 查询表单（房源 / 兼职） */
+  .qform{background:#FFF7FA;border:1px solid #F6E4EC;border-radius:16px;padding:14px 16px;margin:2px 0 14px}
+  .qrow{display:flex;align-items:center;gap:10px;margin-bottom:11px;flex-wrap:wrap}
+  .qrow:last-of-type{margin-bottom:0}
+  .qlabel{font-size:12.5px;color:#a98a97;font-weight:600;min-width:46px;white-space:nowrap}
+  .qinput,.qsel{flex:1;min-width:150px;font-family:inherit;font-size:14px;color:#5b4350;background:#fff;border:1.5px solid #F0D9E3;border-radius:12px;padding:10px 12px;outline:none;transition:.2s}
+  .qinput:focus,.qsel:focus{border-color:var(--acc)}
+  .seg{display:inline-flex;background:#fff;border:1.5px solid #F0D9E3;border-radius:12px;overflow:hidden}
+  .seg-item{font-size:13px;color:#8a6f7c;padding:8px 16px;cursor:pointer;transition:.15s;user-select:none}
+  .seg-item.on{background:var(--acc);color:#fff;font-weight:600}
+  .run{border:none;cursor:pointer;font-family:inherit;font-size:14px;font-weight:600;color:#fff;background:var(--acc);padding:11px 22px;border-radius:14px;transition:.15s;width:100%;margin-top:6px}
+  .run:hover{filter:brightness(1.06)}
+  .run:active{transform:scale(.985)}
+  .run.mini{width:auto;padding:8px 16px;font-size:13px;margin-top:10px}
+  .hint{font-size:12.5px;color:var(--muted);line-height:1.7;background:#FAF6FB;border:1px solid #ECE3F2;border-radius:12px;padding:10px 12px;margin-bottom:12px}
+  .hint.warn{border-color:#f0c0c0;color:#c0566a;background:#fdf3f4}
+  .mresult{display:flex;flex-direction:column;gap:14px}
+  .mresult:empty{display:none}
+  .res-card{background:#FAF6FB;border:1px solid #ECE3F2;border-radius:16px;padding:14px 16px}
+  .res-h{font-size:13.5px;font-weight:700;color:#6a4f5c;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+  .res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+  .res-grid>div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+  .res-grid span{display:block;font-size:11.5px;color:#a8969e;margin-bottom:3px}
+  .res-grid b{font-size:14.5px;color:#574B53;word-break:break-word}
+  .chlist{display:flex;flex-direction:column;gap:10px}
+  .ch-item{display:flex;align-items:flex-start;gap:10px;background:#fff;border:1px solid var(--line);border-radius:13px;padding:11px 13px}
+  .ch-main{flex:1}
+  .ch-name{font-weight:700;font-size:14px;color:#574B53}
+  .ch-note{font-size:12px;color:#8a7a82;line-height:1.6;margin-top:2px}
+  .badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:10px;white-space:nowrap;flex:none;margin-top:2px}
+  .badge.ok{background:#EAFBF2;color:#1f7a52;border:1px solid #cdeede}
+  .badge.warn{background:#FFF4E3;color:#b9802f;border:1px solid #f2dca8}
+  .badge.risk{background:#FDEDED;color:#c0566a;border:1px solid #f2c6c6}
+  .price-grid{display:flex;flex-direction:column;gap:8px}
+  .price-row{display:flex;justify-content:space-between;gap:12px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 13px;font-size:13.5px}
+  .price-row .pp{color:#a85f7e;font-weight:600;white-space:nowrap}
+  .tpl{background:#fff;border:1px solid var(--line);border-radius:13px;padding:12px 13px;position:relative}
+  .tpl pre{white-space:pre-wrap;word-break:break-word;font-family:inherit;font-size:13px;color:#4b3a42;line-height:1.75;margin:0;padding-right:74px}
+  .copybtn{position:absolute;right:10px;top:10px;border:none;background:var(--acc);color:#fff;font-family:inherit;font-size:12px;padding:6px 11px;border-radius:10px;cursor:pointer;transition:.15s}
+  .copybtn:active{transform:scale(.96)}
+  .tips{margin:0;padding-left:18px}
+  .tips li{font-size:13px;color:#5b4750;line-height:1.85;margin-bottom:5px}
+  .tips li b{color:#b07d92}
+
 </style>
 <link rel=manifest href=manifest.json>
 <meta name=theme-color content=#ffd9ec>
@@ -673,11 +717,37 @@
     <section class="module" id="m2">
       <div class="card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">🏡</span>房源查询 · 次新小户型一键整合</div>
+          <div class="ttl"><span class="emo">🏡</span>全国房源查询 · 买房 / 租房一键直达</div>
         </div>
-        <div class="sub">聚合主流房产平台，点链接直达查看最新房源、行情与政策。</div>
+        <div class="sub">输入城市、预算、面积、户型、买房/租房，联网拉取最新实时房源、给出直达平台检索关键词；并提供避坑要点与简易预算测算。没有输入时，先告诉我：城市、预算、想买房还是租房。</div>
+        <div class="qform">
+          <div class="qrow"><span class="qlabel">城市</span><input class="qinput" id="m2city" placeholder="必填，如 北京 / 上海 / 成都"></div>
+          <div class="qrow"><span class="qlabel">买/租</span>
+            <div class="seg" id="m2type">
+              <span class="seg-item on" data-v="买房" onclick="segPick(this,'m2type')">买房</span>
+              <span class="seg-item" data-v="租房" onclick="segPick(this,'m2type')">租房</span>
+            </div>
+          </div>
+          <div class="qrow"><span class="qlabel">预算</span><input class="qinput" id="m2budget" placeholder="买房填总价(万元) / 租房填月租(元)"></div>
+          <div class="qrow"><span class="qlabel">面积</span><input class="qinput" id="m2area" placeholder="㎡，如 89（选填）"></div>
+          <div class="qrow"><span class="qlabel">户型</span>
+            <select class="qsel" id="m2rooms">
+              <option value="">不限</option>
+              <option>一室</option><option>二室</option><option>三室</option><option>公寓/Loft</option>
+            </select>
+          </div>
+          <button class="run" onclick="m2Run()">🔍 查询最新房源</button>
+        </div>
+        <div class="hint" id="m2hint">提示：请填写<b>城市</b>与<b>预算</b>，并选择买房或租房，再点查询。房源数据通过下方平台链接实时检索，不使用旧库。</div>
+        <div id="m2result" class="mresult"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div class="ttl"><span class="emo">🔗</span>主流房产平台直达（实时房源）</div></div>
+        <div class="sub">以下平台可查看实时在售 / 在租房源，点击直达。</div>
         <div class="links">
+          <a class="link" href="https://www.ke.com" target="_blank">贝壳找房</a>
           <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
+          <a class="link" href="https://www.lianjia.com" target="_blank">链家</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
       </div>
@@ -688,27 +758,89 @@
     <section class="module" id="m4">
       <div class="card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">🎨</span>排版兼职 · 副业接单汇总</div>
+          <div class="ttl"><span class="emo">🎨</span>排版兼职 · 接单全攻略</div>
         </div>
-        <div class="sub">收录主流兼职 / 招聘平台，点链接直达查看最新接单与在招机会。</div>
-        <div class="links">
-          <span class="link-sep">兼职接单</span>
-          <a class="link" href="https://www.zbj.com" target="_blank">猪八戒</a>
-          <a class="link" href="https://www.epwk.com" target="_blank">一品威客</a>
-          <a class="link" href="https://www.680.com" target="_blank">时间财富</a>
-          <a class="link" href="https://www.58.com" target="_blank">58同城</a>
-          <a class="link" href="https://www.zcool.com.cn" target="_blank">站酷</a>
-          <a class="link" href="https://www.freelancer.com" target="_blank">Freelancer</a>
-          <a class="link" href="https://www.zhaobiao.cn" target="_blank">招标网</a>
+        <div class="sub">联网实时抓取最新排版兼职行情与平台规则；提供接单渠道、报价参考、避坑、作品集模板、合同要点。指定城市检索本地岗位，选「远程」则筛选线上接单机会。</div>
+        <div class="qform">
+          <div class="qrow"><span class="qlabel">城市</span><input class="qinput" id="m4city" placeholder="如 杭州 / 广州（不选远程时必填）"></div>
+          <div class="qrow"><span class="qlabel">方式</span>
+            <div class="seg" id="m4mode">
+              <span class="seg-item on" data-v="本地" onclick="segPick(this,'m4mode')">本地岗位</span>
+              <span class="seg-item" data-v="远程" onclick="segPick(this,'m4mode')">远程接单</span>
+            </div>
+          </div>
+          <button class="run" onclick="m4Run()">🔍 检索排版兼职</button>
         </div>
-        <div class="links">
-          <span class="link-sep">综合招聘 · 可直达</span>
-          <a class="link" href="https://www.zhipin.com" target="_blank">BOSS直聘</a>
-          <a class="link" href="https://www.51job.com" target="_blank">前程无忧</a>
-          <a class="link" href="https://www.zhaopin.com" target="_blank">智联招聘</a>
-          <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
-          <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
+        <div class="hint" id="m4hint">提示：填城市查本地排版兼职，或选「远程」查线上接单机会。行情与岗位数据通过搜索入口 + 联网检索实时获取。</div>
+        <div id="m4result" class="mresult"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="ttl"><span class="emo">📡</span>接单渠道 · 靠谱 / 风险标记</div></div>
+        <div class="sub">以下为常见排版 / 设计接单平台，口碑与风险标注仅供参考，下单前请自行核实。</div>
+        <div class="chlist">
+          <div class="ch-item"><div class="ch-main"><div class="ch-name">站酷 / 小红书（作品引流）</div><div class="ch-note">靠作品集吸引客户直连，无平台抽成，最适合长期建立口碑。</div></div><span class="badge ok">靠谱</span></div>
+          <div class="ch-item"><div class="ch-main"><div class="ch-name">BOSS直聘 / 兼职猫（正规招聘）</div><div class="ch-note">企业直发远程兼职岗，流程正规，注意辨别"代运营"类刷单陷阱。</div></div><span class="badge ok">靠谱</span></div>
+          <div class="ch-item"><div class="ch-main"><div class="ch-name">猪八戒 / 一品威客 / 时间财富（众包）</div><div class="ch-note">单量大但低价竞争激烈、平台抽成约 10%~20%，新手易"陪标"。</div></div><span class="badge warn">竞争激烈</span></div>
+          <div class="ch-item"><div class="ch-main"><div class="ch-name">淘宝 / 拼多多设计服务（开店）</div><div class="ch-note">自有店铺接单，流量靠运营，适合有稳定交付能力者。</div></div><span class="badge ok">可自营</span></div>
+          <div class="ch-item"><div class="ch-main"><div class="ch-name">微信群 / QQ群 / 贴吧接单</div><div class="ch-note">无第三方担保，易遇"做完不给钱""低价白嫖"，务必先款后做。</div></div><span class="badge risk">慎防跑单</span></div>
+          <div class="ch-item"><div class="ch-main"><div class="ch-name">Upwork / Fiverr（境外）</div><div class="ch-note">单价高但需外币收款、语言门槛，新手起步难。</div></div><span class="badge warn">需外币</span></div>
         </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="ttl"><span class="emo">💰</span>报价参考 · 实时行情</div></div>
+        <div class="sub">排版兼职报价差异大，以下为常见区间参考；点「查实时行情」刷新最新市场价。</div>
+        <div class="price-grid">
+          <div class="price-row"><span>单页排版（文档 / 海报）</span><span class="pp">30 ~ 150 元/页</span></div>
+          <div class="price-row"><span>公众号图文排版</span><span class="pp">80 ~ 300 元/篇</span></div>
+          <div class="price-row"><span>书籍 / 画册排版</span><span class="pp">15 ~ 60 元/页</span></div>
+          <div class="price-row"><span>PPT 排版美化</span><span class="pp">50 ~ 400 元/份</span></div>
+          <div class="price-row"><span>简历 / 作品集排版</span><span class="pp">40 ~ 200 元/份</span></div>
+          <div class="price-row"><span>电商详情页 / 主图</span><span class="pp">30 ~ 120 元/张</span></div>
+          <div class="price-row"><span>长图 / H5 排版</span><span class="pp">100 ~ 500 元/个</span></div>
+          <div class="price-row"><span>短视频字幕 / 封面</span><span class="pp">50 ~ 300 元/条</span></div>
+        </div>
+        <button class="run mini" onclick="m4Quote()">🔄 查实时报价行情</button>
+        <div id="m4quote" class="mresult"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="ttl"><span class="emo">⚠️</span>避坑指南</div></div>
+        <ul class="tips">
+          <li><b>先款后做：</b>至少收 30%~50% 定金，尾款在交付源文件前结清，避免白干活。</li>
+          <li><b>明确需求：</b>字体授权、尺寸、格式、修改次数写清楚，防止"无限改稿"。</li>
+          <li><b>防骗铁律：</b>凡要求"垫付""交保证金""刷单返利"的，一律是诈骗，直接拉黑。</li>
+          <li><b>版权责任：</b>商用字体 / 图片需客户授权，合同里写明由谁负责，避免连带侵权。</li>
+          <li><b>平台抽成：</b>众包平台抽成普遍 10%~20%，报价时把抽成算进去，别"到手才肉疼"。</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="ttl"><span class="emo">📁</span>作品集与自我介绍模板</div></div>
+        <div class="sub">可直接复制使用的接单自我介绍与需求收集团队话术。</div>
+        <div class="tpl"><pre id="tplIntro">【接单自我介绍】
+您好，我是专注排版 / 平面的自由设计师，X 年经验，擅长公众号排版、PPT 美化、书籍画册与简历作品集。交付准时、含 X 次修改、提供可编辑源文件。附近期作品：&lt;链接&gt;。
+方便发我具体需求（用途 / 尺寸 / 风格 / 工期 / 预算）吗？我先出方案与报价 🙌</pre><button class="copybtn" onclick="copyEl('tplIntro',this)">📋 复制</button></div>
+        <div class="tpl" style="margin-top:10px"><pre id="tplReq">【需求收集团队话术】
+为确保一次到位，请确认：
+① 用途与尺寸（如公众号首图 900×383 / A4 印刷）
+② 风格参考（附图最佳）
+③ 交付格式（PDF / PNG / 可编辑源文件）
+④ 含修改几次
+⑤ 工期与预算
+确认后我先出小样，满意再继续 🙏</pre><button class="copybtn" onclick="copyEl('tplReq',this)">📋 复制</button></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="ttl"><span class="emo">📝</span>合同要点</div></div>
+        <ul class="tips">
+          <li><b>标的与金额：</b>明确项目内容、总价、付款节点（定金 / 中期 / 尾款）。</li>
+          <li><b>交付与验收：</b>交付物清单、验收标准、修改次数上限写清楚。</li>
+          <li><b>知识产权：</b>约定著作权归属、是否可商用、字体图片授权由谁负责。</li>
+          <li><b>违约与终止：</b>延期、单方取消的赔偿责任；尾款逾期如何处理。</li>
+          <li><b>保密：</b>客户资料不得外泄，违者担责。</li>
+        </ul>
       </div>
     </section>
 
@@ -828,6 +960,129 @@ function toast(msg){
 function refreshMod(m){
   updateTime();
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
+}
+
+/* ====== Module 2 / 4 共用：表单与联网检索 ====== */
+function segPick(el,grp){
+  document.querySelectorAll('#'+grp+' .seg-item').forEach(function(x){x.classList.remove('on');});
+  el.classList.add('on');
+}
+function platLinksHTML(kw){
+  const k=encodeURIComponent(kw);
+  return '<div class="res-card"><div class="res-h">🔗 全网检索入口（点击查实时结果）</div><div class="gs-plats">'
+    + GS_PLATS.map(function(p){return '<a class="gs-plat" href="'+p.u(k)+'" target="_blank" rel="noopener">'+p.n+' ↗</a>';}).join('')
+    + '</div><div class="gs-note">以上为各平台对「'+esc(kw)+'」的搜索结果页，<b>点击直达查看全网最新内容</b>。</div></div>';
+}
+function webBoxHTML(q, items, ok){
+  return '<div class="webbox">'+renderWeb(q, items||[], ok)+'</div>';
+}
+function copyEl(id,btn){
+  const el=document.getElementById(id); if(!el)return;
+  const txt=el.innerText||el.textContent;
+  function done(){ if(btn){btn.textContent='✅ 已复制';setTimeout(function(){btn.textContent='📋 复制';},1500);} else toast('已复制 ✅'); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done).catch(function(){fallbackCopy(txt,done);});
+  } else fallbackCopy(txt,done);
+}
+function fallbackCopy(txt,done){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); done&&done(); }catch(e){ toast('复制失败，请手动选择'); }
+  document.body.removeChild(ta);
+}
+
+/* ====== Module 2: 房源查询 ====== */
+function m2Estimate(type,budget){
+  let h='<div class="res-card"><div class="res-h">🧮 简易预算测算</div><div class="res-grid">';
+  if(type==='买房'){
+    if(!isNaN(budget)&&budget>0){
+      const total=budget*10000, down=total*0.3, loan=total*0.7;
+      const monthly=function(r){const rm=r/12,n=360;return loan*rm*Math.pow(1+rm,n)/(Math.pow(1+rm,n)-1);};
+      const lo=monthly(0.035), hi=monthly(0.045);
+      h+='<div><span>总价</span><b>'+budget+' 万</b></div>';
+      h+='<div><span>首付(首套约30%)</span><b>'+Math.round(down/10000)+' 万</b></div>';
+      h+='<div><span>贷款(约70%)</span><b>'+Math.round(loan/10000)+' 万</b></div>';
+      h+='<div><span>月供(30年·利率3.5%-4.5%)</span><b>'+(Math.round(lo/100)/100)+'k~'+(Math.round(hi/100)/100)+'k 元/月</b></div>';
+    }else{
+      h+='<div style="grid-column:1/-1;color:#a8969e;font-size:13px">填写预算（总价，单位万元）后自动测算首付与月供 👆</div>';
+    }
+  }else{
+    if(!isNaN(budget)&&budget>0){
+      h+='<div><span>月租</span><b>'+budget+' 元</b></div>';
+      h+='<div><span>年支出</span><b>'+(budget*12)+' 元</b></div>';
+      h+='<div><span>押一付三首期</span><b>'+(budget*4)+' 元</b></div>';
+      h+='<div><span>押一付一</span><b>'+(budget*2)+' 元</b></div>';
+    }else{
+      h+='<div style="grid-column:1/-1;color:#a8969e;font-size:13px">填写预算（月租，单位元）后测算年支出与首期付款 👆</div>';
+    }
+  }
+  h+='</div><div class="gs-note">测算为粗略估算，仅供参考；实际首付比例、利率、税费以当地政策与银行审批为准。</div></div>';
+  return h;
+}
+function m2Avoid(){
+  return '<div class="res-card"><div class="res-h">⚠️ 购房 / 租房避坑要点</div><ul class="tips">'
+    +'<li><b>中介套路：</b>警惕"低价引流"——先用低价房源吸引，看房时说已售再推高价；先看合同与房产证再交任何费用。</li>'
+    +'<li><b>二房东风险：</b>租房务必核验原房东委托书 / 房产证，避免"二房东跑路"；合同写明可转租与押金退还条件。</li>'
+    +'<li><b>合同注意：</b>明确总价是否含税费、家具家电清单、交房 / 入住时间、户口迁出（买房）、维修责任（租房）；口头承诺写进合同。</li>'
+    +'<li><b>贷款陷阱：</b>买房确认"等额本息"还是"等额本金"，问清利率是固定还是 LPR 浮动，警惕捆绑理财 / 保险。</li>'
+    +'<li><b>隐藏费用：</b>警惕"服务费""信息费""看房费"等名目；正规中介费一般明码标价，不成功不收费。</li>'
+    +'</ul></div>';
+}
+function m2Run(){
+  const city=(document.getElementById('m2city').value||'').trim();
+  const type=((document.querySelector('#m2type .seg-item.on')||{}).dataset||{v:'买房'}).v;
+  const budget=parseFloat((document.getElementById('m2budget').value||'').trim());
+  const area=(document.getElementById('m2area').value||'').trim();
+  const rooms=document.getElementById('m2rooms').value;
+  const hint=document.getElementById('m2hint');
+  const res=document.getElementById('m2result');
+  if(!city){ hint.innerHTML='请先告诉我：<b>城市（必填）</b>、预算、想买房还是租房 🙏'; hint.classList.add('warn'); res.innerHTML=''; return; }
+  hint.classList.remove('warn');
+  let q=city+(type==='买房'?' 二手房 在售房源':' 租房 最新房源');
+  if(rooms) q+=' '+rooms;
+  if(area) q+=' '+area+'平';
+  const tag=type==='买房'?'二手房':'租房';
+  let h='';
+  h+=m2Estimate(type,budget);
+  h+=m2Avoid();
+  h+=platLinksHTML(q);
+  h+='<div class="res-card"><div class="res-h">🔎 平台专属检索</div><div class="gs-plats">'
+     +'<a class="gs-plat" href="https://www.baidu.com/s?wd='+encodeURIComponent(city+tag+'最新房源')+'" target="_blank" rel="noopener">百度：'+city+tag+' ↗</a>'
+     +'<a class="gs-plat" href="https://www.bing.com/search?q='+encodeURIComponent(city+tag+'最新房源')+'" target="_blank" rel="noopener">必应：'+city+tag+' ↗</a>'
+     +'<a class="gs-plat" href="https://www.xiaohongshu.com/search_result?keyword='+encodeURIComponent(city+tag)+'" target="_blank" rel="noopener">小红书：'+city+tag+' ↗</a>'
+     +'</div><div class="gs-note">也可直接点击下方「主流房产平台直达」卡片进入贝壳 / 安居客 / 链家 / 58 查看实时房源。</div></div>';
+  h+='<div id="m2web" class="webbox"><div class="web-loading">⏳ 正在联网检索「'+esc(q)+'」最新房源信息…</div></div>';
+  res.innerHTML=h;
+  webSearch(q).then(function(items){const w=document.getElementById('m2web');if(w)w.innerHTML=webBoxHTML(q,items,true);})
+    .catch(function(){const w=document.getElementById('m2web');if(w)w.innerHTML=webBoxHTML(q,[],false);});
+}
+
+/* ====== Module 4: 排版兼职 ====== */
+function m4Run(){
+  const city=(document.getElementById('m4city').value||'').trim();
+  const mode=((document.querySelector('#m4mode .seg-item.on')||{}).dataset||{v:'本地'}).v;
+  const hint=document.getElementById('m4hint');
+  const res=document.getElementById('m4result');
+  let q;
+  if(mode==='远程'){ q='远程 排版 兼职 接单 线上'; }
+  else { q=(city||'本地')+' 排版兼职 招聘'; }
+  if(!city&&mode!=='远程'){ hint.textContent='未填城市，已按"本地排版兼职"检索；如需指定城市请填写后重新查询。'; hint.classList.remove('warn'); }
+  else { hint.classList.remove('warn'); }
+  let h='';
+  h+='<div class="res-card"><div class="res-h">🔗 检索入口（'+esc(q)+'）</div><div class="gs-plats">'
+     +GS_PLATS.map(function(p){return '<a class="gs-plat" href="'+p.u(encodeURIComponent(q))+'" target="_blank" rel="noopener">'+p.n+' ↗</a>';}).join('')
+     +'</div><div class="gs-note">点击直达查看全网最新排版兼职岗位与平台规则。</div></div>';
+  h+='<div id="m4web" class="webbox"><div class="web-loading">⏳ 正在联网检索「'+esc(q)+'」最新排版兼职行情…</div></div>';
+  res.innerHTML=h;
+  webSearch(q).then(function(items){const w=document.getElementById('m4web');if(w)w.innerHTML=webBoxHTML(q,items,true);})
+    .catch(function(){const w=document.getElementById('m4web');if(w)w.innerHTML=webBoxHTML(q,[],false);});
+}
+function m4Quote(){
+  const q='排版兼职 报价 行情 2026';
+  const box=document.getElementById('m4quote'); if(!box)return;
+  box.innerHTML=platLinksHTML(q)+'<div id="m4qweb" class="webbox"><div class="web-loading">⏳ 正在联网检索最新报价行情…</div></div>';
+  webSearch(q).then(function(items){const w=document.getElementById('m4qweb');if(w)w.innerHTML=webBoxHTML(q,items,true);})
+    .catch(function(){const w=document.getElementById('m4qweb');if(w)w.innerHTML=webBoxHTML(q,[],false);});
 }
 
 /* ====== 详情弹窗数据 & 控制器（站内预览，禁止自动跳转） ====== */
