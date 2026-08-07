@@ -719,7 +719,7 @@
         <div class="card-head"><div class="ttl"><span class="emo">🔗</span>主流房产平台直达（实时房源）</div></div>
         <div class="sub">以下平台可查看实时在售 / 在租房源，点击直达。</div>
         <div class="links">
-          <a class="link" href="https://www.ke.com" target="_blank">贝壳找房</a>
+          <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
       </div>
@@ -1069,7 +1069,7 @@ function m2Run(){
      +'<a class="gs-plat" href="https://www.baidu.com/s?wd='+encodeURIComponent(city+tag+'最新房源')+'" target="_blank" rel="noopener">百度：'+city+tag+' ↗</a>'
      +'<a class="gs-plat" href="https://www.bing.com/search?q='+encodeURIComponent(city+tag+'最新房源')+'" target="_blank" rel="noopener">必应：'+city+tag+' ↗</a>'
      +'<a class="gs-plat" href="https://www.xiaohongshu.com/search_result?keyword='+encodeURIComponent(city+tag)+'" target="_blank" rel="noopener">小红书：'+city+tag+' ↗</a>'
-     +'</div><div class="gs-note">也可直接点击上方「主流房产平台直达」卡片进入贝壳 / 58同城 查看实时房源。</div></div>';
+     +'</div><div class="gs-note">也可直接点击上方「主流房产平台直达」卡片进入安居客 / 58同城 查看实时房源。</div></div>';
   h+='<div id="m2web" class="webbox"><div class="web-loading">⏳ 正在联网检索「'+esc(q)+'」最新房源信息…</div></div>';
   res.innerHTML=h;
   webSearch(q).then(function(items){const w=document.getElementById('m2web');if(w)w.innerHTML=webBoxHTML(q,items,true);})
@@ -1205,6 +1205,7 @@ function isHouse(t){t=t||"";return HOUSE_KW.some(k=>t.indexOf(k)>=0);}
 const JOB_KW=["兼职","副业","招聘","求职","日结","小时工","灵活就业","找工作","岗位","offer","裁员","降薪","外包","接单","freelancer","零工","劳务派遣","社招","校招","实习","远程办公","在家办公","带货","主播","网约车","外卖","快递","闪送","代驾","保姆","月嫂","家政","保安","导购","客服","文员","普工","技工","排版","美工","运营","自媒体","小红书","短视频","剪辑","配音","写手","翻译","找工作"];
 function isJob(t){t=t||"";return JOB_KW.some(k=>t.indexOf(k)>=0);}
 const HOUSE_PLATS=[
+  {name:"安居客",cls:"p-ajk",url:k=>"https://www.anjuke.com/search?q="+enc(k)},
   {name:"58同城",cls:"p-58",url:k=>"https://www.58.com/search/?key="+enc(k)},
   {name:"赶集",cls:"p-gj",url:k=>"https://www.ganji.com/search?q="+enc(k)},
   {name:"房天下",cls:"p-ftx",url:k=>"https://www.fang.com/search?q="+enc(k)},
