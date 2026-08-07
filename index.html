@@ -767,7 +767,6 @@
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
           <a class="link" href="https://www.zcool.com.cn" target="_blank">站酷</a>
           <a class="link" href="https://www.freelancer.com" target="_blank">Freelancer</a>
-          <a class="link" href="https://www.zhaobiao.cn" target="_blank">招标网</a>
         </div>
         <div class="links">
           <span class="link-sep">综合招聘 · 可直达</span>
@@ -1355,10 +1354,10 @@ function fillCitySel(selId,key){
 /* ====== Module 4: 排版兼职 ====== */
 const jobs=[
   {t:"鞋盒吊牌 CDR 排版",skill:"CDR",type:"散单",pay:"300-600元/款",payNum:300,city:"晋江",req:"熟悉鞋业吊牌尺寸与出血，2天交付",ch:"猪八戒",link:"https://www.zbj.com/search?key=%E9%9E%8B%E7%9B%92%E5%90%8A%E7%89%8C%20CDR%20%E6%8E%92%E7%89%88"},
-  {t:"品牌包装 AI 长图设计",skill:"AI",type:"长期",pay:"8-12k/月",payNum:8000,city:"广州",req:"每周稳定产出，懂印刷工艺优先",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"品牌包装 AI 长图设计",skill:"AI",type:"长期",pay:"8-12k/月",payNum:8000,city:"广州",req:"每周稳定产出，懂印刷工艺优先",ch:"猪八戒",link:"https://www.zbj.com"},
   {t:"电商详情页 PS 精修",skill:"PS",type:"散单",pay:"150-400元/页",payNum:150,city:"杭州",req:"白底精修+场景合成，当天返稿",ch:"站酷",link:"https://www.zcool.com.cn/search/?word=%E7%94%B5%E5%95%86%E8%AF%A6%E6%83%85%E9%A1%B5%20PS%20%E7%B2%BE%E4%BF%AE"},
   {t:"服装水洗标排版",skill:"CDR",type:"长期",pay:"0.8-1.5元/款",payNum:1,city:"泉州",req:"批量处理，细心不出错",ch:"猪八戒",link:"https://www.zbj.com/search?key=%E6%9C%8D%E8%A3%85%E6%B0%B4%E6%B4%97%E6%A0%87%E6%8E%92%E7%89%88"},
-  {t:"画册网格系统搭建",skill:"AI",type:"散单",pay:"2000-3500元/本",payNum:2000,city:"上海",req:"提供印刷级文件，含出血裁切线",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"画册网格系统搭建",skill:"AI",type:"散单",pay:"2000-3500元/本",payNum:2000,city:"上海",req:"提供印刷级文件，含出血裁切线",ch:"猪八戒",link:"https://www.zbj.com"},
   {t:"小红书图文制版",skill:"PS",type:"长期",pay:"5-8k/月",payNum:5000,city:"厦门",req:"日更3-5图，网感好",ch:"站酷",link:"https://www.zcool.com.cn/search/?word=%E5%B0%8F%E7%BA%A2%E4%B9%A6%E5%9B%BE%E6%96%87%E5%88%B6%E7%89%88"},
   {t:"食品包装正面设计",skill:"AI",type:"散单",pay:"800-1500元",payNum:800,city:"成都",req:"需提供专色与 CMYK 双版本",ch:"一品威客",link:"https://www.epwk.com"},
   {t:"展会易拉宝排版",skill:"CDR",type:"散单",pay:"120-260元/张",payNum:120,city:"福州",req:"72h交付，含 bleeds",ch:"时间财富",link:"https://www.680.com"},
@@ -1367,12 +1366,12 @@ const jobs=[
   {t:"短视频封面 PS",skill:"PS",type:"散单",pay:"80-200元/张",payNum:80,city:"杭州",req:"信息流封面，高点击率",ch:"站酷",link:"https://www.zcool.com.cn/search/?word=%E7%9F%AD%E8%A7%86%E9%A2%91%E5%B0%81%E9%9D%A2%20PS"},
   {t:"吊牌文案排版",skill:"AI",type:"散单",pay:"400-700元",payNum:400,city:"泉州",req:"中英文双语吊牌排版",ch:"猪八戒",link:"https://www.zbj.com/search?key=%E5%90%8A%E7%89%8C%E6%96%87%E6%A1%88%E6%8E%92%E7%89%88"},
   {t:"包装盒刀线设计",skill:"CDR",type:"散单",pay:"300-600元",payNum:300,city:"东莞",req:"熟悉刀线啤版工艺",ch:"一品威客",link:"https://www.epwk.com"},
-  {t:"企业画册 AI 排版",skill:"AI",type:"长期",pay:"7-10k/月",payNum:7000,city:"深圳",req:"整套 VI 画册能力强",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"企业画册 AI 排版",skill:"AI",type:"长期",pay:"7-10k/月",payNum:7000,city:"深圳",req:"整套 VI 画册能力强",ch:"猪八戒",link:"https://www.zbj.com"},
   {t:"品牌 LOGO 延展 AI",skill:"AI",type:"散单",pay:"600-1500元",payNum:600,city:"北京",req:"提供 VI 规范与延展",ch:"站酷",link:"https://www.zcool.com.cn/search/?word=%E5%93%81%E7%89%8C%20LOGO%20%E5%BB%B6%E5%B1%95%20AI"},
   {t:"包装插画 PS 合成",skill:"PS",type:"散单",pay:"500-1200元",payNum:500,city:"武汉",req:"场景合成氛围感强",ch:"Freelancer",link:"https://www.freelancer.com/search/projects/?keyword=%E5%8C%85%E8%A3%85%E6%8F%92%E7%94%BB%20PS%20%E5%90%88%E6%88%90"},
   {t:"不干胶标签排版",skill:"CDR",type:"散单",pay:"200-500元",payNum:200,city:"佛山",req:"批量标签出血规范",ch:"时间财富",link:"https://www.680.com"},
   {t:"鞋盒结构 3D CDR",skill:"CDR",type:"散单",pay:"500-1000元",payNum:500,city:"苏州",req:"结构准确可打样",ch:"一品威客",link:"https://www.epwk.com"},
-  {t:"海报主视觉 AI",skill:"AI",type:"散单",pay:"800-2000元",payNum:800,city:"南京",req:"活动主视觉统一调性",ch:"招标网",link:"https://www.zhaobiao.cn"},
+  {t:"海报主视觉 AI",skill:"AI",type:"散单",pay:"800-2000元",payNum:800,city:"南京",req:"活动主视觉统一调性",ch:"猪八戒",link:"https://www.zbj.com"},
   {t:"国际排版接单 PS",skill:"PS",type:"散单",pay:"$30-80/页",payNum:200,city:"上海",req:"英文排版，欧美客户",ch:"Freelancer",link:"https://www.freelancer.com/search/projects/?keyword=%E5%9B%BD%E9%99%85%E6%8E%92%E7%89%88%E6%8E%A5%E5%8D%95%20PS"},
   {t:"系列吊牌 CDR 全套",skill:"CDR",type:"长期",pay:"1-2元/款",payNum:1,city:"晋江",req:"系列化吊牌长期合作",ch:"猪八戒",link:"https://www.zbj.com/search?key=%E7%B3%BB%E5%88%97%E5%90%8A%E7%89%8C%20CDR%20%E5%85%A8%E5%A5%97"},
   {t:"文创包装插画 AI",skill:"AI",type:"散单",pay:"600-1200元",payNum:600,city:"成都",req:"国潮风插画表现力",ch:"一品威客",link:"https://www.epwk.com"},
