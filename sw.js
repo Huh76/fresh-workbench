@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v4";
-// v4（2026-08-07）：缓存键升级，强制失效旧版缓存，确保手机一开即最新（平台直达卡片置顶版）
+const CACHE = "fresh-workbench-v5";
+// v5（2026-08-08）：缓存键升级，强制失效旧版缓存，确保手机一开即最新（新增每日食谱模块版）
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
