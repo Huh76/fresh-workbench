@@ -583,6 +583,40 @@
   .tips li{font-size:13px;color:#5b4750;line-height:1.85;margin-bottom:5px}
   .tips li b{color:#b07d92}
 
+  /* ===== Module 6: 每日食谱 ===== */
+  .recipe-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:4px 0 14px}
+  .rcat{background:#FFF7F2;border:1.5px solid #F6D9CC;border-radius:16px;padding:14px 8px;text-align:center;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .rcat:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(233,169,155,.28)}
+  .rcat.on{background:#FBE3DA;border-color:var(--m6);box-shadow:0 8px 16px rgba(233,169,155,.35)}
+  .rcat-emo{font-size:26px;line-height:1}
+  .rcat span:last-child{font-size:12.5px;color:#7a5a4e;font-weight:600}
+  .recipe-box{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+  .recipe-card{background:#FFFDFB;border:1.5px solid #F3E2D8;border-radius:18px;padding:14px 16px;box-shadow:0 4px 12px rgba(180,140,120,.08)}
+  .recipe-card.live{border-color:var(--m6);background:#FFF6F2}
+  .rc-head{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:700;color:#5c463c}
+  .rc-meal{font-size:12px;background:#FBE3DA;color:#c06a4f;border-radius:8px;padding:2px 8px;font-weight:600}
+  .rc-badge{font-size:11px;background:var(--m6);color:#fff;border-radius:8px;padding:2px 8px;font-weight:600}
+  .rc-meta{font-size:12.5px;color:#9a7d8a;margin:4px 0 6px}
+  .rc-meta b{color:#7a5a4e}
+  .rc-ing{font-size:13px;color:#5c463c;margin-bottom:4px}
+  .rc-ing .lab{color:#c06a4f;font-weight:600;margin-right:4px}
+  .rc-steps{font-size:13px;color:#5c463c;line-height:1.7}
+  .rc-steps .lab{color:#c06a4f;font-weight:600;margin-right:4px}
+  .rc-steps ol{margin:2px 0 0;padding-left:20px}
+  .rc-steps li{margin:1px 0}
+  .rc-img{font-size:12.5px;color:#8a6f63;background:#FBF3EE;border-radius:10px;padding:7px 10px;margin:7px 0}
+  .rc-img .lab{color:#c06a4f;font-weight:600;margin-right:4px}
+  .rc-links{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+  .rc-link{font-size:12px;text-decoration:none;color:#fff;background:var(--m6);border-radius:20px;padding:5px 11px;transition:.15s}
+  .rc-link:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .rc-link.web{background:#7C6BD6}
+  .rc-link.img{background:#2FA572}
+  .rc-actions{display:flex;gap:10px;margin-top:14px}
+  .run.ghost{background:#fff;color:var(--m6);border:1.5px solid var(--m6)}
+  .run.ghost:hover{background:#FFF1EB}
+  .rc-search-card{background:#FFFDFB;border:1.5px dashed #F0C9B8;border-radius:18px;padding:14px 16px}
+  @media(max-width:560px){ .recipe-cats{grid-template-columns:repeat(2,1fr)} }
+
 </style>
 <link rel=manifest href=manifest.json>
 <meta name=theme-color content=#ffd9ec>
@@ -641,6 +675,10 @@
     <button class="nav-btn" data-mod="m4" style="--acc:var(--m4)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 9h16M9 9v11"/><path d="M14 14l4 4M18 14l-4 4"/></svg></span>
       <span>排版兼职</span>
+    </button>
+    <button class="nav-btn" data-mod="m6" style="--acc:var(--m6)">
+      <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M7 3v7a3 3 0 006 0V3M7 3H5M13 3h2M10 10v11M10 21h-2M10 21h2"/><path d="M17 3c-1.5 0-2.5 1.5-2.5 4s1 4 2.5 4 2.5-1.5 2.5-4-1-4-2.5-4zM17 3v18"/></svg></span>
+      <span>每日食谱</span>
     </button>
     <button class="nav-btn" data-mod="m7" style="--acc:var(--m7)">
       <span class="nav-icon-wrap"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 109 9c0-1-2-3-4-4-1.5-1-2-4-5-5z"/><circle cx="8.5" cy="11.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="14" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg></span>
@@ -863,6 +901,33 @@
       </div>
     </section>
 
+    <!-- ===== Module 6: 每日食谱推荐 ===== -->
+    <section class="module" id="m6">
+      <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🍱</span>每日食谱推荐 · 家常菜营养师</div>
+          <span class="live-upd" id="m6upd">实时</span>
+        </div>
+        <div class="sub">个人自用三餐食谱工具：今日三餐 / 减脂轻食 / 快手家常菜 / 时令应季菜谱 / 自定义搜食谱。内容优先<b>联网获取最新菜谱</b>，每道菜附 📺教程视频 + 🔗网页菜谱 实时直达链接。</div>
+        <div class="recipe-cats">
+          <div class="rcat" data-cat="today" onclick="recipePick('today')"><span class="rcat-emo">🍳</span><span>今日三餐</span></div>
+          <div class="rcat" data-cat="light" onclick="recipePick('light')"><span class="rcat-emo">🥗</span><span>减脂轻食</span></div>
+          <div class="rcat" data-cat="fast" onclick="recipePick('fast')"><span class="rcat-emo">⏱</span><span>快手家常菜</span></div>
+          <div class="rcat" data-cat="season" onclick="recipePick('season')"><span class="rcat-emo">🍲</span><span>时令应季</span></div>
+        </div>
+        <div class="qform">
+          <div class="qrow"><span class="qlabel">搜食谱</span><input class="qinput" id="m6kw" placeholder="减脂 / 早餐 / 空气炸锅 / 宝宝餐 / 冰箱食材…" onkeydown="if(event.key==='Enter')recipeCustom()"></div>
+          <button class="run" onclick="recipeCustom()">🔍 搜食谱</button>
+        </div>
+        <div class="hint" id="m6hint">点上方卡片看分类食谱，或输入关键词搜专属食谱（如「空气炸锅鸡翅」）。</div>
+        <div id="m6result" class="recipe-box"></div>
+        <div class="rc-actions" id="m6actions" style="display:none">
+          <button class="run ghost" onclick="recipeShuffle()">🔄 换一批食谱</button>
+          <button class="run ghost" onclick="recipeMore()">➕ 查看更多</button>
+        </div>
+      </div>
+    </section>
+
     <!-- ===== Module 7: 每日热点 ===== -->
 <section class="module" id="m7">
   <style>
@@ -946,8 +1011,8 @@
 
 <script>
 /* ====== 全局 ====== */
-const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m7:"🟩 每日热点资讯",mSearch:"🔍 全网搜索"};
-const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m7:"#2FA572",mSearch:"#7C6BD6"};
+const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版兼职",m6:"🍱 每日食谱",m7:"🟩 每日热点资讯",mSearch:"🔍 全网搜索"};
+const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m6:"#E9A99B",m7:"#2FA572",mSearch:"#7C6BD6"};
 
 document.querySelectorAll(".nav-btn").forEach(b=>{
   b.onclick=()=>{
@@ -961,7 +1026,7 @@ document.querySelectorAll(".nav-btn").forEach(b=>{
     updateTime();
     if(m==="m7"){newsInit();}
     if(m==="m5")lifeReset();
-    if(m==="m6")qaReset();
+    if(m==="m6"){recipePick('today');}
   };
 });
 function updateTime(){
@@ -978,6 +1043,7 @@ function toast(msg){
 }
 function refreshMod(m){
   updateTime();
+  if(m==="m6"){ recipeShuffle(); return; }
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
 }
 
@@ -1729,6 +1795,138 @@ async function runSearch(kw){
   }catch(e){}
   if(R) R.innerHTML=gsRender(kw, items);
   if(W){ try{ const witems=await webSearch(kw); W.innerHTML=renderWeb(kw, witems, true); }catch(e2){ W.innerHTML=renderWeb(kw, [], false); } }
+}
+
+/* ====== Module 6: 每日食谱推荐 ====== */
+window.RECIPE_SEED={
+ today:[
+  {meal:'🌅 早餐',name:'番茄鸡蛋卷饼',diff:'简单',time:'10分钟',ing:['鸡蛋2个','番茄1个','手抓饼1张','小葱'],steps:['番茄切丁小火炒软出汁','鸡蛋打散加葱花摊成蛋皮','手抓饼煎软铺蛋皮番茄卷起切段'],img:'金黄蛋饼裹着红亮番茄丁，撒翠绿葱花，晨光下的快手早餐'},
+  {meal:'☀️ 午餐',name:'青椒土豆丝炒肉',diff:'简单',time:'20分钟',ing:['土豆2个','青椒1个','瘦肉丝100g','蒜'],steps:['土豆青椒切细丝泡水去淀粉','肉丝生抽腌10分钟滑炒变色','爆香蒜末下土豆丝青椒快炒，加盐醋出锅'],img:'脆嫩土豆丝与碧绿青椒、酱色肉丝同炒，热气腾腾的家常午饭菜'},
+  {meal:'🌙 晚餐',name:'冬瓜排骨汤',diff:'普通',time:'40分钟',ing:['排骨500g','冬瓜300g','姜片','枸杞'],steps:['排骨冷水下锅焯去血沫','加姜片炖30分钟至汤白','下冬瓜块再煮10分钟，撒枸杞盐调味'],img:'乳白汤底漂浮金黄油星，冬瓜透明、排骨酥软，一碗清润晚餐汤'},
+  {meal:'🍎 加餐',name:'酸奶水果燕麦杯',diff:'简单',time:'5分钟',ing:['无糖酸奶1杯','燕麦30g','蓝莓/香蕉','坚果'],steps:['杯底铺燕麦','倒酸奶叠水果','撒坚果即食'],img:'分层玻璃杯：底层燕麦、中层雪白酸奶、顶层彩色莓果与坚果'}
+ ],
+ light:[
+  {name:'凉拌鸡胸西兰花',diff:'简单',time:'15分钟',ing:['鸡胸150g','西兰花半颗','生抽/醋/蒜'],steps:['鸡胸煮熟撕条','西兰花焯水过凉','蒜醋生抽拌入，少油'],img:'白绿分明的鸡丝与翠绿西兰花，淋淡琥珀色凉拌汁'},
+  {name:'清蒸鲈鱼',diff:'普通',time:'20分钟',ing:['鲈鱼1条','姜葱','蒸鱼豉油'],steps:['鱼身改刀铺姜','水开蒸8分钟倒汁','铺葱丝淋热油与豉油'],img:'整条鲈鱼卧盘中，葱丝雪白、鱼肉蒜瓣状，清亮蒸鱼汁'},
+  {name:'蚝油生菜',diff:'简单',time:'8分钟',ing:['生菜1颗','蒜末','蚝油'],steps:['生菜焯水10秒捞出','蒜末爆香加蚝油调汁','淋上即可'],img:'翠绿生菜叶码成小山，裹着油亮蚝油蒜汁'},
+  {name:'番茄豆腐菌菇汤',diff:'简单',time:'15分钟',ing:['嫩豆腐1盒','番茄2个','金针菇','鸡蛋'],steps:['番茄炒出红汤','加水煮开下豆腐菌菇','淋蛋液加盐'],img:'红汤浮白嫩豆腐、金针菇与蛋花，暖身低脂'},
+  {name:'紫薯牛奶蒸蛋',diff:'简单',time:'12分钟',ing:['紫薯100g','鸡蛋2个','牛奶'],steps:['紫薯蒸熟压泥垫底','蛋液加牛奶过筛蒸10分钟'],img:'紫薯泥垫底、上层嫩黄蛋羹，双色低卡甜点'}
+ ],
+ fast:[
+  {name:'蒜蓉粉丝娃娃菜',diff:'简单',time:'15分钟',ing:['娃娃菜2颗','粉丝1把','蒜末','生抽'],steps:['粉丝泡软垫底铺菜','蒜末炒香调汁淋上','蒸8分钟'],img:'白玉娃娃菜托透明粉丝，淋金黄蒜蓉汁'},
+  {name:'酱油炒饭',diff:'简单',time:'10分钟',ing:['隔夜米饭','鸡蛋','葱花','酱油'],steps:['蛋液裹饭粒炒散','淋酱油翻炒上色','撒葱花'],img:'粒粒分明金黄炒饭，点缀翠绿葱花'},
+  {name:'微波炉蒸蛋',diff:'简单',time:'6分钟',ing:['鸡蛋2个','温水','生抽'],steps:['蛋加1.5倍温水打散过筛','微波中火3分钟','淋生抽香油'],img:'颤巍巍嫩黄蒸蛋，表面光滑如镜'},
+  {name:'葱油拌面',diff:'简单',time:'10分钟',ing:['面条','小葱','生抽/老抽','糖'],steps:['葱段小火炸至焦黄','调酱油糖汁','面煮熟拌入葱油'],img:'素白面条拌琥珀葱油，铺焦香葱段'},
+  {name:'电饭煲番茄焖饭',diff:'简单',time:'30分钟',ing:['米','番茄1个','腊肠','玉米青豆'],steps:['番茄挖洞放米上','铺腊肠蔬菜加水生抽','焖煮'],img:'整颗番茄卧五彩米饭中，焖软爆汁'}
+ ],
+ season:[
+  {name:'清炒苦瓜',diff:'简单',time:'10分钟',ing:['苦瓜1根','蒜','盐'],steps:['苦瓜去瓤切薄片盐腌','挤水焯一下','蒜末快炒'],img:'翠绿苦瓜片薄如纸，清火消暑'},
+  {name:'丝瓜毛豆',diff:'简单',time:'12分钟',ing:['丝瓜1根','毛豆','蒜'],steps:['毛豆先煮3分钟','下丝瓜蒜末同炒','加盐'],img:'碧绿丝瓜滚刀块配嫩绿毛豆，盛夏时令'},
+  {name:'凉拌拍黄瓜',diff:'简单',time:'6分钟',ing:['黄瓜2根','蒜','醋/辣椒'],steps:['黄瓜拍裂切段','蒜醋辣油拌匀','冷藏更爽'],img:'断口脆嫩黄瓜，裹红油蒜醋'},
+  {name:'红烧茄子',diff:'普通',time:'20分钟',ing:['茄子2根','蒜末','生抽糖'],steps:['茄子煎软','调酱汁烧入味','收汁'],img:'油亮酱红茄子块，软糯下饭'},
+  {name:'冬瓜虾仁',diff:'普通',time:'15分钟',ing:['冬瓜','虾仁','姜'],steps:['虾仁滑炒盛出','冬瓜炒软回虾仁','勾薄芡'],img:'白玉冬瓜托粉红虾仁，清淡时令'}
+ ]
+};
+let m6Cat='today', m6Offset=0, m6Shown=0;
+function catName(c){ return {today:'今日三餐',light:'减脂轻食',fast:'快手家常菜',season:'时令应季'}[c]||c; }
+function recipeLinks(name){
+  const k=enc(name+' 家常做法');
+  const k2=enc(name+' 菜谱');
+  return [
+    {t:'📺 B站教程', u:'https://search.bilibili.com/all?keyword='+k},
+    {t:'📺 抖音', u:'https://www.douyin.com/search/'+k},
+    {t:'📺 小红书', u:'https://www.xiaohongshu.com/search_result?keyword='+k},
+    {t:'🔗 下厨房', c:'web', u:'https://www.xiachufang.com/search/?keyword='+k2},
+    {t:'🔗 百度菜谱', c:'web', u:'https://www.baidu.com/s?wd='+k2}
+  ];
+}
+function recipeCardHTML(r, live){
+  const meal=r.meal?('<span class="rc-meal">'+esc(r.meal)+'</span>'):'';
+  const badge=live?('<span class="rc-badge">🌐 联网实时</span>'):'';
+  const ing=(r.ing||[]).join('、');
+  const steps=(r.steps||[]).map(function(s){return '<li>'+esc(s)+'</li>';}).join('');
+  const imgTxt=(!live&&r.img)?('<div class="rc-img"><span class="lab">📷 图文参考：</span>'+esc(r.img)+'</div>'):'';
+  const thumb=(live&&r.img&&/^https?:/.test(r.img))?('<div class="rc-img"><span class="lab">📷 实拍参考：</span><br><img src="'+r.img+'" alt="'+esc(r.name)+'" style="max-width:100%;border-radius:10px;margin-top:6px"></div>'):'';
+  let links=recipeLinks(r.name).map(function(p){return '<a class="rc-link '+(p.c||'')+'" href="'+p.u+'" target="_blank" rel="noopener">'+p.t+' ↗</a>';}).join('');
+  if(live&&r.video) links+='<a class="rc-link" href="'+r.video+'" target="_blank" rel="noopener">📺 原站视频 ↗</a>';
+  if(live&&r.web) links+='<a class="rc-link web" href="'+r.web+'" target="_blank" rel="noopener">🔗 原站菜谱 ↗</a>';
+  return '<div class="recipe-card'+(live?' live':'')+'">'
+    +'<div class="rc-head"><span class="rc-name">'+esc(r.name)+'</span>'+meal+badge+'</div>'
+    +'<div class="rc-meta">难度 <b>'+(r.diff||'—')+'</b> · ⏱ <b>'+(r.time||'—')+'</b>'+(r.area?(' · '+esc(r.area)+'菜系'):'')+'</div>'
+    +'<div class="rc-ing"><span class="lab">🥬 食材：</span>'+esc(ing)+'</div>'
+    +(steps?'<div class="rc-steps"><span class="lab">👩‍🍳 步骤：</span><ol>'+steps+'</ol></div>':'')
+    +imgTxt+thumb
+    +'<div class="rc-links">'+links+'</div>'
+    +'</div>';
+}
+function recipeBoxSet(html){ const b=document.getElementById('m6result'); if(b) b.innerHTML=html; }
+async function recipeLive(){
+  try{
+    const d=await fetchJSON('https://www.themealdb.com/api/json/v1/1/random.php',6000);
+    const m=d&&d.meals&&d.meals[0]; if(!m) return null;
+    const ing=[];
+    for(let i=1;i<=20;i++){ const nm=m['strIngredient'+i]; if(nm&&String(nm).trim()){ ing.push((String(m['strMeasure'+i]||'').trim())+' '+String(nm).trim()); } }
+    const steps=String(m.strInstructions||'').split(/\r?\n|(?:\.\s)/).map(function(s){return s.trim();}).filter(function(s){return s.length>3;}).slice(0,5);
+    return {name:m.strMeal, diff:'—', time:'—', area:m.strArea, ing:ing.slice(0,8), steps:steps, img:m.strMealThumb, video:m.strYoutube, web:m.strSource};
+  }catch(e){ return null; }
+}
+async function recipeLivePrepend(){
+  const upd=document.getElementById('m6upd'); if(upd) upd.textContent='联网中…';
+  const live=await recipeLive();
+  if(upd) upd.textContent='实时';
+  if(!live) return;
+  const b=document.getElementById('m6result'); if(!b) return;
+  b.insertAdjacentHTML('afterbegin', recipeCardHTML(live,true));
+}
+function recipePick(cat){
+  m6Cat=cat; m6Offset=0; m6Shown=0;
+  document.querySelectorAll('#m6 .rcat').forEach(function(x){ x.classList.toggle('on', x.dataset.cat===cat); });
+  const act=document.getElementById('m6actions'); if(act) act.style.display='flex';
+  const hint=document.getElementById('m6hint'); if(hint) hint.textContent='已为你准备「'+catName(cat)+'」食谱，点 📺/🔗 看实时教程；点「换一批」联网刷新。';
+  const seed=(window.RECIPE_SEED&&window.RECIPE_SEED[cat])||[];
+  const slice=seed.slice(0,4); m6Shown=slice.length;
+  recipeBoxSet(slice.map(function(r){return recipeCardHTML(r,false);}).join(''));
+  recipeLivePrepend();
+}
+function recipeShuffle(){
+  const seed=(window.RECIPE_SEED&&window.RECIPE_SEED[m6Cat])||[];
+  if(!seed.length) return;
+  const arr=seed.slice();
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=arr[i];arr[i]=arr[j];arr[j]=t; }
+  const slice=arr.slice(0,4); m6Shown=slice.length;
+  recipeBoxSet(slice.map(function(r){return recipeCardHTML(r,false);}).join(''));
+  recipeLivePrepend();
+  toast('已换一批「'+catName(m6Cat)+'」新食谱');
+}
+function recipeMore(){
+  const seed=(window.RECIPE_SEED&&window.RECIPE_SEED[m6Cat])||[];
+  const slice=seed.slice(m6Shown, m6Shown+3);
+  if(!slice.length){ toast('已无更多，点「换一批」刷新'); return; }
+  m6Shown+=slice.length;
+  const b=document.getElementById('m6result');
+  if(b) b.insertAdjacentHTML('beforeend', slice.map(function(r){return recipeCardHTML(r,false);}).join(''));
+}
+function recipeCustom(){
+  const el=document.getElementById('m6kw'); const kw=(el&&el.value||'').trim();
+  if(!kw){ toast('请输入想搜的食谱关键词'); return; }
+  const act=document.getElementById('m6actions'); if(act) act.style.display='none';
+  const seed=(window.RECIPE_SEED&&window.RECIPE_SEED)||{};
+  const all=[]; Object.keys(seed).forEach(function(c){ (seed[c]||[]).forEach(function(r){ all.push(r); }); });
+  const low=kw.toLowerCase();
+  const hit=all.filter(function(r){ return (r.name+r.ing.join('')).toLowerCase().indexOf(low)>=0; });
+  let html='';
+  if(hit.length){
+    html+='<div class="rc-search-card"><div class="rc-head">🔎 本地命中 <b>'+esc(kw)+'</b> 的 '+hit.length+' 道食谱</div></div>';
+    html+=hit.slice(0,6).map(function(r){return recipeCardHTML(r,false);}).join('');
+  }else{
+    const links=recipeLinks(kw).map(function(p){return '<a class="rc-link '+(p.c||'')+'" href="'+p.u+'" target="_blank" rel="noopener">'+p.t+' ↗</a>';}).join('');
+    html+='<div class="rc-search-card"><div class="rc-head">🔎 未命中本地库，已生成「<b>'+esc(kw)+'</b>」实时检索入口</div>'
+      +'<div class="rc-ing" style="margin:8px 0 4px">点击下方链接，在各平台查看最新实时菜谱与教程视频：</div>'
+      +'<div class="rc-links">'+links+'</div>'
+      +'<div class="rc-img"><span class="lab">💡 提示：</span>纯前端无法抓取平台正文，以上为实时搜索跳转，点开即是最新内容。</div></div>';
+  }
+  recipeBoxSet(html);
+  const hint=document.getElementById('m6hint'); if(hint) hint.textContent='搜索「'+kw+'」完成：本地命中可直接看菜谱，未命中请用上方实时检索入口。';
 }
 
 setInterval(updateTime,1000);
