@@ -723,11 +723,9 @@
           <div class="ttl"><span class="emo">🍿</span>休闲追剧 · 全网多平台直达</div>
           <button class="refresh" onclick="m1Refresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg><span id="m1upd">刷新</span></button>
         </div>
-        <div class="sub">聚合剧集 / 综艺 / 电影 / 动漫 / 短剧 / 解说，每条内容一键直达 B站 · 抖音 · 快手 · 爱奇艺 · 腾讯 · 优酷 · 芒果，视频优先、图文也可。</div>
+        <div class="sub">聚合剧集 / 综艺 / 电影 / 动漫 / 短剧 / 解说，每条内容一键直达 B站 · 爱奇艺 · 腾讯视频 · 优酷 · 芒果TV，视频优先、图文也可。</div>
         <div class="m1-bar">
           <a class="link" href="https://search.bilibili.com" target="_blank" rel="noopener">B站</a>
-          <a class="link" href="https://www.douyin.com" target="_blank" rel="noopener">抖音</a>
-          <a class="link" href="https://www.kuaishou.com" target="_blank" rel="noopener">快手</a>
           <a class="link" href="https://www.iqiyi.com" target="_blank" rel="noopener">爱奇艺</a>
           <a class="link" href="https://v.qq.com" target="_blank" rel="noopener">腾讯视频</a>
           <a class="link" href="https://www.youku.com" target="_blank" rel="noopener">优酷</a>
@@ -746,7 +744,7 @@
           <div class="ttl"><span class="emo">🎬</span>实时热播 · 剧集 / 综艺 / 电影</div>
           <span class="live-upd" id="m1liveUpd">更新中…</span>
         </div>
-        <div class="sub">从全网实时热榜中筛出正在热议的剧集 / 综艺 / 电影，每条一键直达 B站 · 抖音 · 快手 · 爱奇艺 · 腾讯 · 优酷 · 芒果 看正片或花絮；每 30 分钟自动更新。</div>
+        <div class="sub">从全网实时热榜中筛出正在热议的剧集 / 综艺 / 电影，按平台分栏实时推送各平台最新最热内容，每条一键直达 B站 · 爱奇艺 · 腾讯视频 · 优酷 · 芒果TV 看正片或花絮；每 5 分钟自动刷新。</div>
         <div id="m1live" class="grid"></div>
       </div>
     </section>
@@ -1186,8 +1184,6 @@ document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDetail(
 const enc=encodeURIComponent;
 const PLATFORMS=[
  {id:"bilibili",name:"B站",cls:"p-bili",url:k=>"https://search.bilibili.com/all?keyword="+enc(k)},
- {id:"douyin",name:"抖音",cls:"p-dy",url:k=>"https://www.douyin.com/search/"+enc(k)},
- {id:"kuaishou",name:"快手",cls:"p-ks",url:k=>"https://www.kuaishou.com/search/video?searchQuery="+enc(k)},
  {id:"iqiyi",name:"爱奇艺",cls:"p-iqy",url:k=>"https://so.iqiyi.com/so/q_"+enc(k)},
  {id:"qq",name:"腾讯视频",cls:"p-qq",url:k=>"https://v.qq.com/x/search/?q="+enc(k)},
  {id:"youku",name:"优酷",cls:"p-yk",url:k=>"https://so.youku.com/search_video/q_"+enc(k)},
@@ -1251,20 +1247,40 @@ function renderHotTabs(tab){
 }
 const DRAMA_KW=["电视剧","网剧","综艺","电影","番剧","动漫","动画","短剧","热播","开播","定档","首播","收官","收视","票房","热映","院线","追剧","爱奇艺","腾讯视频","优酷","芒果TV","Netflix","影视","主演","导演","官宣","杀青","续集","口碑剧","贺岁","国漫","漫改","新剧","热剧","好剧","独播","预告","片单","明星","演员","剧组","开拍","颁奖","金鹰","白玉兰","配音","剧"];
 function isDrama(t){t=t||"";return DRAMA_KW.some(function(k){return t.indexOf(k)>=0;});}
+let m1LiveTab='__all__';
 function renderM1Live(){
   const el=document.getElementById("m1live");if(!el)return;
   if(!hotData||!hotData.platforms){el.innerHTML='<div class="empty">实时热播加载中…</div>';return;}
-  let items=[];
-  (hotData.platforms||[]).forEach(function(p){(p.items||[]).forEach(function(it){if(isDrama(it.t))items.push({t:it.t,url:it.url||"",src:p.name||""});});});
-  const seen={};items=items.filter(function(x){const k=x.t;if(seen[k])return false;seen[k]=1;return true;});
+  const byPlat={};
+  (hotData.platforms||[]).forEach(function(p){
+    (p.items||[]).forEach(function(it){
+      if(isDrama(it.t)){(byPlat[p.name]=byPlat[p.name]||[]).push({t:it.t,url:it.url||"",src:p.name||""});}
+    });
+  });
+  Object.keys(byPlat).forEach(function(k){
+    const seen={};byPlat[k]=byPlat[k].filter(function(x){if(seen[x.t])return false;seen[x.t]=1;return true;});
+  });
+  const plats=Object.keys(byPlat).filter(function(k){return byPlat[k]&&byPlat[k].length;});
   const u=document.getElementById("m1liveUpd");if(u)u.textContent="更新 "+(hotData.updated||"").replace("T"," ").slice(0,16);
-  if(!items.length){el.innerHTML='<div class="empty">当前实时热榜暂未出现明显剧集热点，稍后自动刷新 👇（下方片库照样能搜）</div>';return;}
-  el.innerHTML=items.slice(0,18).map(function(x){
+  if(!plats.length){el.innerHTML='<div class="empty">当前实时热榜暂未出现明显剧集热点，稍后自动刷新 👇（下方片库照样能搜）</div>';return;}
+  const cur=(m1LiveTab==='__all__'||plats.indexOf(m1LiveTab)<0)?'__all__':m1LiveTab;
+  const tabs=['<button class="chip '+(cur==='__all__'?'on':'')+'" onclick="m1LiveTabSet(\'__all__\')">全部</button>'].concat(
+    plats.map(function(p){return '<button class="chip '+(p===cur?'on':'')+'" onclick="m1LiveTabSet(\''+p+'\')">'+p+'</button>';})
+  ).join("");
+  let items=[];
+  if(cur==='__all__'){
+    const seen={};
+    plats.forEach(function(p){(byPlat[p]||[]).forEach(function(x){if(!seen[x.t]){seen[x.t]=1;items.push(x);}});});
+  }else{
+    items=byPlat[cur]||[];
+  }
+  el.innerHTML='<div class="hot-tabs">'+tabs+'</div>'+items.slice(0,18).map(function(x){
     const k=x.t;
-    const plats=PLATFORMS.map(function(p){return '<a class="plat '+p.cls+'" href="'+p.url(k)+'" target="_blank" rel="noopener" title="在'+p.name+'看"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>';}).join('');
-    return '<div class="item"><span class="mtag live">实时</span><h3>'+hotEsc(x.t)+'</h3><div class="plats">'+plats+'</div>'+(x.url?'<a class="go src-link" href="'+x.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+hotEsc(x.src)+' 来源 ↗</a>':'')+'</div>';
+    const platsLinks=PLATFORMS.map(function(p){return '<a class="plat '+p.cls+'" href="'+p.url(k)+'" target="_blank" rel="noopener" title="在'+p.name+'看"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>';}).join('');
+    return '<div class="item"><span class="mtag live">实时</span><h3>'+hotEsc(x.t)+'</h3><div class="plats">'+platsLinks+'</div>'+(x.url?'<a class="go src-link" href="'+x.url+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'+hotEsc(x.src)+' 来源 ↗</a>':'')+'</div>';
   }).join('');
 }
+function m1LiveTabSet(t){m1LiveTab=(t==='__all__'?'__all__':t);renderM1Live();}
 /* ====== 实时板块：房源 / 兼职（复用全网热榜 hotlist.json） ====== */
 const HOUSE_KW=["房价","楼市","房地产","二手房","新房","租房","学区房","房贷","公积金","契税","限购","限售","落户","保障房","廉租房","公租房","房贷利率","首套房","二套房","公积金贷款","楼盘","土拍","买房","卖房","房源","棚改","旧改","共有产权","商住","法拍房","老破小","改善型","刚需","限价房","摇号买房","物业费的","租房市场"];
 function isHouse(t){t=t||"";return HOUSE_KW.some(k=>t.indexOf(k)>=0);}
