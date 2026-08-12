@@ -1586,7 +1586,7 @@ async function newsFetchLive(){
     const r=await fetch(NEWS_API+'60s',{cache:'no-store'});
     const j=await r.json();
     const arr=(j.data&&j.data.news)||[];
-    arr.forEach(t=>{ const s=String(t).trim(); if(s) out.push({t:s,url:'',src:'60s每日要闻'}); });
+    arr.forEach(t=>{ const s=String(t).trim().replace(/[\u0000-\u001f\u007f]/g,''); if(s) out.push({t:s,url:'',src:'60s每日要闻'}); });
   }catch(e){}
   await Promise.all(NEWS_SRCS.map(async s=>{
     try{
@@ -1594,13 +1594,20 @@ async function newsFetchLive(){
       const j=await r.json();
       const arr=(j.data&&Array.isArray(j.data))?j.data:(j.data&&j.data.list)?j.data.list:[];
       arr.slice(0,12).forEach(it=>{
-        const title=String(it.title||it.t||'').trim();
+        const title=String(it.title||it.t||'').trim().replace(/[\u0000-\u001f\u007f]/g,'');
         const url=it.link||it.url||'';
         if(title) out.push({t:title,url,src:s.name});
       });
     }catch(e){}
   }));
-  return out;
+  // 去重：按标题归一化（去空格/标点后比较），保留首次出现的
+  const seen={},dedup=[];
+  for(const it of out){
+    const norm=it.t.replace(/[\s\u3000.,，。！!？?、：:；;""''《》【】()（）\-—_]/g,'');
+    if(norm.length<2||seen[norm]) continue;
+    seen[norm]=1; dedup.push(it);
+  }
+  return dedup;
 }
 
 function newsRender(){
@@ -1609,7 +1616,7 @@ function newsRender(){
   const dt=document.getElementById('newsDate');
   if(dt) dt.textContent=newsFetchedAt||'—';
   if(!newsItems.length){
-    list.innerHTML='<div class="news-empty">📡 正在联网获取今日实时资讯，请稍候…<br>（若长时间无响应，点上方「刷新」或输入「刷新资讯」）</div>';
+    list.innerHTML='<div class="news-empty">📡 正在联网获取今日实时资讯，请稍候…<br>（若长时间无响应，点上方「🔄 刷新」按钮）</div>';
     return;
   }
   let items=newsItems;
@@ -1654,7 +1661,7 @@ async function newsRefresh(){
   newsLoading=true;
   const hadSeed = newsItems.length>0;
   if(!hadSeed && window.NEWS_SEED && window.NEWS_SEED.length){
-    newsItems=window.NEWS_SEED.map(x=>({t:x.t,url:x.url||'',src:x.src||'',cat:x.cat||newsClassify(x.t)}));
+    newsItems=window.NEWS_SEED.map(x=>({t:x.t,url:x.url||'',src:x.src||'',cat:newsClassify(x.t)}));
     newsFetchedAt='本地缓存';
     setNewsStatus('📦 已载入本地缓存，正在刷新实时热点…');
     newsRender();
@@ -1672,7 +1679,7 @@ async function newsRefresh(){
       const r=await fetch(NEWS_FALLBACK+'?t='+Date.now(),{cache:'no-store'});
       const j=await r.json();
       if(j&&j.items&&j.items.length){
-        newsItems=j.items.map(x=>({t:x.t,url:x.url||'',src:x.src||'',cat:x.cat||newsClassify(x.t)}));
+        newsItems=j.items.map(x=>({t:x.t,url:x.url||'',src:x.src||'',cat:newsClassify(x.t)}));
         newsFetchedAt=j.updated||'';
         setNewsStatus('⚠ 实时接口暂不可达，已载入最近缓存（'+(j.updated||'')+'）');
       } else if(!newsItems.length) setNewsStatus('❌ 暂无可用资讯，请稍后点「刷新热点」');
