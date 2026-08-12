@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v10";
-// v10（2026-08-12）：每日热点合并快捷按钮与分类chips为单行，移除重复的分类行
+const CACHE = "fresh-workbench-v11";
+// v11（2026-08-12）：每日热点删除实时资讯台标题卡（保留快捷按钮+资讯列表）
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
