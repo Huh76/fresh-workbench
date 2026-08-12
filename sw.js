@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v8";
-// v8（2026-08-12）：每日热点模块移除指令输入框，仅保留快捷按钮+分类chips
+const CACHE = "fresh-workbench-v9";
+// v9（2026-08-12）：每日热点修复乱码(种子重新分类)+去重(多平台同条归并)+清理控制字符
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
