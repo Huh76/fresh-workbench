@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v7";
-// v7（2026-08-12）：缓存键升级，强制失效旧版缓存（每日热点模块全面重建 + 食谱模块移除英文TheMealDB API）
+const CACHE = "fresh-workbench-v8";
+// v8（2026-08-12）：每日热点模块移除指令输入框，仅保留快捷按钮+分类chips
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
