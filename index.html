@@ -934,11 +934,9 @@
     #m7 .news-emo{font-size:13px;font-weight:800;color:#1f7a52}
     #m7 .news-date{font-size:13px;color:#2a7a57;font-weight:700}
     #m7 .news-quick{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px}
-    #m7 .news-quick button{border:1px solid #d7ece2;background:#f3fbf8;color:#2a7a57;font-size:12px;padding:6px 11px;border-radius:18px;cursor:pointer;font-family:inherit}
-    #m7 .news-quick button:active{background:#dff3e9}
-    #m7 .news-cats{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px}
-    #m7 .nc{border:1px solid #d7ece2;background:#f6fbf9;color:#3a8a66;padding:7px 13px;border-radius:20px;cursor:pointer;font-family:inherit;font-size:12.5px;white-space:nowrap}
-    #m7 .nc.on{background:#2fa572;color:#fff;border-color:#2fa572}
+    #m7 .nq{border:1px solid #d7ece2;background:#f3fbf8;color:#2a7a57;font-size:12px;padding:6px 11px;border-radius:18px;cursor:pointer;font-family:inherit}
+    #m7 .nq:active{background:#dff3e9}
+    #m7 .nq.on{background:#2fa572;color:#fff;border-color:#2fa572}
     #m7 .news-list{display:flex;flex-direction:column;gap:9px}
     #m7 .news-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 13px;box-shadow:var(--shadow-sm)}
     #m7 .ni-top{display:flex;align-items:flex-start;gap:8px}
@@ -966,23 +964,14 @@
       <div class="sub">联网实时抓取当下热点 / 生活干货 / 行业新消息 / 实用科普，自动刷新、拒绝过时；每条附 🔍直达搜索，点关键词跳转查看完整原文资料。</div>
     </div>
 
-    <div class="news-quick">
-      <button onclick="newsQuick('刷新资讯')">🔄 刷新资讯</button>
-      <button onclick="newsQuick('只看社会热点')">社会热点</button>
-      <button onclick="newsQuick('只看生活技巧')">生活技巧</button>
-      <button onclick="newsQuick('只看健康资讯')">健康科普</button>
-      <button onclick="newsQuick('只看消费避坑')">消费避坑</button>
-      <button onclick="newsQuick('只看新奇资讯')">新奇资讯</button>
-      <button onclick="newsQuick('只看全部')">全部</button>
-    </div>
-
-    <div class="news-cats" id="newsCats">
-      <button class="nc on" data-cat="全部" onclick="newsSetCat('全部')">全部</button>
-      <button class="nc" data-cat="社会热点" onclick="newsSetCat('社会热点')">社会热点</button>
-      <button class="nc" data-cat="生活技巧" onclick="newsSetCat('生活技巧')">生活技巧</button>
-      <button class="nc" data-cat="健康科普" onclick="newsSetCat('健康科普')">健康科普</button>
-      <button class="nc" data-cat="消费避坑" onclick="newsSetCat('消费避坑')">消费避坑</button>
-      <button class="nc" data-cat="新奇资讯" onclick="newsSetCat('新奇资讯')">新奇资讯</button>
+    <div class="news-quick" id="newsQuick">
+      <button class="nq on" data-cat="全部" onclick="newsQuick('刷新资讯')">🔄 刷新资讯</button>
+      <button class="nq" data-cat="社会热点" onclick="newsSetCat('社会热点')">社会热点</button>
+      <button class="nq" data-cat="生活技巧" onclick="newsSetCat('生活技巧')">生活技巧</button>
+      <button class="nq" data-cat="健康科普" onclick="newsSetCat('健康科普')">健康科普</button>
+      <button class="nq" data-cat="消费避坑" onclick="newsSetCat('消费避坑')">消费避坑</button>
+      <button class="nq" data-cat="新奇资讯" onclick="newsSetCat('新奇资讯')">新奇资讯</button>
+      <button class="nq" data-cat="全部" onclick="newsSetCat('全部')">全部</button>
     </div>
 
     <div class="news-list" id="newsList"></div>
@@ -1640,7 +1629,7 @@ function newsRender(){
 
 function newsSetCat(c){
   newsCat=c;
-  document.querySelectorAll('#m7 .nc').forEach(b=>b.classList.toggle('on',b.dataset.cat===c));
+  document.querySelectorAll('#m7 .nq').forEach(b=>b.classList.toggle('on',b.dataset.cat===c));
   newsRender();
 }
 function newsQuick(cmd){ newsRunCmd(cmd); }
