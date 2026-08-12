@@ -759,9 +759,14 @@
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
       </div>
-      <div class="card">
+      <div class="card live-card">
         <div class="card-head">
-          <div class="ttl"><span class="emo">🏡</span>全国房源查询 · 买房 / 租房一键直达</div>
+          <div class="ttl"><span class="emo">📡</span>实时楼市热点 · 全网推送</div>
+          <span class="live-upd" id="m2liveUpd">更新中…</span>
+        </div>
+        <div id="m2live" class="grid"><div class="empty">实时楼市热点加载中…</div></div>
+      </div>
+      <div class="card">
         </div>
         <div class="sub">输入城市、预算、面积、户型、买房/租房，联网拉取最新实时房源、给出直达平台检索关键词；并提供避坑要点与简易预算测算。没有输入时，先告诉我：城市、预算、想买房还是租房。</div>
         <div class="qform">
@@ -810,6 +815,13 @@
           <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
+      </div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">📡</span>实时兼职热点 · 全网推送</div>
+          <span class="live-upd" id="m4liveUpd">更新中…</span>
+        </div>
+        <div id="m4live" class="grid"><div class="empty">实时兼职热点加载中…</div></div>
       </div>
       <div class="card">
         <div class="card-head">
@@ -907,6 +919,15 @@
           <span class="live-upd" id="m6upd">实时</span>
         </div>
         <div class="sub">个人自用三餐食谱工具：今日三餐 / 减脂轻食 / 快手家常菜 / 时令应季菜谱 / 自定义搜食谱。内容优先<b>联网获取最新菜谱</b>，每道菜附 📺教程视频 + 🔗网页菜谱 实时直达链接。</div>
+      </div>
+      <div class="card live-card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">📡</span>实时美食热点 · 全网推送</div>
+          <span class="live-upd" id="m6liveUpd">更新中…</span>
+        </div>
+        <div id="m6live" class="grid"><div class="empty">实时美食热点加载中…</div></div>
+      </div>
+      <div class="card">
         <div class="recipe-cats">
           <div class="rcat" data-cat="today" onclick="recipePick('today')"><span class="rcat-emo">🍳</span><span>今日三餐</span></div>
           <div class="rcat" data-cat="light" onclick="recipePick('light')"><span class="rcat-emo">🥗</span><span>减脂轻食</span></div>
@@ -1028,7 +1049,9 @@ function toast(msg){
 }
 function refreshMod(m){
   updateTime();
-  if(m==="m6"){ recipeShuffle(); return; }
+  if(m==="m6"){ recipeShuffle(); loadHot(); return; }
+  if(m==="m7"){ newsRefresh(); return; }
+  if(m==="m1"||m==="m2"||m==="m4"){ loadHot(); }
   toast("「"+modTitles[m].replace(/^[^ ]+ /,"")+"」内容已刷新");
 }
 
@@ -1192,12 +1215,15 @@ async function loadHot(){
       hotData=await r.json();
     }catch(e2){
       el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';
-      ["m1live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
+      ["m1live","m2live","m4live","m6live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
       return;
     }
   }
   renderHotTabs();
   renderM1Live();
+  renderM2Live();
+  renderM4Live();
+  renderM6Live();
 }
 /* 实时热榜：优先直连 60s.viki.moe（CORS=*，国内/境外均可直连，真正的实时），失败回退 hotlist.json 静态快照 */
 async function fetchHotLive(){
@@ -1273,6 +1299,8 @@ const HOUSE_KW=["房价","楼市","房地产","二手房","新房","租房","学
 function isHouse(t){t=t||"";return HOUSE_KW.some(k=>t.indexOf(k)>=0);}
 const JOB_KW=["兼职","副业","招聘","求职","日结","小时工","灵活就业","找工作","岗位","offer","裁员","降薪","外包","接单","freelancer","零工","劳务派遣","社招","校招","实习","远程办公","在家办公","带货","主播","网约车","外卖","快递","闪送","代驾","保姆","月嫂","家政","保安","导购","客服","文员","普工","技工","排版","美工","运营","自媒体","小红书","短视频","剪辑","配音","写手","翻译","找工作"];
 function isJob(t){t=t||"";return JOB_KW.some(k=>t.indexOf(k)>=0);}
+const FOOD_KW=["美食","食谱","菜谱","做饭","烹饪","厨房","早餐","午餐","晚餐","夜宵","小吃","零食","减脂","轻食","养生","煲汤","营养","食材","菜市场","外卖","探店","烘焙","面包","甜品","奶茶","火锅","烧烤","空气炸锅","家常菜","宝宝餐","辅食","下饭菜","酱","卤味","糕点","月饼","汤圆","粽子","饺子","包子","面条","米粉","粥","汤","炒菜","炖菜","凉拌"];
+function isFood(t){t=t||"";return FOOD_KW.some(k=>t.indexOf(k)>=0);}
 const HOUSE_PLATS=[
   {name:"安居客",cls:"p-ajk",url:k=>"https://www.anjuke.com/search?q="+enc(k)},
   {name:"58同城",cls:"p-58",url:k=>"https://www.58.com/search/?key="+enc(k)},
@@ -1287,6 +1315,13 @@ const JOB_PLATS=[
   {name:"智联招聘",cls:"p-zl",url:k=>"https://www.zhaopin.com/sou?query="+enc(k)},
   {name:"前程无忧",cls:"p-51",url:k=>"https://search.51job.com/list/000000,000000,0000,00,9,99,"+enc(k)+",2,1.html"},
   {name:"猎聘",cls:"p-lp",url:k=>"https://www.liepin.com/zhaopin/?key="+enc(k)}
+];
+const FOOD_PLATS=[
+  {name:"下厨房",cls:"p-xcf",url:k=>"https://www.xiachufang.com/search/?keyword="+enc(k)},
+  {name:"小红书",cls:"p-xhs",url:k=>"https://www.xiaohongshu.com/search_result?keyword="+enc(k)},
+  {name:"B站",cls:"p-bili",url:k=>"https://search.bilibili.com/all?keyword="+enc(k)},
+  {name:"百度",cls:"p-bd",url:k=>"https://www.baidu.com/s?wd="+enc(k+" 菜谱")},
+  {name:"抖音",cls:"p-dy",url:k=>"https://www.douyin.com/search/"+enc(k)}
 ];
 function platCaps(kw,list){return (list||[]).map(p=>'<a class="plat '+p.cls+'" href="'+p.url(kw)+'" target="_blank" rel="noopener" title="在'+p.name+'搜索"><svg viewBox="0 0 24 24"><path d="M14 3h7v7h-2V6.4l-9.3 9.3-1.4-1.4L17.6 5H14V3zM5 5h6v2H7v10h10v-4h2v6H5V5z"/></svg>'+p.name+'</a>').join('');}
 function liveItemHTML(x,plats){
@@ -1304,6 +1339,24 @@ function renderLiveEl(elId,updId,items,plats,emptyMsg,extra){
   }
   el.innerHTML=html;
 }
+/* ====== 各模块实时推送（共用：从 hotData 按关键词过滤 + 平台直达） ====== */
+function renderModLive(elId,updId,filterFn,plats,emptyMsg){
+  const el=document.getElementById(elId);if(!el)return;
+  if(!hotData||!hotData.platforms){el.innerHTML='<div class="empty">'+emptyMsg+'</div>';return;}
+  let items=[];
+  (hotData.platforms||[]).forEach(function(p){
+    (p.items||[]).forEach(function(it){
+      if(filterFn(it.t))items.push({t:it.t,url:it.url||"",src:p.name||""});
+    });
+  });
+  const seen={};items=items.filter(function(x){if(seen[x.t])return false;seen[x.t]=1;return true;});
+  const u=document.getElementById(updId);if(u)u.textContent="更新 "+(hotData.updated||"").replace("T"," ").slice(0,16);
+  if(!items.length){el.innerHTML='<div class="empty">当前热榜暂无相关热点，每5分钟自动刷新 👇</div>';return;}
+  el.innerHTML=items.slice(0,8).map(function(x){return liveItemHTML(x,plats);}).join('');
+}
+function renderM2Live(){renderModLive("m2live","m2liveUpd",isHouse,HOUSE_PLATS,"实时楼市热点加载中…");}
+function renderM4Live(){renderModLive("m4live","m4liveUpd",isJob,JOB_PLATS,"实时兼职热点加载中…");}
+function renderM6Live(){renderModLive("m6live","m6liveUpd",isFood,FOOD_PLATS,"实时美食热点加载中…");}
 /* ====== Module 2: 房源 ====== */
 const houses=[
   {t:"中骏·云景台",src:"58同城",city:"晋江",dist:"梅岭街道",cat:"租房",rooms:"一室",sqm:48,year:2019,gas:true,price:1450,fac:"电梯/近地铁/精装",pros:["近地铁口通勤便利","精装拎包入住","小区绿化好"],cons:["楼龄偏老","车位紧张"],link:"https://www.58.com"},
