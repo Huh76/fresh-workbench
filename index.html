@@ -933,10 +933,6 @@
     #m7 .news-head2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 1px}
     #m7 .news-emo{font-size:13px;font-weight:800;color:#1f7a52}
     #m7 .news-date{font-size:13px;color:#2a7a57;font-weight:700}
-    #m7 .news-cmd{display:flex;gap:8px;margin:2px 0 2px}
-    #m7 .news-cmd input{flex:1;min-width:0;padding:10px 13px;border:2px solid #cdeede;border-radius:13px;background:#fff;font-size:13.5px;color:#243b33;outline:none;font-family:inherit}
-    #m7 .news-cmd input:focus{border-color:#2fa572}
-    #m7 .news-cmd button{border:none;border-radius:13px;background:#2fa572;color:#fff;font-weight:700;padding:0 15px;cursor:pointer;font-family:inherit;font-size:13px;white-space:nowrap}
     #m7 .news-quick{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px}
     #m7 .news-quick button{border:1px solid #d7ece2;background:#f3fbf8;color:#2a7a57;font-size:12px;padding:6px 11px;border-radius:18px;cursor:pointer;font-family:inherit}
     #m7 .news-quick button:active{background:#dff3e9}
@@ -970,10 +966,6 @@
       <div class="sub">联网实时抓取当下热点 / 生活干货 / 行业新消息 / 实用科普，自动刷新、拒绝过时；每条附 🔍直达搜索，点关键词跳转查看完整原文资料。</div>
     </div>
 
-    <div class="news-cmd">
-      <input id="newsCmd" placeholder="输入指令：刷新资讯 / 只看健康资讯 / 只看消费避坑 …" onkeydown="if(event.key==='Enter')newsRunCmd()">
-      <button onclick="newsRunCmd()">发送</button>
-    </div>
     <div class="news-quick">
       <button onclick="newsQuick('刷新资讯')">🔄 刷新资讯</button>
       <button onclick="newsQuick('只看社会热点')">社会热点</button>
@@ -1644,20 +1636,15 @@ function newsSetCat(c){
   document.querySelectorAll('#m7 .nc').forEach(b=>b.classList.toggle('on',b.dataset.cat===c));
   newsRender();
 }
-function newsQuick(cmd){ const i=document.getElementById('newsCmd'); if(i)i.value=cmd; newsRunCmd(); }
-function newsRunCmd(){
-  const i=document.getElementById('newsCmd');
-  const raw=(i?i.value:'').trim();
-  if(!raw){ toast('可用指令：刷新资讯 / 只看健康资讯 / 只看消费避坑 …'); return; }
-  if(raw.indexOf('刷新')>=0){ newsRefresh(); if(i)i.value=''; return; }
+function newsQuick(cmd){ newsRunCmd(cmd); }
+function newsRunCmd(raw){
+  raw=(raw||'').trim();
+  if(!raw) return;
+  if(raw.indexOf('刷新')>=0){ newsRefresh(); return; }
   const map={'社会热点':'社会热点','生活':'生活技巧','生活技巧':'生活技巧','健康':'健康科普','健康资讯':'健康科普','消费':'消费避坑','消费避坑':'消费避坑','新奇':'新奇资讯','新奇资讯':'新奇资讯','全部':'全部'};
   let hit=null;
   for(const k in map){ if(raw.indexOf(k)>=0){ hit=map[k]; break; } }
-  if(hit){ newsSetCat(hit); if(i)i.value=''; return; }
-  // 其他输入：当作关键词去全网搜索
-  const nb=document.querySelector('.nav-btn[data-mod="mSearch"]');
-  const gi=document.getElementById('gsInput');
-  if(nb&&gi){ gi.value=raw; nb.click(); if(typeof gsGo==='function') gsGo(); }
+  if(hit){ newsSetCat(hit); return; }
 }
 
 function setNewsStatus(s){ const el=document.getElementById('newsStatus'); if(el) el.textContent=s; }
