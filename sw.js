@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v11";
-// v11（2026-08-12）：每日热点删除实时资讯台标题卡（保留快捷按钮+资讯列表）
+const CACHE = "fresh-workbench-v12";
+// v12（2026-08-12）：m2房源/m4兼职/m6食谱三个模块新增实时热点推送卡片（每5分钟自动刷新）
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
