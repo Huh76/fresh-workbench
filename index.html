@@ -926,58 +926,77 @@
       </div>
     </section>
 
-    <!-- ===== Module 7: 每日热点 ===== -->
+    <!-- ===== Module 7: 实时资讯台 ===== -->
 <section class="module" id="m7">
   <style>
-    #m7 .news-toolbar{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
-    #m7 .news-modes{display:flex;gap:8px}
-    #m7 .nm{flex:1;border:1px solid #cdeede;background:#fff;color:#2a7a57;font-weight:700;padding:10px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:13.5px}
-    #m7 .nm.on{background:#2fa572;color:#fff;border-color:#2fa572}
+    #m7 .news-wrap{display:flex;flex-direction:column;gap:11px}
+    #m7 .news-head2{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 1px}
+    #m7 .news-emo{font-size:13px;font-weight:800;color:#1f7a52}
+    #m7 .news-date{font-size:13px;color:#2a7a57;font-weight:700}
+    #m7 .news-cmd{display:flex;gap:8px;margin:2px 0 2px}
+    #m7 .news-cmd input{flex:1;min-width:0;padding:10px 13px;border:2px solid #cdeede;border-radius:13px;background:#fff;font-size:13.5px;color:#243b33;outline:none;font-family:inherit}
+    #m7 .news-cmd input:focus{border-color:#2fa572}
+    #m7 .news-cmd button{border:none;border-radius:13px;background:#2fa572;color:#fff;font-weight:700;padding:0 15px;cursor:pointer;font-family:inherit;font-size:13px;white-space:nowrap}
+    #m7 .news-quick{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px}
+    #m7 .news-quick button{border:1px solid #d7ece2;background:#f3fbf8;color:#2a7a57;font-size:12px;padding:6px 11px;border-radius:18px;cursor:pointer;font-family:inherit}
+    #m7 .news-quick button:active{background:#dff3e9}
     #m7 .news-cats{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px}
     #m7 .nc{border:1px solid #d7ece2;background:#f6fbf9;color:#3a8a66;padding:7px 13px;border-radius:20px;cursor:pointer;font-family:inherit;font-size:12.5px;white-space:nowrap}
     #m7 .nc.on{background:#2fa572;color:#fff;border-color:#2fa572}
     #m7 .news-list{display:flex;flex-direction:column;gap:9px}
     #m7 .news-item{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 13px;box-shadow:var(--shadow-sm)}
-    #m7 .ni-row{display:flex;align-items:flex-start;gap:9px}
-    #m7 .ni-idx{flex:none;width:20px;height:20px;border-radius:50%;background:#EAFBF2;color:#1f7a52;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px}
-    #m7 .ni-title{color:#243b33;text-decoration:none;font-size:14.5px;line-height:1.5;font-weight:600}
-    #m7 .ni-title:active{color:#2fa572}
-    #m7 .ni-cat{flex:none;font-size:11px;color:#2fa572;background:#EAFBF2;border:1px solid #cdeede;border-radius:10px;padding:1px 7px;margin-top:2px;white-space:nowrap}
-    #m7 .news-list.brief .ni-title{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-    #m7 .ni-meta{display:flex;justify-content:space-between;gap:8px;margin-top:7px;padding-top:7px;border-top:1px dashed #eef3f0;font-size:11.5px;color:#8aa89a}
-    #m7 .ni-src a{color:#2a7a57;text-decoration:none}
-    #m7 .ni-plats{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
-    #m7 .ni-plats-label{font-size:11px;color:#7a9a8c;white-space:nowrap}
-    #m7 .ni-plat{font-size:11.5px;color:#2a7a57;background:#EAFBF2;border:1px solid #cdeede;border-radius:10px;padding:3px 9px;text-decoration:none;transition:.15s}
-    #m7 .ni-plat:active{background:#dff3e9;transform:scale(.97)}
-    #m7 .news-empty{color:#8aa89a;font-size:13px;text-align:center;padding:24px 10px;line-height:1.7}
-    #m7 .news-foot{margin-top:12px;font-size:12px;color:#7a9a8c;text-align:center;min-height:18px}
+    #m7 .ni-top{display:flex;align-items:flex-start;gap:8px}
+    #m7 .ni-cat{flex:none;font-size:11px;color:#2fa572;background:#EAFBF2;border:1px solid #cdeede;border-radius:10px;padding:2px 8px;margin-top:1px;white-space:nowrap;font-weight:700}
+    #m7 .ni-title{font-size:14.5px;line-height:1.5;font-weight:700;color:#243b33}
+    #m7 .ni-sum{font-size:13px;line-height:1.6;color:#5a6f66;margin:7px 0 2px}
+    #m7 .ni-bot{display:flex;align-items:center;gap:9px;margin-top:9px;flex-wrap:wrap}
+    #m7 .ni-search{font-size:12.5px;color:#1f6fb0;background:#EAF3FB;border:1px solid #cfe4f5;border-radius:11px;padding:5px 11px;text-decoration:none;font-weight:700}
+    #m7 .ni-search:active{background:#dcecfb}
+    #m7 .ni-src{font-size:12px;color:#2a7a57;text-decoration:none;white-space:nowrap}
+    #m7 .ni-src:active{text-decoration:underline}
+    #m7 .news-empty{color:#8aa89a;font-size:13px;text-align:center;padding:22px 10px;line-height:1.7}
+    #m7 .news-foot{margin-top:8px;font-size:12px;color:#7a9a8c;text-align:center;min-height:18px}
+    #m7 .news-note{font-size:11.5px;color:#9bb0a6;line-height:1.6;background:#f6fbf9;border:1px dashed #d7ece2;border-radius:11px;padding:8px 11px}
   </style>
+  <div class="news-wrap">
     <div class="card">
       <div class="card-head">
-        <div class="ttl"><span class="emo">🟩</span>每日热点</div>
-        <button class="refresh" onclick="newsRefresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg>刷新热点</button>
+        <div class="ttl"><span class="emo">🟪</span>实时资讯台</div>
+        <button class="refresh" onclick="newsRefresh()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-3-6.7M21 4v5h-5"/></svg><span id="m7upd">刷新</span></button>
       </div>
-      <div class="sub">实时联网检索当日新鲜热点，区分民生 / 财经 / 科技 / 社会 / 互联网；每条均附来源直达 + 全网平台（微博 / 抖音 / 快手 / B站 / 知乎 / 百度 / 头条）一键检索，拒绝编撰旧闻。</div>
+      <div class="news-head2">
+        <span class="news-emo">📅 今日更新时间：</span><span class="news-date" id="newsDate">—</span>
+      </div>
+      <div class="sub">联网实时抓取当下热点 / 生活干货 / 行业新消息 / 实用科普，自动刷新、拒绝过时；每条附 🔍直达搜索，点关键词跳转查看完整原文资料。</div>
     </div>
 
-  <div class="news-toolbar">
-    <div class="news-modes">
-      <button class="nm on" data-mode="brief" onclick="newsSetMode('brief')">📰 简版速览</button>
-      <button class="nm" data-mode="detail" onclick="newsSetMode('detail')">📖 详细解读</button>
+    <div class="news-cmd">
+      <input id="newsCmd" placeholder="输入指令：刷新资讯 / 只看健康资讯 / 只看消费避坑 …" onkeydown="if(event.key==='Enter')newsRunCmd()">
+      <button onclick="newsRunCmd()">发送</button>
     </div>
+    <div class="news-quick">
+      <button onclick="newsQuick('刷新资讯')">🔄 刷新资讯</button>
+      <button onclick="newsQuick('只看社会热点')">社会热点</button>
+      <button onclick="newsQuick('只看生活技巧')">生活技巧</button>
+      <button onclick="newsQuick('只看健康资讯')">健康科普</button>
+      <button onclick="newsQuick('只看消费避坑')">消费避坑</button>
+      <button onclick="newsQuick('只看新奇资讯')">新奇资讯</button>
+      <button onclick="newsQuick('只看全部')">全部</button>
+    </div>
+
     <div class="news-cats" id="newsCats">
       <button class="nc on" data-cat="全部" onclick="newsSetCat('全部')">全部</button>
-      <button class="nc" data-cat="民生" onclick="newsSetCat('民生')">民生</button>
-      <button class="nc" data-cat="财经" onclick="newsSetCat('财经')">财经</button>
-      <button class="nc" data-cat="科技" onclick="newsSetCat('科技')">科技</button>
-      <button class="nc" data-cat="社会" onclick="newsSetCat('社会')">社会</button>
-      <button class="nc" data-cat="互联网" onclick="newsSetCat('互联网')">互联网</button>
+      <button class="nc" data-cat="社会热点" onclick="newsSetCat('社会热点')">社会热点</button>
+      <button class="nc" data-cat="生活技巧" onclick="newsSetCat('生活技巧')">生活技巧</button>
+      <button class="nc" data-cat="健康科普" onclick="newsSetCat('健康科普')">健康科普</button>
+      <button class="nc" data-cat="消费避坑" onclick="newsSetCat('消费避坑')">消费避坑</button>
+      <button class="nc" data-cat="新奇资讯" onclick="newsSetCat('新奇资讯')">新奇资讯</button>
     </div>
-  </div>
 
-  <div class="news-list" id="newsList"></div>
-  <div class="news-foot" id="newsStatus"></div>
+    <div class="news-list" id="newsList"></div>
+    <div class="news-foot" id="newsStatus"></div>
+    <div class="news-note">⚠️ 资讯聚合自公开实时热榜，均为当下热议话题；健康 / 医疗类请以官方与专业机构发布为准，网传偏方勿轻信。</div>
+  </div>
 </section>
 
   <!-- ===== 全局搜索（内置每个模块，输入「搜索 XXX」即触发） ===== -->
@@ -1542,29 +1561,32 @@ let newsFocus=null;
 let newsLoading=false;
 let newsFetchedAt='';
 
+const NEWS_CATS=['社会热点','生活技巧','健康科普','消费避坑','新奇资讯'];
 const CAT_KW={
-  '财经':['股','央行','货币','基金','GDP','经济','涨停','跌停','理财','税','财报','上市','融资','房价','楼市','公积','房贷','零售','进出口','外贸','油价','黄金','金融','证券','保险'],
-  '科技':['AI','人工智能','芯片','半导','手机','华为','苹果','小米','新能源','电动车','科技','数码','5G','大模型','算力','航天','卫星','量子','机器人','操作系统'],
-  '互联网':['互联网','App','平台','直播','短视频','游戏','电商','支付宝','微信','抖音','快手','淘宝','京东','拼多多','外卖','网约车','算法','数据安'],
-  '民生':['教育','医疗','养老','社保','物价','食品','安全','天气','高考','就业','工资','租房','民生','疫情','公交','出行','消费者','退休','户籍','婚姻']
+  '社会热点':['社会','民生','法治','官方','通报','事故','灾害','天气','暴雨','高温','台风','政策','教育','医疗','养老','社保','高考','就业','工资','租房','公交','出行','消费者','退休','户籍','婚姻','火','坠','拘','判','案','救援','疫情','曝光','失联','失踪','通报'],
+  '生活技巧':['生活','妙招','技巧','省钱','收纳','清洁','厨房','做饭','穿衣','穿搭','护肤','攻略','贴士','生活小','降温','保暖','除味','去污','省电','省水','菜谱','保鲜','除螨','去渍','叠衣'],
+  '健康科普':['健康','养生','医保','疾控','疫苗','医院','医生','睡眠','减肥','营养','体检','心理','药','病毒','卫生','饮食','膳食','血压','血糖','流感','发烧','感冒','护眼','补钙','维生素','中医','推拿','急救','牙','护肤健康','养生'],
+  '消费避坑':['消费','电商','退款','维权','假','坑','套路','价格','促销','直播带货','避雷','智商税','网购','团购','双11','618','优惠券','假货','虚假','夸大','传销','p2p','理财陷阱','预付','霸王条款','天价','涨价','降价'],
+  '新奇资讯':['科技','AI','人工智能','芯片','半导','手机','华为','苹果','小米','新能源','电动车','数码','5G','大模型','算力','航天','卫星','量子','机器人','宇宙','天文','动物','自然','黑科技','发明','趣闻','奇闻','上新','发布','上市','新发现','突破']
 };
 function newsClassify(t){
-  for(const cat in CAT_KW){ if(CAT_KW[cat].some(k=>t.indexOf(k)>=0)) return cat; }
-  return '社会';
+  for(const cat of NEWS_CATS){ if((CAT_KW[cat]||[]).some(k=>t.indexOf(k)>=0)) return cat; }
+  return '社会热点';
 }
 function newsSrcUrl(it){ return it.url ? it.url : 'https://www.baidu.com/s?wd='+encodeURIComponent(it.t); }
 function newsSrcLabel(it){ return it.url ? ('来源：'+it.src) : '检索：百度'; }
 function newsNow(){ const d=new Date(); const p=n=>String(n).padStart(2,'0'); return (d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes()); }
-const NEWS_PLATS=[
+const NEWS_SEARCH_MAIN=k=>`https://www.baidu.com/s?wd=${k}`;
+const NEWS_EXT=[
   {n:'微博', u:k=>`https://s.weibo.com/weibo?q=${k}`},
-  {n:'抖音', u:k=>`https://www.douyin.com/search/${k}`},
-  {n:'快手', u:k=>`https://www.kuaishou.com/search/video?searchKey=${k}`},
-  {n:'B站', u:k=>`https://search.bilibili.com/all?keyword=${k}`},
   {n:'知乎', u:k=>`https://www.zhihu.com/search?type=content&q=${k}`},
-  {n:'百度', u:k=>`https://www.baidu.com/s?wd=${k}`},
   {n:'头条', u:k=>`https://so.toutiao.com/search?keyword=${k}`}
 ];
-function newsPlatCaps(t){ const k=encodeURIComponent(t); return NEWS_PLATS.map(p=>`<a class="ni-plat" href="${p.u(k)}" target="_blank" rel="noopener">${p.n}</a>`).join(''); }
+function newsSearchHTML(t){
+  const k=encodeURIComponent(t);
+  const ext=NEWS_EXT.map(p=>`<a class="ni-src" href="${p.u(k)}" target="_blank" rel="noopener">${p.n}</a>`).join(' ');
+  return '<a class="ni-search" href="'+NEWS_SEARCH_MAIN(k)+'" target="_blank" rel="noopener">🔍直达搜索：【'+esc(t)+'】</a> '+ext;
+}
 
 async function newsFetchLive(){
   const out=[];
@@ -1592,38 +1614,50 @@ async function newsFetchLive(){
 function newsRender(){
   const list=document.getElementById('newsList');
   if(!list) return;
-  list.classList.toggle('brief', newsMode==='brief');
+  const dt=document.getElementById('newsDate');
+  if(dt) dt.textContent=newsFetchedAt||'—';
   if(!newsItems.length){
-    list.innerHTML='<div class="news-empty">📡 正在联网获取今日热点，请稍候…<br>（若长时间无响应，点上方「🔄 刷新热点」）</div>';
+    list.innerHTML='<div class="news-empty">📡 正在联网获取今日实时资讯，请稍候…<br>（若长时间无响应，点上方「刷新」或输入「刷新资讯」）</div>';
     return;
   }
   let items=newsItems;
-  if(newsFocus){ const kw=FOCUS_KW[newsFocus]||[]; items=items.filter(x=>kw.some(k=>x.t.indexOf(k)>=0)); }
-  else if(newsCat!=='全部'){ items=items.filter(x=>x.cat===newsCat); }
-  const show=items.slice(0,8);
+  if(newsCat!=='全部'){ items=items.filter(x=>x.cat===newsCat); }
+  const show=items.slice(0,12);
   if(!show.length){
-    const hint = newsFocus ? ('「'+newsFocus+'」定向') : ('「'+newsCat+'」分类');
-    list.innerHTML='<div class="news-empty">😶 今日'+hint+'暂无抓取到的热点。<br>试试「全部」或点「🔄 刷新热点」重新检索。</div>';
+    const k=encodeURIComponent(newsCat);
+    list.innerHTML='<div class="news-empty">😶 当前实时抓取中，「'+newsCat+'」暂无足够条目。<br>点下方查看该分类最新检索结果 👇<br><a class="ni-search" href="https://www.baidu.com/s?wd='+k+'" target="_blank" rel="noopener">🔍直达搜索：【'+newsCat+'】</a></div>';
     return;
   }
-  list.innerHTML=show.map((it,i)=>{
-    const url=newsSrcUrl(it);
-    const row='<div class="ni-row"><span class="ni-idx">'+(i+1)+'</span><a class="ni-title" href="'+url+'" target="_blank" rel="noopener">'+it.t+'</a><span class="ni-cat">'+it.cat+'</span></div>';
-    const meta='<div class="ni-meta"><span class="ni-src">🔗 <a href="'+url+'" target="_blank" rel="noopener">'+newsSrcLabel(it)+' ↗</a></span><span>'+newsFetchedAt+'</span></div>';
-    const plats='<div class="ni-plats"><span class="ni-plats-label">全网检索：</span>'+newsPlatCaps(it.t)+'</div>';
-    return '<div class="news-item">'+row+plats+(newsMode==='detail'?meta:'')+'</div>';
+  list.innerHTML=show.map(it=>{
+    const kw=it.t;
+    const src=it.url?(' · <a class="ni-src" href="'+it.url+'" target="_blank" rel="noopener">来源 ↗</a>'):'';
+    return '<div class="news-item">'
+      +'<div class="ni-top"><span class="ni-cat">'+it.cat+'</span><span class="ni-title">'+esc(it.t)+'</span></div>'
+      +'<div class="ni-sum">（来源：'+esc(it.src||'实时热榜')+'）实时热议中，点下方直达搜索查看完整报道与多方观点。</div>'
+      +'<div class="ni-bot">'+newsSearchHTML(kw)+src+'</div>'
+      +'</div>';
   }).join('');
 }
 
-function newsSetMode(m){ newsMode=m; document.querySelectorAll('#m7 .nm').forEach(b=>b.classList.toggle('on',b.dataset.mode===m)); if(newsItems.length) newsRender(); }
-function newsSetCat(c){ newsCat=c; newsFocus=null; document.querySelectorAll('#m7 .nc').forEach(b=>b.classList.toggle('on',b.dataset.cat===c)); newsRender(); }
-
-function newsShow(mode,focus){
-  newsMode=mode||'brief';
-  newsFocus=focus||null;
-  document.querySelectorAll('#m7 .nm').forEach(b=>b.classList.toggle('on',b.dataset.mode===newsMode));
-  if(newsFocus){ document.querySelectorAll('#m7 .nc').forEach(b=>b.classList.remove('on')); }
-  if(!newsItems.length) newsRefresh(); else newsRender();
+function newsSetCat(c){
+  newsCat=c;
+  document.querySelectorAll('#m7 .nc').forEach(b=>b.classList.toggle('on',b.dataset.cat===c));
+  newsRender();
+}
+function newsQuick(cmd){ const i=document.getElementById('newsCmd'); if(i)i.value=cmd; newsRunCmd(); }
+function newsRunCmd(){
+  const i=document.getElementById('newsCmd');
+  const raw=(i?i.value:'').trim();
+  if(!raw){ toast('可用指令：刷新资讯 / 只看健康资讯 / 只看消费避坑 …'); return; }
+  if(raw.indexOf('刷新')>=0){ newsRefresh(); if(i)i.value=''; return; }
+  const map={'社会热点':'社会热点','生活':'生活技巧','生活技巧':'生活技巧','健康':'健康科普','健康资讯':'健康科普','消费':'消费避坑','消费避坑':'消费避坑','新奇':'新奇资讯','新奇资讯':'新奇资讯','全部':'全部'};
+  let hit=null;
+  for(const k in map){ if(raw.indexOf(k)>=0){ hit=map[k]; break; } }
+  if(hit){ newsSetCat(hit); if(i)i.value=''; return; }
+  // 其他输入：当作关键词去全网搜索
+  const nb=document.querySelector('.nav-btn[data-mod="mSearch"]');
+  const gi=document.getElementById('gsInput');
+  if(nb&&gi){ gi.value=raw; nb.click(); if(typeof gsGo==='function') gsGo(); }
 }
 
 function setNewsStatus(s){ const el=document.getElementById('newsStatus'); if(el) el.textContent=s; }
@@ -1876,33 +1910,14 @@ function recipeCardHTML(r, live){
     +'</div>';
 }
 function recipeBoxSet(html){ const b=document.getElementById('m6result'); if(b) b.innerHTML=html; }
-async function recipeLive(){
-  try{
-    const d=await fetchJSON('https://www.themealdb.com/api/json/v1/1/random.php',6000);
-    const m=d&&d.meals&&d.meals[0]; if(!m) return null;
-    const ing=[];
-    for(let i=1;i<=20;i++){ const nm=m['strIngredient'+i]; if(nm&&String(nm).trim()){ ing.push((String(m['strMeasure'+i]||'').trim())+' '+String(nm).trim()); } }
-    const steps=String(m.strInstructions||'').split(/\r?\n|(?:\.\s)/).map(function(s){return s.trim();}).filter(function(s){return s.length>3;}).slice(0,5);
-    return {name:m.strMeal, diff:'—', time:'—', area:m.strArea, ing:ing.slice(0,8), steps:steps, img:m.strMealThumb, video:m.strYoutube, web:m.strSource};
-  }catch(e){ return null; }
-}
-async function recipeLivePrepend(){
-  const upd=document.getElementById('m6upd'); if(upd) upd.textContent='联网中…';
-  const live=await recipeLive();
-  if(upd) upd.textContent='实时';
-  if(!live) return;
-  const b=document.getElementById('m6result'); if(!b) return;
-  b.insertAdjacentHTML('afterbegin', recipeCardHTML(live,true));
-}
 function recipePick(cat){
   m6Cat=cat; m6Offset=0; m6Shown=0;
   document.querySelectorAll('#m6 .rcat').forEach(function(x){ x.classList.toggle('on', x.dataset.cat===cat); });
   const act=document.getElementById('m6actions'); if(act) act.style.display='flex';
-  const hint=document.getElementById('m6hint'); if(hint) hint.textContent='已为你准备「'+catName(cat)+'」食谱，点 📺/🔗 看实时教程；点「换一批」联网刷新。';
+  const hint=document.getElementById('m6hint'); if(hint) hint.textContent='已为你准备「'+catName(cat)+'」食谱，点 📺/🔗 看实时教程；点「换一批」刷新。';
   const seed=(window.RECIPE_SEED&&window.RECIPE_SEED[cat])||[];
   const slice=seed.slice(0,4); m6Shown=slice.length;
   recipeBoxSet(slice.map(function(r){return recipeCardHTML(r,false);}).join(''));
-  recipeLivePrepend();
 }
 function recipeShuffle(){
   const seed=(window.RECIPE_SEED&&window.RECIPE_SEED[m6Cat])||[];
@@ -1911,7 +1926,6 @@ function recipeShuffle(){
   for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=arr[i];arr[i]=arr[j];arr[j]=t; }
   const slice=arr.slice(0,4); m6Shown=slice.length;
   recipeBoxSet(slice.map(function(r){return recipeCardHTML(r,false);}).join(''));
-  recipeLivePrepend();
   toast('已换一批「'+catName(m6Cat)+'」新食谱');
 }
 function recipeMore(){
