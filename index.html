@@ -731,6 +731,19 @@
           <a class="link" href="https://www.youku.com" target="_blank" rel="noopener">优酷</a>
           <a class="link" href="https://www.mgtv.com" target="_blank" rel="noopener">芒果TV</a>
         </div>
+        <div class="m1-search">
+          <input id="m1kw" placeholder="输入剧名搜全网平台…" onkeydown="if(event.key==='Enter')m1Search()">
+          <button class="m1-shuffle" onclick="m1Dice()">🎲 换一批</button>
+        </div>
+        <div id="m1chips" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px">
+          <span class="mtag seri" style="cursor:pointer" onclick="m1Filter('seri')">剧集</span>
+          <span class="mtag free" style="cursor:pointer" onclick="m1Filter('free')">综艺</span>
+          <span class="mtag pay" style="cursor:pointer" onclick="m1Filter('pay')">电影</span>
+          <span class="mtag done" style="cursor:pointer" onclick="m1Filter('done')">动漫</span>
+          <span class="mtag live" style="cursor:pointer" onclick="m1Filter('live')">短剧</span>
+          <span class="mtag" style="background:#9a8aaa;cursor:pointer" onclick="m1Filter('rec')">解说</span>
+        </div>
+        <div id="m1list" class="grid"></div>
       </div>
       <div class="card hot-card">
         <div class="card-head">
@@ -758,6 +771,11 @@
           <a class="link" href="https://www.anjuke.com" target="_blank">安居客</a>
           <a class="link" href="https://www.58.com" target="_blank">58同城</a>
         </div>
+        <div class="m1-search">
+          <input id="m2platKw" placeholder="输入关键词搜房源（如 学区房 / 二手房 / 租房）" onkeydown="if(event.key==='Enter')m2PlatSearch()">
+          <button class="m1-shuffle" onclick="m2PlatDice()">🎲</button>
+        </div>
+        <div id="m2platResult" class="plat-bar"></div>
       </div>
       <div class="card live-card">
         <div class="card-head">
@@ -767,6 +785,8 @@
         <div id="m2live" class="grid"><div class="empty">实时楼市热点加载中…</div></div>
       </div>
       <div class="card">
+        <div class="card-head">
+          <div class="ttl"><span class="emo">🏠</span>房源查询 · 联网实时检索</div>
         </div>
         <div class="sub">输入城市、预算、面积、户型、买房/租房，联网拉取最新实时房源、给出直达平台检索关键词；并提供避坑要点与简易预算测算。没有输入时，先告诉我：城市、预算、想买房还是租房。</div>
         <div class="qform">
@@ -815,6 +835,11 @@
           <a class="link" href="https://www.liepin.com" target="_blank">猎聘</a>
           <a class="link" href="https://www.lagou.com" target="_blank">拉勾招聘</a>
         </div>
+        <div class="m1-search">
+          <input id="m4platKw" placeholder="输入关键词搜兼职（如 排版 / PPT / 远程设计）" onkeydown="if(event.key==='Enter')m4PlatSearch()">
+          <button class="m1-shuffle" onclick="m4PlatDice()">🎲</button>
+        </div>
+        <div id="m4platResult" class="plat-bar"></div>
       </div>
       <div class="card live-card">
         <div class="card-head">
@@ -1031,7 +1056,7 @@ document.querySelectorAll(".nav-btn").forEach(b=>{
     document.documentElement.style.setProperty("--acc",modAcc[m]);
     updateTime();
     if(m==="m7"){newsInit();}
-    if(m==="m5")lifeReset();
+    if(m==="m1"){var ml=document.getElementById("m1list");if(ml&&!ml.innerHTML)m1Dice();}
     if(m==="m6"){recipePick('today');}
   };
 });
@@ -1199,9 +1224,97 @@ const PLATFORMS=[
  {id:"youku",name:"优酷",cls:"p-yk",url:k=>"https://so.youku.com/search_video/q_"+enc(k)},
   {id:"mgtv",name:"芒果TV",cls:"p-mgtv",url:k=>"https://so.mgtv.com/so?k="+enc(k)}
 ];
-const PLAT_SEARCH={};
-function renderPlatLinks(){return '';}
+const PLAT_SEARCH={
+  job:[
+    {n:"猪八戒",u:k=>"https://www.zbj.com/search/?kw="+enc(k)},
+    {n:"BOSS直聘",u:k=>"https://www.zhipin.com/web/geek/job?query="+enc(k)},
+    {n:"前程无忧",u:k=>"https://we.51job.com/pc/search?keyword="+enc(k)},
+    {n:"智联招聘",u:k=>"https://www.zhaopin.com/sou/?kw="+enc(k)},
+    {n:"猎聘",u:k=>"https://www.liepin.com/zhaopin/?key="+enc(k)},
+    {n:"拉勾",u:k=>"https://www.lagou.com/wn/zhaopin?pn=&kd="+enc(k)},
+    {n:"58同城",u:k=>"https://www.58.com/search/?key="+enc(k)},
+    {n:"站酷",u:k=>"https://www.zcool.com.cn/search?word="+enc(k)}
+  ],
+  house:[
+    {n:"安居客",u:k=>"https://www.anjuke.com/search?q="+enc(k)},
+    {n:"58同城",u:k=>"https://www.58.com/search/?key="+enc(k)},
+    {n:"链家",u:k=>"https://bj.lianjia.com/ershoufang/?keyword="+enc(k)},
+    {n:"房天下",u:k=>"https://www.fang.com/search?q="+enc(k)},
+    {n:"贝壳找房",u:k=>"https://www.ke.com/s?keyword="+enc(k)}
+  ]
+};
+function renderPlatLinks(kw,plats){
+  var k=enc(kw);
+  return plats.map(function(p){return '<a class="plat" href="'+p.u(k)+'" target="_blank" rel="noopener" style="background:#E98AB5;color:#fff;padding:5px 10px;border-radius:11px;font-size:12px;font-weight:700;text-decoration:none">'+p.n+' ↗</a>';}).join('');
+}
+/* m2/m4 平台搜索栏 */
+function m2PlatSearch(){
+  var kw=(document.getElementById("m2platKw").value||"").trim();
+  if(!kw)return;
+  var el=document.getElementById("m2platResult");
+  if(el)el.innerHTML='<div style="margin-top:8px"><span style="font-size:13px;color:#6b5b7a;font-weight:700">🔍「'+hotEsc(kw)+'」全网搜房源：</span><div class="plats" style="margin-top:6px">'+renderPlatLinks(kw,PLAT_SEARCH.house)+'</div></div>';
+}
+function m2PlatDice(){
+  var words=["北京二手房","上海租房","成都学区房","广州买房","杭州新房","深圳租房","南京二手房","武汉租房"];
+  var kw=words[Math.floor(Math.random()*words.length)];
+  var inp=document.getElementById("m2platKw");if(inp)inp.value=kw;
+  m2PlatSearch();
+}
+function m4PlatSearch(){
+  var kw=(document.getElementById("m4platKw").value||"").trim();
+  if(!kw)return;
+  var el=document.getElementById("m4platResult");
+  if(el)el.innerHTML='<div style="margin-top:8px"><span style="font-size:13px;color:#6b5b7a;font-weight:700">🔍「'+hotEsc(kw)+'」全网搜兼职：</span><div class="plats" style="margin-top:6px">'+renderPlatLinks(kw,PLAT_SEARCH.job)+'</div></div>';
+}
+function m4PlatDice(){
+  var words=["排版兼职","远程设计","PPT美化","公众号排版","海报设计","简历制作","电商美工","视频剪辑"];
+  var kw=words[Math.floor(Math.random()*words.length)];
+  var inp=document.getElementById("m4platKw");if(inp)inp.value=kw;
+  m4PlatSearch();
+}
 function m1Refresh(){const d=new Date();const hh=('0'+d.getHours()).slice(-2),mm=('0'+d.getMinutes()).slice(-2);const u=document.getElementById('m1upd');if(u)u.textContent='更新 '+hh+':'+mm;loadHot();}
+/* m1 剧集库 + 搜索 */
+const DRAMA_SEED=[
+  {t:"庆余年第二季",cat:"seri"},{t:"玫瑰的故事",cat:"seri"},{t:"墨雨云间",cat:"seri"},
+  {t:"与凤行",cat:"seri"},{t:"繁花",cat:"seri"},{t:"追风者",cat:"seri"},{t:"花间令",cat:"seri"},
+  {t:"向往的生活",cat:"free"},{t:"乘风2024",cat:"free"},{t:"奔跑吧",cat:"free"},
+  {t:"哈哈哈哈哈",cat:"free"},{t:"种地吧",cat:"free"},
+  {t:"第二十条",cat:"pay"},{t:"飞驰人生2",cat:"pay"},{t:"热辣滚烫",cat:"pay"},
+  {t:"周处除三害",cat:"pay"},{t:"沙丘2",cat:"pay"},
+  {t:"斗破苍穹年番",cat:"done"},{t:"完美世界",cat:"done"},{t:"凡人修仙传",cat:"done"},
+  {t:"雾山五行",cat:"done"},{t:"天官赐福",cat:"done"},
+  {t:"我在八零年代当后妈",cat:"live"},{t:"闪婚老伴是豪门",cat:"live"},{t:"总裁的替身新娘",cat:"live"},
+  {t:"木鱼水心",cat:"rec"},{t:"毒舌电影",cat:"rec"},{t:"贤于葛格",cat:"rec"}
+];
+var CAT_NAMES={seri:"剧集",free:"综艺",pay:"电影",done:"动漫",live:"短剧",rec:"解说"};
+var m1Cat="all";
+function m1Render(list){
+  var el=document.getElementById("m1list");if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty">暂无匹配，试试换关键词或 🎲换一批</div>';return;}
+  el.innerHTML=list.map(function(d){
+    var platsLinks=PLATFORMS.map(function(p){return '<a class="plat '+p.cls+'" href="'+p.url(d.t)+'" target="_blank" rel="noopener">'+p.name+'</a>';}).join('');
+    return '<div class="item"><span class="mtag '+(d.cat||"live")+'">'+(CAT_NAMES[d.cat]||"推荐")+'</span><h3>'+hotEsc(d.t)+'</h3><div class="plats">'+platsLinks+'</div></div>';
+  }).join('');
+}
+function m1Search(){
+  var kw=(document.getElementById("m1kw").value||"").trim();
+  if(!kw){m1Dice();return;}
+  var matched=DRAMA_SEED.filter(function(d){return d.t.indexOf(kw)>=0||kw.indexOf(d.t)>=0;});
+  if(matched.length){m1Render(matched);}
+  else{m1Render([{t:kw,cat:"live"}]);}
+}
+function m1Dice(){
+  var pool=m1Cat==="all"?DRAMA_SEED:DRAMA_SEED.filter(function(d){return d.cat===m1Cat;});
+  var shuffled=pool.slice().sort(function(){return Math.random()-0.5;}).slice(0,6);
+  m1Render(shuffled);
+}
+function m1Filter(cat){
+  m1Cat=cat;
+  var chips=document.querySelectorAll('#m1chips .mtag');
+  if(!chips.length){chips=document.querySelectorAll('.m1-search ~ div .mtag');}
+  chips.forEach(function(el){el.style.opacity=(cat==="all"||el.classList.contains(cat))?"1":"0.4";});
+  m1Dice();
+}
 function hotEsc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
 let hotData=null;
 async function loadHot(){
