@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v12";
-// v12（2026-08-12）：m2房源/m4兼职/m6食谱三个模块新增实时热点推送卡片（每5分钟自动刷新）
+const CACHE = "fresh-workbench-v13";
+// v13（2026-08-13）：恢复 m1 搜索框/分类chips/🎲换一批 + DRAMA_SEED；修复 m2 card-head；恢复 m2/m4 搜索栏 + renderPlatLinks
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
