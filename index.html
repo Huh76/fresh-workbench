@@ -476,9 +476,9 @@
   @media (max-width:760px){
     html,body{overflow-x:hidden}
     .app{height:100vh;height:100dvh}
-    /* 导航整齐网格，去除阶梯错位（brand 在手机端隐藏仍占 nth-child 序号导致偏移） */
-    .sidebar{flex-wrap:wrap;justify-content:center;gap:10px 12px;overflow:visible}
-    .nav-btn{width:64px;height:78px;transform:none!important;flex:0 0 auto}
+    /* 导航 3 列网格，两行整齐排列 */
+    .sidebar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px;overflow:visible;justify-items:center}
+    .nav-btn{width:64px;height:78px;transform:none!important;flex:0 0 auto;justify-self:center}
     .nav-btn:nth-child(even),
     .nav-btn.active:nth-child(even),
     .nav-btn.active:nth-child(odd){transform:none!important}
