@@ -936,13 +936,6 @@
         </div>
         <div class="sub">个人自用三餐食谱工具：今日三餐 / 减脂轻食 / 快手家常菜 / 时令应季菜谱 / 自定义搜食谱。内容优先<b>联网获取最新菜谱</b>，每道菜附 📺教程视频 + 🔗网页菜谱 实时直达链接。</div>
       </div>
-      <div class="card live-card">
-        <div class="card-head">
-          <div class="ttl"><span class="emo">📡</span>实时美食热点 · 全网推送</div>
-          <span class="live-upd" id="m6liveUpd">更新中…</span>
-        </div>
-        <div id="m6live" class="grid"><div class="empty">实时美食热点加载中…</div></div>
-      </div>
       <div class="card">
         <div class="recipe-cats">
           <div class="rcat" data-cat="today" onclick="recipePick('today')"><span class="rcat-emo">🍳</span><span>今日三餐</span></div>
@@ -1319,13 +1312,12 @@ async function loadHot(){
       hotData=await r.json();
     }catch(e2){
       el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';
-      ["m1live","m6live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
+      ["m1live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
       return;
     }
   }
   renderHotTabs();
   renderM1Live();
-  renderM6Live();
 }
 /* 实时热榜：优先直连 60s.viki.moe（CORS=*，国内/境外均可直连，真正的实时），失败回退 hotlist.json 静态快照 */
 async function fetchHotLive(){
@@ -1456,7 +1448,6 @@ function renderModLive(elId,updId,filterFn,plats,emptyMsg){
   if(!items.length){el.innerHTML='<div class="empty">当前热榜暂无相关热点，每5分钟自动刷新 👇</div>';return;}
   el.innerHTML=items.slice(0,8).map(function(x){return liveItemHTML(x,plats);}).join('');
 }
-function renderM6Live(){renderModLive("m6live","m6liveUpd",isFood,FOOD_PLATS,"实时美食热点加载中…");}
 /* ====== Module 2: 房源 ====== */
 const houses=[
   {t:"中骏·云景台",src:"58同城",city:"晋江",dist:"梅岭街道",cat:"租房",rooms:"一室",sqm:48,year:2019,gas:true,price:1450,fac:"电梯/近地铁/精装",pros:["近地铁口通勤便利","精装拎包入住","小区绿化好"],cons:["楼龄偏老","车位紧张"],link:"https://www.58.com"},
