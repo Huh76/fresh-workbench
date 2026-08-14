@@ -834,16 +834,10 @@
         </div>
         <div class="m1-search">
           <input id="m4platKw" placeholder="输入关键词搜兼职（如 排版 / PPT / 远程设计）" onkeydown="if(event.key==='Enter')m4PlatSearch()">
+          <button class="m1-go" onclick="m4PlatSearch()">🔍 搜索</button>
           <button class="m1-shuffle" onclick="m4PlatDice()">🎲</button>
         </div>
         <div id="m4platResult" class="plat-bar"></div>
-      </div>
-      <div class="card live-card">
-        <div class="card-head">
-          <div class="ttl"><span class="emo">📡</span>实时兼职热点 · 全网推送</div>
-          <span class="live-upd" id="m4liveUpd">更新中…</span>
-        </div>
-        <div id="m4live" class="grid"><div class="empty">实时兼职热点加载中…</div></div>
       </div>
       <div class="card">
         <div class="card-head">
@@ -1325,13 +1319,12 @@ async function loadHot(){
       hotData=await r.json();
     }catch(e2){
       el.innerHTML='<div class="empty">实时热榜暂时获取不到（网络 / CDN 波动），已为你展示下方精选内容 👇</div>';
-      ["m1live","m4live","m6live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
+      ["m1live","m6live"].forEach(function(id){const x=document.getElementById(id);if(x)x.innerHTML='<div class="empty">实时热搜暂时获取不到，稍后自动重试 👇</div>';});
       return;
     }
   }
   renderHotTabs();
   renderM1Live();
-  renderM4Live();
   renderM6Live();
 }
 /* 实时热榜：优先直连 60s.viki.moe（CORS=*，国内/境外均可直连，真正的实时），失败回退 hotlist.json 静态快照 */
@@ -1463,7 +1456,6 @@ function renderModLive(elId,updId,filterFn,plats,emptyMsg){
   if(!items.length){el.innerHTML='<div class="empty">当前热榜暂无相关热点，每5分钟自动刷新 👇</div>';return;}
   el.innerHTML=items.slice(0,8).map(function(x){return liveItemHTML(x,plats);}).join('');
 }
-function renderM4Live(){renderModLive("m4live","m4liveUpd",isJob,JOB_PLATS,"实时兼职热点加载中…");}
 function renderM6Live(){renderModLive("m6live","m6liveUpd",isFood,FOOD_PLATS,"实时美食热点加载中…");}
 /* ====== Module 2: 房源 ====== */
 const houses=[
