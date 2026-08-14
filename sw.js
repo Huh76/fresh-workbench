@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v14";
-// v14（2026-08-13）：手机端导航改为 3 列 grid 网格布局，两行整齐排列
+const CACHE = "fresh-workbench-v15";
+// v15（2026-08-14）：m1 追剧搜索框增加「🔍 搜索」按钮（之前只能按回车，手机端不直观）
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
