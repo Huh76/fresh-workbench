@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v15";
-// v15（2026-08-14）：m1 追剧搜索框增加「🔍 搜索」按钮（之前只能按回车，手机端不直观）
+const CACHE = "fresh-workbench-v16";
+// v16（2026-08-14）：m2房源搜索框增加搜索按钮；删除实时楼市热点卡片
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
