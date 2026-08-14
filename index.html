@@ -509,6 +509,8 @@
   .m1-search{display:flex;gap:8px;margin:12px 0 4px}
   .m1-search input{flex:1;min-width:0;padding:10px 14px;border:2px solid #F0D3E0;border-radius:14px;background:#fff;font-size:14px;color:#5a3a48;outline:none;font-family:inherit}
   .m1-search input:focus{border-color:#E98AB5}
+  .m1-go{padding:0 16px;border:none;border-radius:14px;background:#E98AB5;color:#fff;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;transition:.18s}
+  .m1-go:active{transform:scale(.95)}
   .m1-shuffle{padding:0 16px;border:none;border-radius:14px;background:#FFD9EC;color:#7a2f4d;font-weight:700;cursor:pointer;font-size:13px;white-space:nowrap;transition:.18s}
   .m1-shuffle:active{transform:scale(.95)}
   .mtag{display:inline-block;font-size:11px;padding:3px 9px;border-radius:10px;font-weight:700;margin:0 5px 7px 0;color:#fff}
@@ -733,6 +735,7 @@
         </div>
         <div class="m1-search">
           <input id="m1kw" placeholder="输入剧名搜全网平台…" onkeydown="if(event.key==='Enter')m1Search()">
+          <button class="m1-go" onclick="m1Search()">🔍 搜索</button>
           <button class="m1-shuffle" onclick="m1Dice()">🎲 换一批</button>
         </div>
         <div id="m1chips" style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 4px">
