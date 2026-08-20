@@ -53,7 +53,7 @@
   .nav-btn{
     width:80px;height:74px;border:none;background:transparent;cursor:pointer;
     border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
-    color:var(--muted);transition:.2s;font-size:11px;font-weight:500;
+    color:var(--muted);transition:transform .15s ease;font-size:11px;font-weight:500;
   }
   .nav-btn svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
   .nav-btn:hover{background:#FBEFF3;color:var(--text)}
@@ -71,7 +71,7 @@
   .topbar .pill{font-size:12px;color:var(--muted);background:#fff;padding:6px 14px;border-radius:20px;box-shadow:var(--shadow-sm)}
   .topbar .pill b{color:var(--text)}
 
-  .module{display:none;animation:fade .3s ease}
+  .module{display:none;animation:fade .12s ease;contain:layout paint}
   .module.show{display:block}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
@@ -478,7 +478,7 @@
     .app{height:100vh;height:100dvh}
     /* 导航 3 列网格，两行整齐排列 */
     .sidebar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px;overflow:visible;justify-items:center}
-    .nav-btn{width:64px;height:78px;transform:none!important;flex:0 0 auto;justify-self:center}
+    .nav-btn{width:64px;height:78px;transform:none!important;flex:0 0 auto;justify-self:center;will-change:transform}
     .nav-btn:nth-child(even),
     .nav-btn.active:nth-child(even),
     .nav-btn.active:nth-child(odd){transform:none!important}
@@ -1030,19 +1030,23 @@ const modTitles={m1:"🍿 休闲追剧",m2:"🏡 房源查询",m4:"🎨 排版�
 const modAcc={m1:"#FFB3C6",m2:"#A8E6CF",m4:"#FFF0A8",m6:"#E9A99B",m7:"#2FA572",mSearch:"#7C6BD6"};
 
 document.querySelectorAll(".nav-btn").forEach(b=>{
-  b.onclick=()=>{
-    document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
+  b.addEventListener("click",function(){
     const m=b.dataset.mod;
-    document.querySelectorAll(".module").forEach(s=>s.classList.remove("show"));
-    document.getElementById(m).classList.add("show");
-    document.getElementById("modTitle").textContent=modTitles[m];
-    document.documentElement.style.setProperty("--acc",modAcc[m]);
-    updateTime();
-    if(m==="m7"){newsInit();}
-    if(m==="m1"){var ml=document.getElementById("m1list");if(ml&&!ml.innerHTML)m1Dice();}
-    if(m==="m6"){recipePick('today');}
-  };
+    /* 批量更新 DOM，避免逐帧重绘 */
+    requestAnimationFrame(function(){
+      document.querySelectorAll(".nav-btn").forEach(x=>x.classList.remove("active"));
+      b.classList.add("active");
+      document.querySelectorAll(".module").forEach(s=>s.classList.remove("show"));
+      document.getElementById(m).classList.add("show");
+      document.getElementById("modTitle").textContent=modTitles[m];
+      /* 仅在 .main 上设置 --acc，避免全页面重绘 */
+      document.getElementById("main").style.setProperty("--acc",modAcc[m]);
+      updateTime();
+      if(m==="m7"){newsInit();}
+      if(m==="m1"){var ml=document.getElementById("m1list");if(ml&&!ml.innerHTML)m1Dice();}
+      if(m==="m6"){recipePick('today');}
+    });
+  });
 });
 function updateTime(){
   const d=new Date();
