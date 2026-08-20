@@ -1,6 +1,6 @@
 // Service Worker：离线缓存 APP shell，让「添加到主屏幕」后即使网络不佳也能打开
-const CACHE = "fresh-workbench-v18";
-// v18（2026-08-14）：删除 m6 食谱模块的实时美食热点卡片
+const CACHE = "fresh-workbench-v19";
+// v19（2026-08-20）：导航点击性能优化——--acc限定到main元素避免全页重绘、transition仅动画transform、模块动画缩短至.12s、rAF批量更新、GPU层提升
 const ASSETS = ["./", "index.html", "manifest.json", "icons/icon-512.png"];
 
 self.addEventListener("install", function (e) {
